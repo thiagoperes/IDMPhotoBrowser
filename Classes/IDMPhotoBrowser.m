@@ -219,15 +219,21 @@
         {
             //CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y);
             
-            CGFloat finalX = firstX;
+            CGFloat finalX = firstX, finalY;
+
+            CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
+            
+            if(moveView.center.y > viewHalfHeight+30) // down
+                finalY = windowsHeigt*2;
+            else // up
+                finalY = -viewHalfHeight;
             
             //CGFloat finalY = (moveView.center.y > viewHalfHeight+30) ? viewHeight+viewHalfHeight/2 : -viewHalfHeight/2;
-            CGFloat finalY = (moveView.center.y > viewHalfHeight+30) ? viewHeight+viewHalfHeight/2 : -viewHalfHeight/2;
             
             /*CGFloat animationDuration = (ABS(velocityY)*.0002)+.2;
             animationDuration += animationDuration/4;*/
             
-            CGFloat animationDuration = 0.27;
+            CGFloat animationDuration = 0.35;
             
             [UIView beginAnimations:nil context:NULL];
             [UIView setAnimationDuration:animationDuration];
@@ -283,25 +289,25 @@
     
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
-    _toolbar.barStyle = UIBarStyleBlack;
     _toolbar.tintColor = [UIColor clearColor];
-    _toolbar.backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
+    _toolbar.backgroundColor = [UIColor clearColor];
     _toolbar.translucent = YES;
     [_toolbar setBackgroundImage:[UIImage new]
               forToolbarPosition:UIToolbarPositionAny
                       barMetrics:UIBarMetricsDefault];
-
+    
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _doneButton.layer.cornerRadius = 3.0f;
-    _doneButton.layer.borderColor = [UIColor colorWithWhite:0.8 alpha:1].CGColor;
+    _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
     _doneButton.layer.borderWidth = 1.0f;
-    [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:1]];
-    [_doneButton setTitleColor:[UIColor colorWithWhite:0.8 alpha:1] forState:UIControlStateNormal];
-    [_doneButton setTitleColor:[UIColor colorWithWhite:0.8 alpha:1] forState:UIControlStateHighlighted];
+    [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
+    [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal];
+    [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
     [_doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-    _doneButton.frame = CGRectMake(250, 30, 55, 26); // Done: (250, 30, 45, 22);
+    _doneButton.frame = CGRectMake(250, 30, 55, 26);
+    _doneButton.alpha = 1;
     [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]
@@ -962,7 +968,7 @@
             }
             else
             {
-                [_delegate photoBrowser:self actionIndex:buttonIndex];
+                [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex];
             }
         }
     }

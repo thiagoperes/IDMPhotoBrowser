@@ -141,7 +141,7 @@
 
 #pragma mark IDMPhotoBrowser Delegate
 
-- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser actionIndex:(NSUInteger)index
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)index
 {
     [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Option %d", index+1] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }

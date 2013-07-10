@@ -8,6 +8,7 @@
 
 #import "IDMCaptionView.h"
 #import "IDMPhoto.h"
+#import <QuartzCore/QuartzCore.h>
 
 static const CGFloat labelPadding = 10;
 
@@ -25,7 +26,13 @@ static const CGFloat labelPadding = 10;
     if (self) {
         _photo = photo;
         self.opaque = NO;
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
+        
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 130)];
+        CAGradientLayer *gradient = [CAGradientLayer layer];
+        gradient.frame = view.bounds;
+        gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor clearColor] CGColor], (id)[[UIColor blackColor] CGColor], nil];
+        [view.layer insertSublayer:gradient atIndex:0];
+        [self addSubview:view];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
         [self setupCaption];
     }

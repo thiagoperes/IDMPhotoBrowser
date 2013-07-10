@@ -33,7 +33,7 @@ See the code snippet below for an example of how to implement the photo browser.
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     browser.displayActionButton = YES;
-    browser.actionButtonTitles = [[NSMutableArray alloc] initWithObjects:@"action1", @"action2", nil]; // If you want to use your own actions, alloc and set the titles. And don't forget to set the delegate = self, and create the method photoBrowser:actionIndex:
+    browser.actionButtonTitles = [[NSMutableArray alloc] initWithObjects:@"action1", @"action2", nil]; // If you want to use your own actions, alloc and set the titles. And don't forget to set the delegate = self, and create the method photoBrowser:didDismissActionSheetWithButtonIndex:
 	browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
