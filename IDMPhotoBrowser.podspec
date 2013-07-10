@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary      = "IDMPhotoBrowser."
   s.homepage     = "https://github.com/appkraft/IDMPhotoBrowser"
 
-  s.license      = { :type => 'MIT', :file => 'LICENSE' }
+  s.license      = { :type => 'MIT', :file => 'LICENSE.txt' }
   s.author       = { "Appkraft" => "all@appkraft.net" }
   s.source       = { 
     :git => "https://github.com/appkraft/IDMPhotoBrowser.git", 
@@ -15,6 +15,10 @@ Pod::Spec.new do |s|
   
   # s.source_files = '*.{h,m}'
   s.source_files = 'Classes'
+
+  s.dependency 'AFNetworking', '~> 1.3.1'
+  s.dependency 'DACircularProgress', '~> 2.1.0'
+  s.dependency 'SVProgressHUD', '~> 0.9'
 
   s.requires_arc = true
 end
