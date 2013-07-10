@@ -1,33 +1,21 @@
 # IDMPhotoBrowser
 
-IDMPhotoBrowser é uma modificação da biblioteca [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser).
+IDMPhotoBrowser is a new implementation of the [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser) library.
 
-O MWPhotoBrowser é muito bom, porém poderia ser melhor. Há algum tempo o código não é atualizado e há uma notável necessidade de um update.
+We've added both user experience and technical features to this release.
 
-O IDMPhotoBrowser é desenvolvida com base nos recursos do visualizador de fotos do app do Facebook.
-
-[SCREENSHOTS]
-
-### Mudanças do projeto da MWPhotoBrowser
-
-- Atualizado pra ARC
-- Uso da AFNetworking pra carregar as imagem
-
+## New features:
+- Uses ARC
+- Uses AFNetworking for image loading
+- Image progress shown
+- Minimalistic Facebook-like interface, swipe up to dismiss
+- Ability to add custom actions on the action sheet
 
 ## Features
 
 - Can display one or more images by providing either `UIImage` objects, file paths to images on the device, or URLs to images online
 - Handles the downloading and caching of photos from the web seamlessly
 - Photos can be zoomed and panned, and optional captions can be displayed
-
-### New features
-
-- Gestos do app do facebook, como dismiss photo with vertical swipe
-- Progresso do download de cada foto
-- Carregar fotos sem precisar de delegate
-- Ações customizadas
-- Opção de remoção das setas pra passar as fotos
-
 
 ## Usage
 
@@ -42,7 +30,7 @@ See the code snippet below for an example of how to implement the photo browser.
     	[photos addObject:photo];
     }
     
-    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos]; // init with the IDMPhoto's array
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     browser.displayActionButton = YES;
     browser.actionButtonTitles = [[NSMutableArray alloc] initWithObjects:@"action1", @"action2", nil]; // If you want to use your own actions, alloc and set the titles. And don't forget to set the delegate = self, and create the method photoBrowser:actionIndex:
@@ -89,22 +77,12 @@ Example delegate method for custom caption view:
 
 Simply add the files inside `IDMPhotoBrowser/IDMPhotoBrowser` to your Xcode project, copying them to your project's directory if required.
 
-
-## Outstanding issues and improvements
-
-[...]
-
-## Notes and Accreditation
-
 ### Opensource libraries used
 
 - [AFNetWorking](https://github.com/AFNetworking/AFNetworking)
 - [DACircularProgress](https://github.com/danielamitay/DACircularProgress)
 - [SVProgressHUD](https://github.com/samvermette/SVProgressHUD)
 
-Demo photos kindly provided by Oliver Waters (<http://twitter.com/oliverwaters>).
-
-
 ## Licence
 
-[...]
+This project uses MIT License
