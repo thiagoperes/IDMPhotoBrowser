@@ -53,14 +53,6 @@
     return title;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
-{
-    if(section == 1)
-        return @"'Photos from Flickr' using custom action";
-    
-    return nil;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Create
     static NSString *CellIdentifier = @"Cell";
@@ -72,7 +64,7 @@
     // Configure
     if(indexPath.section == 0)
     {
-        cell.textLabel.text = @"Local photo";
+        cell.textLabel.text = @"Local photos";
     }
     else if(indexPath.section == 1)
     {
@@ -88,14 +80,15 @@
 #pragma mark - TableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	// Browser
+    //Create an array to store IDMPhoto objects
 	NSMutableArray *photos = [[NSMutableArray alloc] init];
+
     IDMPhoto *photo;
     if(indexPath.section == 0)
     {
-            photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
-            photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
-			[photos addObject:photo];
+        photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
+        photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
+        [photos addObject:photo];
 	}
     else if(indexPath.section == 1)
     {
@@ -123,21 +116,23 @@
         }
     }
     
-	// Create browser
+    // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     browser.displayActionButton = YES;
     browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-
+    
     if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
         browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
     
     // Show
+    browser.view.alpha = 0;
+    [UIView animateWithDuration:0.3 animations:^{ browser.view.alpha = 1; }];
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
     [self presentModalViewController:browser animated:YES];
     
-	// Deselect
+	// Deselect row
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

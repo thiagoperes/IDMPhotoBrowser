@@ -27,10 +27,10 @@ static const CGFloat labelPadding = 10;
         _photo = photo;
         self.opaque = NO;
         
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 130)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, -100, 320, 130+100)];
         CAGradientLayer *gradient = [CAGradientLayer layer];
         gradient.frame = view.bounds;
-        gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor clearColor] CGColor], (id)[[UIColor blackColor] CGColor], nil];
+        gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithWhite:0 alpha:0.0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:0.8] CGColor], nil];
         [view.layer insertSublayer:gradient atIndex:0];
         [self addSubview:view];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;

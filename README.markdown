@@ -21,22 +21,33 @@ We've added both user experience and technical features to this release.
 
 See the code snippet below for an example of how to implement the photo browser.
 
+    // URLs array
     NSArray *photosURL = @[[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
     
-    NSMutableArray *photos = [[NSMutableArray alloc] init]; // Create array of 'IDMPhoto' objects
+    // Create an array to store IDMPhoto objects
+    NSMutableArray *photos = [[NSMutableArray alloc] init];
     
     for (NSURL *url in photosURL) {
     	IDMPhoto *photo = [IDMPhoto photoWithURL:url];
     	[photos addObject:photo];
     }
     
+    // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     browser.displayActionButton = YES;
-    browser.actionButtonTitles = [[NSMutableArray alloc] initWithObjects:@"action1", @"action2", nil]; // If you want to use your own actions, alloc and set the titles. And don't forget to set the delegate = self, and create the method photoBrowser:didDismissActionSheetWithButtonIndex:
 	browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
+    /* If you want to use custom action
+     * Just set the array actionButtonTitles with the titles for the actionSheet
+     * And then implement the method photoBrowser:didDismissActionSheetWithButtonIndex:, from the IDMPhotoBrowser delegate
+     */
+    browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
+    
+    // Show and deselect row
+    browser.view.alpha = 0;
+    [UIView animateWithDuration:0.3 animations:^{ browser.view.alpha = 1; }];
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
     [self presentModalViewController:browser animated:YES];
 
@@ -71,11 +82,11 @@ Example delegate method for custom caption view:
 
 ### Using CocoaPods
 
-[...]
+Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 ### Including Source Directly Into Your Project
 
-Simply add the files inside `IDMPhotoBrowser/IDMPhotoBrowser` to your Xcode project, copying them to your project's directory if required.
+Simply add the files inside `IDMPhotoBrowser/Classes` to your Xcode project, copying them to your project's directory if required.
 
 ### Opensource libraries used
 
@@ -85,4 +96,4 @@ Simply add the files inside `IDMPhotoBrowser/IDMPhotoBrowser` to your Xcode proj
 
 ## Licence
 
-This project uses MIT License
+This project uses MIT License.
