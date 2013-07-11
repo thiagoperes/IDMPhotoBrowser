@@ -51,10 +51,9 @@ See the code snippet below for an example of how to implement the photo browser.
      */
     browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
     
-    // Show and deselect row
-    browser.view.alpha = 0;
-    [UIView animateWithDuration:0.3 animations:^{ browser.view.alpha = 1; }];
+    // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    
     [self presentModalViewController:browser animated:YES];
 
 

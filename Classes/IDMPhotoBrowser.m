@@ -272,7 +272,11 @@
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	// View
+	// Animation
+    self.view.alpha = 0;
+    [UIView animateWithDuration:0.3 animations:^{ self.view.alpha = 1; }];
+    
+    // View
 	self.view.backgroundColor = [UIColor blackColor];
 
 	// Setup paging scrolling view

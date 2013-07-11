@@ -127,8 +127,6 @@
         browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
     
     // Show
-    browser.view.alpha = 0;
-    [UIView animateWithDuration:0.3 animations:^{ browser.view.alpha = 1; }];
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
     [self presentModalViewController:browser animated:YES];
     
