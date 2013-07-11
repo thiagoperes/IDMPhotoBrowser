@@ -351,7 +351,7 @@
     [_recycledPages removeAllObjects];
     
     // Toolbar
-    if ( _displayActionButton || (_displayArrowButton && numberOfPhotos > 1) || _displayToolbar) {
+    if ( (_displayActionButton || (_displayArrowButton && numberOfPhotos > 1)) && _displayToolbar) {
         [self.view addSubview:_toolbar];
     } else {
         [_toolbar removeFromSuperview];
@@ -366,7 +366,7 @@
     UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     NSMutableArray *items = [[NSMutableArray alloc] init];
     
-    [items addObject:fixedLeftSpace];
+    if (_displayActionButton) [items addObject:fixedLeftSpace];
     [items addObject:flexSpace];
     if (numberOfPhotos > 1 && _displayArrowButton) [items addObject:_previousButton];
     [items addObject:flexSpace];

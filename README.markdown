@@ -35,12 +35,18 @@ See the code snippet below for an example of how to implement the photo browser.
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
-    browser.displayActionButton = YES;
-	browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
-    /* If you want to use custom action
-     * Just set the array actionButtonTitles with the titles for the actionSheet
+    /* You can customize the toolbar:
+     * There are two boolean properties you can set: displayActionButton and displayArrowButton;
+     * If you dont want the toolbar at all, you can set displayToolbar = NO.
+     */
+     
+    browser.displayActionButton = YES;
+	browser.displayArrowButton = YES;
+    
+    /* If you want to use custom action:
+     * Just set the array actionButtonTitles with the titles for the actionSheet;
      * And then implement the method photoBrowser:didDismissActionSheetWithButtonIndex:, from the IDMPhotoBrowser delegate
      */
     browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
