@@ -36,7 +36,7 @@
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayActionButton;
-@property (nonatomic, retain) NSMutableArray *actionButtonTitles;
+@property (nonatomic, retain) NSArray *actionButtonTitles;
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;

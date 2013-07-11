@@ -10,10 +10,7 @@
 
 @implementation Menu
 
-@synthesize photos = _photos;
-
-#pragma mark -
-#pragma mark Initialization
+#pragma mark - Initialization
 
 - (id)initWithStyle:(UITableViewStyle)style {
     if ((self = [super initWithStyle:style])) {
@@ -22,15 +19,13 @@
     return self;
 }
 
-#pragma mark -
-#pragma mark View lifecycle
+#pragma mark - View Lifecycle
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return YES;
 }
 
-#pragma mark -
-#pragma mark Table view data source
+#pragma mark - TableView DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
@@ -58,16 +53,22 @@
     return title;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+    if(section == 1)
+        return @"'Photos from Flickr' using custom action";
     
+    return nil;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Create
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    cell.accessoryType = _segmentedControl.selectedSegmentIndex == 0 ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-
+    
     // Configure
     if(indexPath.section == 0)
     {
@@ -84,8 +85,7 @@
     return cell;
 }
 
-#pragma mark -
-#pragma mark Table view delegate
+#pragma mark - TableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Browser
@@ -122,7 +122,6 @@
 			[photos addObject:[IDMPhoto photoWithURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]]];
         }
     }
-    self.photos = photos;
     
 	// Create browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
@@ -130,6 +129,9 @@
     browser.displayActionButton = YES;
     browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+
+    if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
+        browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
     
     // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -139,7 +141,7 @@
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-#pragma mark IDMPhotoBrowser Delegate
+#pragma mark - IDMPhotoBrowser Delegate
 
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)index
 {

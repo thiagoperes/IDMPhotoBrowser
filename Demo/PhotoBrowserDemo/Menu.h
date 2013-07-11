@@ -10,11 +10,5 @@
 #import "IDMPhotoBrowser.h"
 
 @interface Menu : UITableViewController <IDMPhotoBrowserDelegate>
-{
-    NSArray *_photos;
-    UISegmentedControl *_segmentedControl;
-}
-
-@property (nonatomic, strong) NSArray *photos;
 
 @end
