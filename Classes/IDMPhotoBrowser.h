@@ -41,6 +41,9 @@
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
 
+// Init with animation
+- (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view;
+
 // Reloads the photo browser and refetches data
 - (void)reloadData;
 

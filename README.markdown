@@ -21,6 +21,7 @@ We've added both user experience and technical features inspired by Facebook's a
 
 See the code snippet below for an example of how to implement the photo browser.
 
+``` objective-c
     // URLs array
     NSArray *photosURL = @[[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
     
@@ -55,6 +56,7 @@ See the code snippet below for an example of how to implement the photo browser.
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
     
     [self presentModalViewController:browser animated:YES];
+```
 
 
 ### Photo Captions

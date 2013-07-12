@@ -22,12 +22,16 @@ static const CGFloat labelPadding = 10;
 @implementation IDMCaptionView
 
 - (id)initWithPhoto:(id<IDMPhoto>)photo {
-    self = [super initWithFrame:CGRectMake(0, 0, 320, 44)]; // Random initial frame
+    
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.width;
+    
+    self = [super initWithFrame:CGRectMake(0, 0, screenWidth, 44)]; // Random initial frame
     if (self) {
         _photo = photo;
         self.opaque = NO;
         
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, -100, 320, 130+100)];
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, -100, screenWidth, 130+100)];
         CAGradientLayer *gradient = [CAGradientLayer layer];
         gradient.frame = view.bounds;
         gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithWhite:0 alpha:0.0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:0.8] CGColor], nil];
@@ -59,8 +63,8 @@ static const CGFloat labelPadding = 10;
     _label.lineBreakMode = UILineBreakModeWordWrap;
     _label.numberOfLines = 3;
     _label.textColor = [UIColor whiteColor];
-    _label.shadowColor = [UIColor blackColor];
-    _label.shadowOffset = CGSizeMake(1, 1);
+    _label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
+    _label.shadowOffset = CGSizeMake(0, 1);
     _label.font = [UIFont systemFontOfSize:17];
     if ([_photo respondsToSelector:@selector(caption)]) {
         _label.text = [_photo caption] ? [_photo caption] : @" ";

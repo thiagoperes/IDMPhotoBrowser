@@ -49,10 +49,11 @@
 		[self addSubview:_photoImageView];
         
         CGRect screenBound = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenBound.size.width;
         CGFloat screenHeight = screenBound.size.height;
-        
+
         // Progress view
-        _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((320.-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
+        _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
         _progressView.roundedCorners = YES;
         _progressView.tag = 101;
         _progressView.trackTintColor = [UIColor clearColor];

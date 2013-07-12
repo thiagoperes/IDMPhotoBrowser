@@ -25,10 +25,77 @@
     return YES;
 }
 
+- (void)viewDidLoad
+{
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.width;
+    
+    // Create a button with and image to be shown on screen
+    UIButton *buttonWithImageOnScreen = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonWithImageOnScreen.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8, 200, 200);
+    buttonWithImageOnScreen.tag = 101;
+    [buttonWithImageOnScreen setImage:[UIImage imageNamed:@"photo1m.jpg"] forState:UIControlStateNormal];
+    buttonWithImageOnScreen.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    buttonWithImageOnScreen.backgroundColor = [UIColor blackColor];
+    [buttonWithImageOnScreen addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:buttonWithImageOnScreen];
+    
+    UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonWithImageOnScreen2.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8+220, 200, 200);
+    buttonWithImageOnScreen2.tag = 102;
+    [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo2m.jpg"] forState:UIControlStateNormal];
+    buttonWithImageOnScreen2.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    buttonWithImageOnScreen2.backgroundColor = [UIColor blackColor];
+    [buttonWithImageOnScreen2 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:buttonWithImageOnScreen2];
+}
+
+- (void)buttonWithImageOnScreenPressed:(id)sender
+{
+    UIButton *buttonSender = (UIButton*)sender;
+    
+    // Create an array to store IDMPhoto objects
+    NSMutableArray *photos = [[NSMutableArray alloc] init];
+    
+    IDMPhoto *photo;
+    if(buttonSender.tag == 101)
+    {
+        photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
+        photo.caption = @"Grotto of the Madonna";
+        [photos addObject:photo];
+    }
+    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
+    photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
+    [photos addObject:photo];
+    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo3l" ofType:@"jpg"]];
+    photo.caption = @"York Floods";
+    [photos addObject:photo];
+    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
+    photo.caption = @"Campervan";
+    [photos addObject:photo];
+    if(buttonSender.tag == 102)
+    {
+        photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
+        photo.caption = @"Grotto of the Madonna";
+        [photos addObject:photo];
+    }
+    
+    // Create and setup browser
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using method initWithPhotos:animatedFromView: to use the zoom-in animation
+    browser.delegate = self;
+    browser.displayActionButton = YES;
+    browser.displayArrowButton = YES;
+    browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
+    // Show
+    self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    [self presentModalViewController:browser animated:YES];
+}
+
 #pragma mark - TableView DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -38,6 +105,8 @@
         rows = 1;
     else if(section == 1)
         rows = 2;
+    else if(section == 2)
+        rows = 0;
     
     return rows;
 }
@@ -49,6 +118,8 @@
         title = @"Single photo";
     else if(section == 1)
         title = @"Multiple photos";
+    else if(section == 2)
+        title = @"Images showing on screen";
     
     return title;
 }
@@ -77,10 +148,19 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    if (section == 2) {
+        return 440;
+    }
+    
+    return 0;
+}
+
 #pragma mark - TableView Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //Create an array to store IDMPhoto objects
+    // Create an array to store IDMPhoto objects
 	NSMutableArray *photos = [[NSMutableArray alloc] init];
 
     IDMPhoto *photo;

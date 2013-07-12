@@ -52,7 +52,11 @@
     UIStatusBarStyle _previousStatusBarStyle;
     UIBarButtonItem *_previousViewControllerBackButton;
     
+    // Present
+    UIView *_senderViewForAnimation;
+    
     // Misc
+    //BOOL _presentAnimatedFromView;
     BOOL _displayActionButton;
     BOOL _useDefaultActions;
     BOOL _displayArrowButton;
@@ -140,6 +144,7 @@
         _recycledPages = [[NSMutableSet alloc] init];
         _newPhotos = [[NSMutableArray alloc] init];
 
+        //_presentAnimatedFromView = NO;
         _useDefaultActions = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
@@ -159,6 +164,17 @@
 - (id)initWithPhotos:(NSArray *)photosArray {
     if ((self = [self init])) {
 		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
+	}
+	return self;
+}
+
+- (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view;
+{
+    if ((self = [self init])) {
+		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
+        //_presentAnimatedFromView = YES;
+        
+        [self performAnimationWithView:view];
 	}
 	return self;
 }
@@ -216,22 +232,15 @@
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
     {
         if(moveView.center.y > viewHalfHeight+40 || moveView.center.y < viewHalfHeight-40) // Automatic Dismiss View
-        {
-            //CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y);
-            
+        {            
             CGFloat finalX = firstX, finalY;
-
+            
             CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
             
-            if(moveView.center.y > viewHalfHeight+30) // down
+            if(moveView.center.y > viewHalfHeight+30) // swipe down
                 finalY = windowsHeigt*2;
-            else // up
+            else // swipe up
                 finalY = -viewHalfHeight;
-            
-            //CGFloat finalY = (moveView.center.y > viewHalfHeight+30) ? viewHeight+viewHalfHeight/2 : -viewHalfHeight/2;
-            
-            /*CGFloat animationDuration = (ABS(velocityY)*.0002)+.2;
-            animationDuration += animationDuration/4;*/
             
             CGFloat animationDuration = 0.35;
             
@@ -274,7 +283,9 @@
 - (void)viewDidLoad {
 	// Animation
     self.view.alpha = 0;
-    [UIView animateWithDuration:0.3 animations:^{ self.view.alpha = 1; }];
+
+    if(!_senderViewForAnimation)
+        [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
     
     // View
 	self.view.backgroundColor = [UIColor blackColor];
@@ -295,10 +306,14 @@
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
     _toolbar.tintColor = [UIColor clearColor];
     _toolbar.backgroundColor = [UIColor clearColor];
+    _toolbar.clipsToBounds = YES;
     _toolbar.translucent = YES;
     [_toolbar setBackgroundImage:[UIImage new]
               forToolbarPosition:UIToolbarPositionAny
                       barMetrics:UIBarMetricsDefault];
+    
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.width;
     
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -310,7 +325,7 @@
     [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
     [_doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-    _doneButton.frame = CGRectMake(250, 30, 55, 26);
+    _doneButton.frame = CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
     _doneButton.alpha = 1;
     [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -343,6 +358,46 @@
     
 	// Super
     [super viewDidLoad];
+}
+
+- (void)performAnimationWithView:(UIView*)senderView
+{
+    _senderViewForAnimation = senderView;
+    
+    UIImage *imageFromView;
+    
+    if([senderView isKindOfClass:[UIButton class]])
+    {
+        UIButton *buttonSender = (UIButton*)senderView;
+        imageFromView = buttonSender.currentImage;
+    }
+    else if([senderView isKindOfClass:[UIImageView class]])
+    {
+        UIImageView *imageViewSender = (UIImageView*)senderView;
+        imageFromView = imageViewSender.image;
+    }
+    
+    UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
+    
+    CGRect frame = [senderView convertRect:senderView.superview.frame toView:[[[UIApplication sharedApplication] delegate] window]];
+    frame.size.height = senderView.frame.size.height;
+    frame.size.width = senderView.frame.size.width;
+    
+    resizableImageView.frame = frame;
+    resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
+    resizableImageView.backgroundColor = [UIColor blackColor];
+    [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
+    
+    [UIView animateWithDuration:0.28 animations:^{
+        CGRect screenBound = [[UIScreen mainScreen] bounds];
+        CGFloat screenWidth = screenBound.size.width;
+        CGFloat screenHeight = screenBound.size.height;
+        
+        resizableImageView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+    } completion:^(BOOL finished) {
+        self.view.alpha = 1;
+        [resizableImageView removeFromSuperview];
+    }];
 }
 
 - (void)performLayout {
