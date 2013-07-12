@@ -1,8 +1,8 @@
 # IDMPhotoBrowser
 
-IDMPhotoBrowser is a new implementation of the [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser) library.
+IDMPhotoBrowser is a new implementation based on [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser).
 
-We've added both user experience and technical features to this release.
+We've added both user experience and technical features inspired by Facebook's and Tweetbot's photo browsers.
 
 ## New features:
 - Uses ARC
