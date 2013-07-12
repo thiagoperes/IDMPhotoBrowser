@@ -21,9 +21,14 @@ We've added both user experience and technical features inspired by Facebook's a
 
 See the code snippet below for an example of how to implement the photo browser.
 
+First create a photos array containing IDMPhoto objects:
+
 ``` objective-c
     // URLs array
-    NSArray *photosURL = @[[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], [NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
+    NSArray *photosURL = @[[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], 
+    [NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"], 
+    [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], 
+    [NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
     
     // Create an array to store IDMPhoto objects
     NSMutableArray *photos = [[NSMutableArray alloc] init];
@@ -32,29 +37,44 @@ See the code snippet below for an example of how to implement the photo browser.
     	IDMPhoto *photo = [IDMPhoto photoWithURL:url];
     	[photos addObject:photo];
     }
-    
+````
+
+There are two main ways to presente the photoBrowser: With a fade on screen or with a zooming effect from an existing view.
+
+Presenting using a simple fade transition:
+
+``` objective-c    
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    
-    /* You can customize the toolbar:
-     * There are two boolean properties you can set: displayActionButton and displayArrowButton;
-     * If you dont want the toolbar at all, you can set displayToolbar = NO.
-     */
+``` 
+Presenting from a view:
+``` objective-c    
+    // Create and setup browser
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
+    browser.delegate = self;
+    browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+``` 
+
+You can customize the toolbar. There are two boolean properties you can set: displayActionButton and displayArrowButton. If you dont want the toolbar at all, you can set displayToolbar = NO.
      
+``` objective-c     
     browser.displayActionButton = YES;
-	browser.displayArrowButton = YES;
-    
-    /* If you want to use custom action:
-     * Just set the array actionButtonTitles with the titles for the actionSheet;
-     * And then implement the method photoBrowser:didDismissActionSheetWithButtonIndex:, from the IDMPhotoBrowser delegate
-     */
+    browser.displayArrowButton = YES;
+```
+
+If you want to use custom actions, set the actionButtonTitles array with the titles for the actionSheet. Then, implement the photoBrowser:didDismissActionSheetWithButtonIndex: method, from the IDMPhotoBrowser delegate
+
+``` objective-c    
     browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
-    
+```
+
+Presenting using a modal view controller:
+
+``` objective-c
     // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    
     [self presentModalViewController:browser animated:YES];
 ```
 
