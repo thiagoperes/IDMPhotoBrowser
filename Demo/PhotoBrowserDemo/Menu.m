@@ -30,20 +30,19 @@
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     
-    // Create a button with and image to be shown on screen
-    UIButton *buttonWithImageOnScreen = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8, 200, 200);
-    buttonWithImageOnScreen.tag = 101;
-    [buttonWithImageOnScreen setImage:[UIImage imageNamed:@"photo1m.jpg"] forState:UIControlStateNormal];
-    buttonWithImageOnScreen.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    buttonWithImageOnScreen.backgroundColor = [UIColor blackColor];
-    [buttonWithImageOnScreen addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:buttonWithImageOnScreen];
+    UIButton *buttonWithImageOnScreen1 = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonWithImageOnScreen1.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8, 200, 200);
+    buttonWithImageOnScreen1.tag = 101;
+    [buttonWithImageOnScreen1 setImage:[UIImage imageNamed:@"photo1m.jpg"] forState:UIControlStateNormal];
+    buttonWithImageOnScreen1.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    buttonWithImageOnScreen1.backgroundColor = [UIColor blackColor];
+    [buttonWithImageOnScreen1 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:buttonWithImageOnScreen1];
     
     UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
     buttonWithImageOnScreen2.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8+220, 200, 200);
     buttonWithImageOnScreen2.tag = 102;
-    [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo2m.jpg"] forState:UIControlStateNormal];
+    [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo3m.jpg"] forState:UIControlStateNormal];
     buttonWithImageOnScreen2.imageView.contentMode = UIViewContentModeScaleAspectFit;
     buttonWithImageOnScreen2.backgroundColor = [UIColor blackColor];
     [buttonWithImageOnScreen2 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -64,11 +63,11 @@
         photo.caption = @"Grotto of the Madonna";
         [photos addObject:photo];
     }
-    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
-    photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
-    [photos addObject:photo];
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo3l" ofType:@"jpg"]];
     photo.caption = @"York Floods";
+    [photos addObject:photo];
+    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
+    photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
     [photos addObject:photo];
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
     photo.caption = @"Campervan";
@@ -81,7 +80,7 @@
     }
     
     // Create and setup browser
-    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using method initWithPhotos:animatedFromView: method to use the zoom-in animation
+    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using initWithPhotos:animatedFromView: method to use the zoom-in animation
     browser.delegate = self;
     browser.displayActionButton = YES;
     browser.displayArrowButton = YES;
