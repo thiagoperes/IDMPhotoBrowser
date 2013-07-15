@@ -46,11 +46,6 @@
 		D157496E178DB94900B0211A /* IDMZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157495B178DB94900B0211A /* IDMZoomingScrollView.m */; };
 		D1574971178DB95300B0211A /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = D157496F178DB95300B0211A /* README.markdown */; };
 		D1574972178DB95300B0211A /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = D1574970178DB95300B0211A /* LICENSE.txt */; };
-		D1809D3917943FD10065C3C1 /* idmphotobrowser_ss1.png in Resources */ = {isa = PBXBuildFile; fileRef = D1809D3417943FD10065C3C1 /* idmphotobrowser_ss1.png */; };
-		D1809D3A17943FD10065C3C1 /* idmphotobrowser_ss2.png in Resources */ = {isa = PBXBuildFile; fileRef = D1809D3517943FD10065C3C1 /* idmphotobrowser_ss2.png */; };
-		D1809D3B17943FD10065C3C1 /* idmphotobrowser_ss3.png in Resources */ = {isa = PBXBuildFile; fileRef = D1809D3617943FD10065C3C1 /* idmphotobrowser_ss3.png */; };
-		D1809D3C17943FD10065C3C1 /* idmphotobrowser_ss4.png in Resources */ = {isa = PBXBuildFile; fileRef = D1809D3717943FD10065C3C1 /* idmphotobrowser_ss4.png */; };
-		D1809D3D17943FD10065C3C1 /* idmphotobrowser_ss5.png in Resources */ = {isa = PBXBuildFile; fileRef = D1809D3817943FD10065C3C1 /* idmphotobrowser_ss5.png */; };
 		D1A193581758F37B00CE615F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A193561758F37B00CE615F /* libz.1.2.5.dylib */; };
 		D1A193591758F37B00CE615F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A193571758F37B00CE615F /* libz.dylib */; };
 		D1A1935B1758F42300CE615F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1935A1758F42300CE615F /* SystemConfiguration.framework */; };
@@ -122,11 +117,6 @@
 		D157495B178DB94900B0211A /* IDMZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMZoomingScrollView.m; sourceTree = "<group>"; };
 		D157496F178DB95300B0211A /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.markdown; path = ../../README.markdown; sourceTree = "<group>"; };
 		D1574970178DB95300B0211A /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../LICENSE.txt; sourceTree = "<group>"; };
-		D1809D3417943FD10065C3C1 /* idmphotobrowser_ss1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = idmphotobrowser_ss1.png; sourceTree = "<group>"; };
-		D1809D3517943FD10065C3C1 /* idmphotobrowser_ss2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = idmphotobrowser_ss2.png; sourceTree = "<group>"; };
-		D1809D3617943FD10065C3C1 /* idmphotobrowser_ss3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = idmphotobrowser_ss3.png; sourceTree = "<group>"; };
-		D1809D3717943FD10065C3C1 /* idmphotobrowser_ss4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = idmphotobrowser_ss4.png; sourceTree = "<group>"; };
-		D1809D3817943FD10065C3C1 /* idmphotobrowser_ss5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = idmphotobrowser_ss5.png; sourceTree = "<group>"; };
 		D1A193561758F37B00CE615F /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		D1A193571758F37B00CE615F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		D1A1935A1758F42300CE615F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -204,7 +194,6 @@
 		4C6F979814AF734900F8389A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D1809D3317943FD10065C3C1 /* Screenshots */,
 				D157496F178DB95300B0211A /* README.markdown */,
 				D1574970178DB95300B0211A /* LICENSE.txt */,
 				D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */,
@@ -329,19 +318,6 @@
 			path = SVProgressHUD;
 			sourceTree = "<group>";
 		};
-		D1809D3317943FD10065C3C1 /* Screenshots */ = {
-			isa = PBXGroup;
-			children = (
-				D1809D3417943FD10065C3C1 /* idmphotobrowser_ss1.png */,
-				D1809D3517943FD10065C3C1 /* idmphotobrowser_ss2.png */,
-				D1809D3617943FD10065C3C1 /* idmphotobrowser_ss3.png */,
-				D1809D3717943FD10065C3C1 /* idmphotobrowser_ss4.png */,
-				D1809D3817943FD10065C3C1 /* idmphotobrowser_ss5.png */,
-			);
-			name = Screenshots;
-			path = ../../Screenshots;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -407,11 +383,6 @@
 				D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */,
 				D1574971178DB95300B0211A /* README.markdown in Resources */,
 				D1574972178DB95300B0211A /* LICENSE.txt in Resources */,
-				D1809D3917943FD10065C3C1 /* idmphotobrowser_ss1.png in Resources */,
-				D1809D3A17943FD10065C3C1 /* idmphotobrowser_ss2.png in Resources */,
-				D1809D3B17943FD10065C3C1 /* idmphotobrowser_ss3.png in Resources */,
-				D1809D3C17943FD10065C3C1 /* idmphotobrowser_ss4.png in Resources */,
-				D1809D3D17943FD10065C3C1 /* idmphotobrowser_ss5.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

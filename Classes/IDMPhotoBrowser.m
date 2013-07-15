@@ -56,7 +56,6 @@
     UIView *_senderViewForAnimation;
     
     // Misc
-    //BOOL _presentAnimatedFromView;
     BOOL _displayActionButton;
     BOOL _useDefaultActions;
     BOOL _displayArrowButton;
@@ -144,7 +143,6 @@
         _recycledPages = [[NSMutableSet alloc] init];
         _newPhotos = [[NSMutableArray alloc] init];
 
-        //_presentAnimatedFromView = NO;
         _useDefaultActions = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
@@ -172,7 +170,6 @@
 {
     if ((self = [self init])) {
 		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
-        //_presentAnimatedFromView = YES;
         
         [self performAnimationWithView:view];
 	}
@@ -207,7 +204,6 @@
     float viewHeight = moveView.frame.size.height;
     float viewHalfHeight = viewHeight/2;
     
-    //[self.view bringSubviewToFront:[(UIPanGestureRecognizer*)sender view]];
     CGPoint translatedPoint = [(UIPanGestureRecognizer*)sender translationInView:self.view];
     
     // Gesture Began
@@ -279,12 +275,11 @@
 
 #pragma mark - View Loading
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
-	// Animation
+	// Setup animation
     self.view.alpha = 0;
 
-    if(!_senderViewForAnimation)
+    if(!_senderViewForAnimation) // default animation
         [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
     
     // View
