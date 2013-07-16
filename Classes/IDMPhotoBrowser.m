@@ -310,6 +310,11 @@
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     
+    if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
+        [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
+        screenWidth = screenBound.size.height;
+    }
+    
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _doneButton.layer.cornerRadius = 3.0f;
@@ -374,7 +379,7 @@
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     
-    CGRect frame = [senderView convertRect:senderView.superview.frame toView:[[[UIApplication sharedApplication] delegate] window]];
+    CGRect frame = [senderView convertRect:senderView.superview.bounds toView:[[[UIApplication sharedApplication] delegate] window]];
     frame.size.height = senderView.frame.size.height;
     frame.size.width = senderView.frame.size.width;
     

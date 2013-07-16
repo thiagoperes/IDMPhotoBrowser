@@ -27,26 +27,27 @@
 
 - (void)viewDidLoad
 {
-    CGRect screenBound = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenBound.size.width;
+    UIView *tableViewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 440)];
     
     UIButton *buttonWithImageOnScreen1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen1.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8, 200, 200);
+    buttonWithImageOnScreen1.frame = CGRectMake(15, 0, 200, 200);
     buttonWithImageOnScreen1.tag = 101;
     [buttonWithImageOnScreen1 setImage:[UIImage imageNamed:@"photo1m.jpg"] forState:UIControlStateNormal];
     buttonWithImageOnScreen1.imageView.contentMode = UIViewContentModeScaleAspectFit;
     buttonWithImageOnScreen1.backgroundColor = [UIColor blackColor];
     [buttonWithImageOnScreen1 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:buttonWithImageOnScreen1];
+    [tableViewFooter addSubview:buttonWithImageOnScreen1];
     
     UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen2.frame = CGRectMake(15 + ((screenWidth > 320) ? 34 : 0), 270+8+220, 200, 200);
+    buttonWithImageOnScreen2.frame = CGRectMake(15, 220, 200, 200);
     buttonWithImageOnScreen2.tag = 102;
     [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo3m.jpg"] forState:UIControlStateNormal];
     buttonWithImageOnScreen2.imageView.contentMode = UIViewContentModeScaleAspectFit;
     buttonWithImageOnScreen2.backgroundColor = [UIColor blackColor];
     [buttonWithImageOnScreen2 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:buttonWithImageOnScreen2];
+    [tableViewFooter addSubview:buttonWithImageOnScreen2];
+    
+    self.tableView.tableFooterView = tableViewFooter;
 }
 
 - (void)buttonWithImageOnScreenPressed:(id)sender
@@ -149,10 +150,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    if (section == 2) {
-        return 440;
-    }
-    
     return 0;
 }
 

@@ -52,6 +52,12 @@
         CGFloat screenWidth = screenBound.size.width;
         CGFloat screenHeight = screenBound.size.height;
 
+        if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
+            [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
+            screenWidth = screenBound.size.height;
+            screenHeight = screenBound.size.width;
+        }
+        
         // Progress view
         _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
         _progressView.roundedCorners = YES;

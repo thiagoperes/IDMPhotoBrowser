@@ -26,6 +26,11 @@ static const CGFloat labelPadding = 10;
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     
+    if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
+        [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
+        screenWidth = screenBound.size.height;
+    }
+    
     self = [super initWithFrame:CGRectMake(0, 0, screenWidth, 44)]; // Random initial frame
     if (self) {
         _photo = photo;
