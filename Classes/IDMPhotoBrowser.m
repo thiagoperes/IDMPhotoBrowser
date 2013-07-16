@@ -275,11 +275,12 @@
 
 #pragma mark - View Loading
 
-- (void)viewDidLoad {
-	// Setup animation
+- (void)viewDidLoad
+{
+    // Setup animation
     self.view.alpha = 0;
-
-    if(!_senderViewForAnimation) // default animation
+        
+    if(!_senderViewForAnimation) // Default animation (withoung zooming-in)
         [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
     
     // View
@@ -360,13 +361,22 @@
     [super viewDidLoad];
 }
 
+- (UIImage *)getImageFromView:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2); // 4);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 - (void)performAnimationWithView:(UIView*)senderView
 {
     _senderViewForAnimation = senderView;
     
-    UIImage *imageFromView;
-    
-    if([senderView isKindOfClass:[UIButton class]])
+    UIImage *imageFromView = [self getImageFromView:senderView];
+
+    /*if([senderView isKindOfClass:[UIButton class]])
     {
         UIButton *buttonSender = (UIButton*)senderView;
         imageFromView = buttonSender.currentImage;
@@ -375,7 +385,7 @@
     {
         UIImageView *imageViewSender = (UIImageView*)senderView;
         imageFromView = imageViewSender.image;
-    }
+    }*/
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     
