@@ -206,7 +206,6 @@
     
     // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    
     [self presentModalViewController:browser animated:YES];
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];

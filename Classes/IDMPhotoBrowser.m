@@ -1072,7 +1072,7 @@ BOOL isFirstViewLoad = YES;
     
     _autoHide = NO;
     
-//    self.view.backgroundColor = [UIColor blackColor];
+    //self.view.backgroundColor = [UIColor blackColor];
     
     [self dismissModalViewControllerAnimated:NO];
 }
