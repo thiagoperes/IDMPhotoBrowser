@@ -63,6 +63,8 @@
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
+    
+    //UIImage *_backgroundScreenshot;
 }
 
 // Private Properties
@@ -88,8 +90,11 @@
 - (CGRect)frameForPageAtIndex:(NSUInteger)index;
 - (CGSize)contentSizeForPagingScrollView;
 - (CGPoint)contentOffsetForPageAtIndex:(NSUInteger)index;
-- (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation;
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index;
+- (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation;
+- (CGRect)frameForToolbarWhenRotationFromOrientation:(UIInterfaceOrientation)orientation;
+- (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation;
+- (CGRect)frameForDoneButtonWhenRotationFromOrientation:(UIInterfaceOrientation)orientation;
 
 // Navigation
 - (void)updateNavigation;
@@ -220,9 +225,14 @@
     
     float newY = moveView.center.y - viewHalfHeight;
     float newAlpha = 1 - abs(newY)/viewHeight;
+    //float newAlpha = abs(newY)/viewHeight * 1.8;
     
     self.view.opaque = YES;
+
     self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:newAlpha];
+    /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
+     backgroundImageView.alpha = newAlpha;
+     self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
     
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
@@ -247,6 +257,7 @@
             [UIView setAnimationDidStopSelector:@selector(animationDidFinish)];
             [moveView setCenter:CGPointMake(finalX, finalY)];
             self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
+            //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             [UIView commitAnimations];
             
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
@@ -254,6 +265,7 @@
         else // Continue Showing View
         {
             self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+            //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             
             CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y); 
             
@@ -279,13 +291,20 @@
 {
     // Setup animation
     self.view.alpha = 0;
-        
+    
     if(!_senderViewForAnimation) // Default animation (withoung zooming-in)
-        [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
+    {
+        if(SYSTEM_VERSION_LESS_THAN(@"7"))
+            [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
+        else
+            [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
+                [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
+            }];
+    }
     
     // View
 	self.view.backgroundColor = [UIColor blackColor];
-
+    
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
 	_pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
@@ -300,21 +319,12 @@
     
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
-    _toolbar.tintColor = [UIColor clearColor];
     _toolbar.backgroundColor = [UIColor clearColor];
     _toolbar.clipsToBounds = YES;
     _toolbar.translucent = YES;
     [_toolbar setBackgroundImage:[UIImage new]
               forToolbarPosition:UIToolbarPositionAny
                       barMetrics:UIBarMetricsDefault];
-    
-    CGRect screenBound = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenBound.size.width;
-    
-    if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
-        [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
-        screenWidth = screenBound.size.height;
-    }
     
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -326,7 +336,7 @@
     [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
     [_doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-    _doneButton.frame = CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
+    _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation]; //CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
     _doneButton.alpha = 1;
     [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -370,30 +380,49 @@
     return image;
 }
 
+static inline double radians (double degrees) {return degrees * M_PI/180;}
+- (UIImage*) rotateImage:(UIImage*)src orientation:(UIImageOrientation) orientation
+{
+    UIGraphicsBeginImageContext(src.size);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    if (orientation == UIImageOrientationRight) {
+        CGContextRotateCTM (context, radians(90));
+    } else if (orientation == UIImageOrientationLeft) {
+        CGContextRotateCTM (context, radians(-90));
+    } else if (orientation == UIImageOrientationDown) {
+        // NOTHING
+    } else if (orientation == UIImageOrientationUp) {
+        CGContextRotateCTM (context, radians(90));
+    }
+    
+    [src drawAtPoint:CGPointMake(0, 0)];
+    
+    return UIGraphicsGetImageFromCurrentImageContext();
+}
+
 - (void)performAnimationWithView:(UIView*)senderView
 {
     _senderViewForAnimation = senderView;
     
     UIImage *imageFromView = [self getImageFromView:senderView];
-
-    /*if([senderView isKindOfClass:[UIButton class]])
+    
+    CGRect resizableImageViewFrame = [senderView convertRect:senderView.superview.bounds toView:[[[UIApplication sharedApplication] delegate] window]];
+    resizableImageViewFrame.size.height = senderView.frame.size.height;
+    resizableImageViewFrame.size.width = senderView.frame.size.width;
+    
+    /*if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
     {
-        UIButton *buttonSender = (UIButton*)senderView;
-        imageFromView = buttonSender.currentImage;
-    }
-    else if([senderView isKindOfClass:[UIImageView class]])
-    {
-        UIImageView *imageViewSender = (UIImageView*)senderView;
-        imageFromView = imageViewSender.image;
+        imageFromView = [self rotateImage:imageFromView orientation:UIImageOrientationRight];
+     
+     CGFloat temp = newFrame.origin.x;
+        newFrame.origin.x = newFrame.origin.y;
+        newFrame.origin.y = temp;
     }*/
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    
-    CGRect frame = [senderView convertRect:senderView.superview.bounds toView:[[[UIApplication sharedApplication] delegate] window]];
-    frame.size.height = senderView.frame.size.height;
-    frame.size.width = senderView.frame.size.width;
-    
-    resizableImageView.frame = frame;
+    resizableImageView.frame = resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
     resizableImageView.backgroundColor = [UIColor blackColor];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
@@ -472,7 +501,15 @@
 
 #pragma mark - Appearance
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
+    /*UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    UIGraphicsBeginImageContext(window.bounds.size);
+    [window.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    _backgroundScreenshot = image;*/
+    
     // Super
 	[super viewWillAppear:animated];
 	
@@ -503,7 +540,7 @@
 }
 
 #pragma mark - Layout
-
+BOOL isFirstViewLoad = YES;
 - (void)viewWillLayoutSubviews
 {
     // Super
@@ -511,11 +548,21 @@
 	
 	// Flag
 	_performingLayout = YES;
-	
-	// Toolbar
-	_toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
-	
-	// Remember index
+    
+    //if(!isFirstViewLoad)
+    {
+        // Toolbar
+        //_toolbar.frame = [self frameForToolbarWhenRotationFromOrientation:self.interfaceOrientation];
+        _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
+        
+        // Done button
+        //_doneButton.frame = [self frameForDoneButtonWhenRotationFromOrientation:self.interfaceOrientation];
+        _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
+    }
+    
+    //if(isFirstViewLoad) isFirstViewLoad = NO;
+    
+    // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
 	
 	// Get paging scroll view frame to determine if anything needs changing
@@ -815,16 +862,54 @@
 
 - (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation {
     CGFloat height = 44;
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
-        UIInterfaceOrientationIsLandscape(orientation)) height = 32;
-	return CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+        UIInterfaceOrientationIsLandscape(orientation))
+        height = 32;
+    
+    return CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+}
+
+- (CGRect)frameForToolbarWhenRotationFromOrientation:(UIInterfaceOrientation)orientation {
+    CGFloat height = 32;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
+        UIInterfaceOrientationIsLandscape(orientation))
+        height = 44;
+    
+    return CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+}
+
+- (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation {
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.width;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
+        UIInterfaceOrientationIsLandscape(orientation))
+        screenWidth = screenBound.size.height;
+    
+    return CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
+}
+
+- (CGRect)frameForDoneButtonWhenRotationFromOrientation:(UIInterfaceOrientation)orientation {
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.height;
+    
+    if (//UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
+        UIInterfaceOrientationIsLandscape(orientation))
+        screenWidth = screenBound.size.width;
+    
+    return CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
     CGRect pageFrame = [self frameForPageAtIndex:index];
+    
     captionView.frame = CGRectMake(0, 0, pageFrame.size.width, 44); // set initial frame
+    
     CGSize captionSize = [captionView sizeThatFits:CGSizeMake(pageFrame.size.width, 0)];
     CGRect captionFrame = CGRectMake(pageFrame.origin.x, pageFrame.size.height - captionSize.height - (_toolbar.superview?_toolbar.frame.size.height:0), pageFrame.size.width, captionSize.height);
+    
     return captionFrame;
 }
 
@@ -987,7 +1072,9 @@
     
     _autoHide = NO;
     
-    [self dismissModalViewControllerAnimated:YES];
+//    self.view.backgroundColor = [UIColor blackColor];
+    
+    [self dismissModalViewControllerAnimated:NO];
 }
 
 - (void)actionButtonPressed:(id)sender {

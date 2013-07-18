@@ -22,7 +22,6 @@ static const CGFloat labelPadding = 10;
 @implementation IDMCaptionView
 
 - (id)initWithPhoto:(id<IDMPhoto>)photo {
-    
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     
@@ -36,15 +35,11 @@ static const CGFloat labelPadding = 10;
         _photo = photo;
         self.opaque = NO;
         
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, -100, screenWidth, 130+100)];
-        CAGradientLayer *gradient = [CAGradientLayer layer];
-        gradient.frame = view.bounds;
-        gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithWhite:0 alpha:0.0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:0.8] CGColor], nil];
-        [view.layer insertSublayer:gradient atIndex:0];
-        [self addSubview:view];
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        [self setBackground];
+        
         [self setupCaption];
     }
+    
     return self;
 }
 
@@ -76,6 +71,17 @@ static const CGFloat labelPadding = 10;
     }
     
     [self addSubview:_label];
+}
+
+- (void)setBackground
+{
+    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, -100, 10000, 130+100)]; // Static width, autoresizingMask is not working
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = fadeView.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithWhite:0 alpha:0.0] CGColor], (id)[[UIColor colorWithWhite:0 alpha:0.8] CGColor], nil];
+    [fadeView.layer insertSublayer:gradient atIndex:0];
+    fadeView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight; //UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    [self addSubview:fadeView];
 }
 
 @end

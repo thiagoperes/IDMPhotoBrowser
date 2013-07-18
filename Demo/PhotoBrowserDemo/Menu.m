@@ -27,6 +27,13 @@
 
 - (void)viewDidLoad
 {
+    [self setupTableViewFooterView];
+}
+
+#pragma mark - General
+
+- (void)setupTableViewFooterView
+{
     UIView *tableViewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 440)];
     
     UIButton *buttonWithImageOnScreen1 = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -51,6 +58,8 @@
     
     self.tableView.tableFooterView = tableViewFooter;
 }
+
+#pragma mark - Actions
 
 - (void)buttonWithImageOnScreenPressed:(id)sender
 {
@@ -85,8 +94,6 @@
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using initWithPhotos:animatedFromView: method to use the zoom-in animation
     browser.delegate = self;
-    browser.displayActionButton = YES;
-    browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     // Show
@@ -121,7 +128,7 @@
     else if(section == 1)
         title = @"Multiple photos";
     else if(section == 2)
-        title = @"Images showing on screen";
+        title = @"Photos on screen";
     
     return title;
 }
@@ -137,7 +144,7 @@
     // Configure
     if(indexPath.section == 0)
     {
-        cell.textLabel.text = @"Local photos";
+        cell.textLabel.text = @"Local photo";
     }
     else if(indexPath.section == 1)
     {
@@ -148,11 +155,6 @@
     }
     
     return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 0;
 }
 
 #pragma mark - TableView Delegate
@@ -197,8 +199,6 @@
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
-    browser.displayActionButton = YES;
-    browser.displayArrowButton = YES;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
@@ -206,6 +206,7 @@
     
     // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    
     [self presentModalViewController:browser animated:YES];
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
