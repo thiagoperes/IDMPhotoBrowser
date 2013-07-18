@@ -24,11 +24,11 @@
     IDMCaptionView *_captionView;
     
 	IDMTapDetectingView *_tapView; // for background taps
-	IDMTapDetectingImageView *_photoImageView;
     
     DACircularProgressView *_progressView;
 }
 
+@property (nonatomic, strong) IDMTapDetectingImageView *photoImageView;
 @property (nonatomic, strong) IDMCaptionView *captionView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
 

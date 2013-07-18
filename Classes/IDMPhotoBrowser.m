@@ -64,6 +64,7 @@
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
     
+    CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
 }
 
@@ -201,12 +202,14 @@
 
 #pragma mark - PanGesture
 
-- (void)move:(id)sender {
+- (void)move:(id)sender
+{
     // Initial Setup
-    IDMZoomingScrollView *moveView = [self pageDisplayedAtIndex:_currentPageIndex];
- 
+    IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
+    IDMTapDetectingImageView *moveImageView = scrollView.photoImageView;
+    
     static float firstX, firstY;
-    float viewHeight = moveView.frame.size.height;
+    float viewHeight = scrollView.frame.size.height;
     float viewHalfHeight = viewHeight/2;
     
     CGPoint translatedPoint = [(UIPanGestureRecognizer*)sender translationInView:self.view];
@@ -216,19 +219,19 @@
     {
         [self setControlsHidden:YES animated:YES permanent:YES];
         
-        firstX = [moveView center].x;
-        firstY = [moveView center].y;
+        firstX = [scrollView center].x;
+        firstY = [scrollView center].y;
     }
     
     translatedPoint = CGPointMake(firstX, firstY+translatedPoint.y);
-    [moveView setCenter:translatedPoint];
+    [scrollView setCenter:translatedPoint];
     
-    float newY = moveView.center.y - viewHalfHeight;
+    float newY = scrollView.center.y - viewHalfHeight;
     float newAlpha = 1 - abs(newY)/viewHeight;
     //float newAlpha = abs(newY)/viewHeight * 1.8;
     
     self.view.opaque = YES;
-
+    
     self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:newAlpha];
     /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
      backgroundImageView.alpha = newAlpha;
@@ -237,13 +240,13 @@
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
     {
-        if(moveView.center.y > viewHalfHeight+40 || moveView.center.y < viewHalfHeight-40) // Automatic Dismiss View
+        if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
         {            
             CGFloat finalX = firstX, finalY;
             
             CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
             
-            if(moveView.center.y > viewHalfHeight+30) // swipe down
+            if(scrollView.center.y > viewHalfHeight+30) // swipe down
                 finalY = windowsHeigt*2;
             else // swipe up
                 finalY = -viewHalfHeight;
@@ -255,12 +258,43 @@
             [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(animationDidFinish)];
-            [moveView setCenter:CGPointMake(finalX, finalY)];
+            [scrollView setCenter:CGPointMake(finalX, finalY)];
             self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             [UIView commitAnimations];
-            
+             
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
+            
+            
+            
+            // ****** NEW ANIMATION
+            
+            
+            //CGRect frame = [_senderViewForAnimation convertRect:_senderViewForAnimation.frame toView:[[[UIApplication sharedApplication] delegate] window]];
+            //CGRect frame = [_senderViewForAnimation convertRect:_senderViewForAnimation.frame toView:[[[UIApplication sharedApplication] delegate] window]];
+            
+            //frame.size.width = _senderViewForAnimation.frame.size.width;
+            //frame.size.height = _senderViewForAnimation.frame.size.height;
+            //frame.origin.x = _senderViewForAnimation.frame.origin.x;
+            //frame.origin.y = _senderViewForAnimation.frame.origin.y;
+            
+            //CGFloat animationDuration = 0.35;
+            
+            //UIImageView *resizableImageView = [[UIImageView alloc] initWithFrame:moveView]
+            
+            /*CGRect newFrame = CGRectMake(0,
+                                         0,
+                                         _resizableImageViewFrame.size.width,
+                                         _resizableImageViewFrame.size.height);*/
+            
+            /*[UIView animateWithDuration:0.1 animations:^{
+                [scrollView setFrame:_resizableImageViewFrame];
+            } completion:^(BOOL finished) {
+                //self.view.alpha = 1;
+                //[moveView removeFromSuperview];
+                
+                [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:2];
+            }];*/
         }
         else // Continue Showing View
         {
@@ -279,7 +313,7 @@
             [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationDidStopSelector:@selector(animationDidFinish)];
-            [moveView setCenter:CGPointMake(finalX, finalY)];
+            [scrollView setCenter:CGPointMake(finalX, finalY)];
             [UIView commitAnimations];
         }
     }
@@ -408,21 +442,23 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     UIImage *imageFromView = [self getImageFromView:senderView];
     
-    CGRect resizableImageViewFrame = [senderView convertRect:senderView.superview.bounds toView:[[[UIApplication sharedApplication] delegate] window]];
+    /*CGRect resizableImageViewFrame = [senderView convertRect:senderView.superview.bounds toView:[[[UIApplication sharedApplication] delegate] window]];
     resizableImageViewFrame.size.height = senderView.frame.size.height;
-    resizableImageViewFrame.size.width = senderView.frame.size.width;
+    resizableImageViewFrame.size.width = senderView.frame.size.width;*/
+    
+    _resizableImageViewFrame = [senderView.superview convertRect:senderView.frame toView:nil];
     
     /*if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
     {
         imageFromView = [self rotateImage:imageFromView orientation:UIImageOrientationRight];
      
-     CGFloat temp = newFrame.origin.x;
+        CGFloat temp = newFrame.origin.x;
         newFrame.origin.x = newFrame.origin.y;
         newFrame.origin.y = temp;
     }*/
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = resizableImageViewFrame;
+    resizableImageView.frame = _resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
     resizableImageView.backgroundColor = [UIColor blackColor];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
@@ -482,6 +518,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     [self tilePages];
     _performingLayout = NO;
     
+    //[self.view.subviews[0] addGestureRecognizer:_panGesture];
     [self.view addGestureRecognizer:_panGesture];
 }
 
@@ -1074,7 +1111,7 @@ BOOL isFirstViewLoad = YES;
     
     //self.view.backgroundColor = [UIColor blackColor];
     
-    [self dismissModalViewControllerAnimated:NO];
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 - (void)actionButtonPressed:(id)sender {

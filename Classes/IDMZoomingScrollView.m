@@ -26,7 +26,7 @@
 
 @implementation IDMZoomingScrollView
 
-@synthesize photoBrowser = _photoBrowser, photo = _photo, captionView = _captionView;
+@synthesize photoImageView = _photoImageView, photoBrowser = _photoBrowser, photo = _photo, captionView = _captionView;
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser {
     if ((self = [super init])) {
@@ -44,7 +44,7 @@
 		// Image view
 		_photoImageView = [[IDMTapDetectingImageView alloc] initWithFrame:CGRectZero];
 		_photoImageView.tapDelegate = self;
-		_photoImageView.contentMode = UIViewContentModeCenter;
+//		_photoImageView.contentMode = UIViewContentModeCenter;
 		_photoImageView.backgroundColor = [UIColor clearColor];
 		[self addSubview:_photoImageView];
         

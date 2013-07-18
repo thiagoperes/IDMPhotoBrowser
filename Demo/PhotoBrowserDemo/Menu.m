@@ -34,10 +34,10 @@
 
 - (void)setupTableViewFooterView
 {
-    UIView *tableViewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 440)];
-    
+    UIView *tableViewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 426 * 0.9 + 40)];
+
     UIButton *buttonWithImageOnScreen1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen1.frame = CGRectMake(15, 0, 200, 200);
+    buttonWithImageOnScreen1.frame = CGRectMake(15, 0, 640/2 * 0.9, 426/2 * 0.9);
     buttonWithImageOnScreen1.tag = 101;
     buttonWithImageOnScreen1.adjustsImageWhenHighlighted = NO;
     [buttonWithImageOnScreen1 setImage:[UIImage imageNamed:@"photo1m.jpg"] forState:UIControlStateNormal];
@@ -46,8 +46,18 @@
     [buttonWithImageOnScreen1 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewFooter addSubview:buttonWithImageOnScreen1];
     
+    /*UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonWithImageOnScreen2.frame = CGRectMake(15, 426/2 * 0.9 + 20, 640/2 * 0.9, 426/2 * 0.9);
+    buttonWithImageOnScreen2.tag = 102;
+    buttonWithImageOnScreen2.adjustsImageWhenHighlighted = NO;
+    [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo3m.jpg"] forState:UIControlStateNormal];
+    buttonWithImageOnScreen2.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    buttonWithImageOnScreen2.backgroundColor = [UIColor blackColor];
+    [buttonWithImageOnScreen2 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [tableViewFooter addSubview:buttonWithImageOnScreen2];*/
+    
     UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen2.frame = CGRectMake(15, 220, 200, 200);
+    buttonWithImageOnScreen2.frame = CGRectMake(15, 426/2 * 0.9 + 20, 640/2 * 0.9, 426/2 * 0.9);
     buttonWithImageOnScreen2.tag = 102;
     buttonWithImageOnScreen2.adjustsImageWhenHighlighted = NO;
     [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo3m.jpg"] forState:UIControlStateNormal];
