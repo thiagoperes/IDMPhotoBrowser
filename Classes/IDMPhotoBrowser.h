@@ -38,8 +38,6 @@
 @property (nonatomic) BOOL displayActionButton;
 @property (nonatomic, retain) NSArray *actionButtonTitles;
 
-@property (nonatomic, strong) UIViewController *previousViewController;
-
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
 

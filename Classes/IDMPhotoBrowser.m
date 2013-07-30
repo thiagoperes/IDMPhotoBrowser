@@ -157,10 +157,11 @@
         _displayToolbar = YES;
         _autoHide = YES;
         
-        _previousPresentationStyle       = _previousViewController.modalPresentationStyle;
-        _previousPresentationStyleNavCon = _previousViewController.navigationController.modalPresentationStyle;
-        _previousPresentationStyleTabBar = _previousViewController.tabBarController.modalPresentationStyle;
-        
+        UIViewController *previousViewController = (UIViewController*)_delegate;
+        _previousPresentationStyle       = previousViewController.modalPresentationStyle;
+        _previousPresentationStyleNavCon = previousViewController.navigationController.modalPresentationStyle;
+        _previousPresentationStyleTabBar = previousViewController.tabBarController.modalPresentationStyle;
+
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleIDMPhotoLoadingDidEndNotification:)
@@ -1118,9 +1119,10 @@ BOOL isFirstViewLoad = YES;
     //self.view.backgroundColor = [UIColor blackColor];
     
     [self dismissViewControllerAnimated:YES completion:^{
-        _previousViewController.modalPresentationStyle = _previousPresentationStyle;
-        _previousViewController.navigationController.modalPresentationStyle = _previousPresentationStyleNavCon;
-        _previousViewController.tabBarController.modalPresentationStyle = _previousPresentationStyleTabBar;
+        UIViewController *previousViewController = (UIViewController*)_delegate;
+        previousViewController.modalPresentationStyle = _previousPresentationStyle;
+        previousViewController.navigationController.modalPresentationStyle = _previousPresentationStyleNavCon;
+        previousViewController.tabBarController.modalPresentationStyle = _previousPresentationStyleTabBar;
     }];
 }
 
