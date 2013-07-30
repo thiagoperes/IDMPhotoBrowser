@@ -66,6 +66,8 @@
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
+    
+    UIModalPresentationStyle _previousPresentationStyle, _previousPresentationStyleNavCon, _previousPresentationStyleTabBar;
 }
 
 // Private Properties
@@ -154,6 +156,10 @@
         _displayArrowButton = YES;
         _displayToolbar = YES;
         _autoHide = YES;
+        
+        _previousPresentationStyle       = _previousViewController.modalPresentationStyle;
+        _previousPresentationStyleNavCon = _previousViewController.navigationController.modalPresentationStyle;
+        _previousPresentationStyleTabBar = _previousViewController.tabBarController.modalPresentationStyle;
         
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -1111,7 +1117,11 @@ BOOL isFirstViewLoad = YES;
     
     //self.view.backgroundColor = [UIColor blackColor];
     
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:^{
+        _previousViewController.modalPresentationStyle = _previousPresentationStyle;
+        _previousViewController.navigationController.modalPresentationStyle = _previousPresentationStyleNavCon;
+        _previousViewController.tabBarController.modalPresentationStyle = _previousPresentationStyleTabBar;
+    }];
 }
 
 - (void)actionButtonPressed:(id)sender {

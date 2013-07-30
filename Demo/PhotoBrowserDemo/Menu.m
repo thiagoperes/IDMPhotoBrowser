@@ -106,6 +106,8 @@
     browser.delegate = self;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
+    browser.previousViewController = self;
+    
     // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
     [self presentModalViewController:browser animated:YES];
@@ -213,6 +215,8 @@
     
     if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
         browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
+    
+    browser.previousViewController = self;
     
     // Show
     self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
