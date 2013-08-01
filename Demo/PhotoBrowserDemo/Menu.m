@@ -21,10 +21,6 @@
 
 #pragma mark - View Lifecycle
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
-}
-
 - (void)viewDidLoad
 {
     [self setupTableViewFooterView];
@@ -46,16 +42,6 @@
     [buttonWithImageOnScreen1 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewFooter addSubview:buttonWithImageOnScreen1];
     
-    /*UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen2.frame = CGRectMake(15, 426/2 * 0.9 + 20, 640/2 * 0.9, 426/2 * 0.9);
-    buttonWithImageOnScreen2.tag = 102;
-    buttonWithImageOnScreen2.adjustsImageWhenHighlighted = NO;
-    [buttonWithImageOnScreen2 setImage:[UIImage imageNamed:@"photo3m.jpg"] forState:UIControlStateNormal];
-    buttonWithImageOnScreen2.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    buttonWithImageOnScreen2.backgroundColor = [UIColor blackColor];
-    [buttonWithImageOnScreen2 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [tableViewFooter addSubview:buttonWithImageOnScreen2];*/
-    
     UIButton *buttonWithImageOnScreen2 = [UIButton buttonWithType:UIButtonTypeCustom];
     buttonWithImageOnScreen2.frame = CGRectMake(15, 426/2 * 0.9 + 20, 640/2 * 0.9, 426/2 * 0.9);
     buttonWithImageOnScreen2.tag = 102;
@@ -74,6 +60,19 @@
 - (void)buttonWithImageOnScreenPressed:(id)sender
 {
     UIButton *buttonSender = (UIButton*)sender;
+    
+    // DEBUG
+    /*if(buttonSender.tag == 101)
+    {
+        Menu *menu = [[Menu alloc] init];
+        [self presentModalViewController:menu animated:YES];
+    }
+    else
+    {
+        [self dismissModalViewControllerAnimated:YES];
+    }
+    
+    return;*/
     
     // Create an array to store IDMPhoto objects
     NSMutableArray *photos = [[NSMutableArray alloc] init];

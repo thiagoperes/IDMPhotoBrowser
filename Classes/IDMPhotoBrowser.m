@@ -66,8 +66,6 @@
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
-    
-    UIModalPresentationStyle _previousPresentationStyle, _previousPresentationStyleNavCon, _previousPresentationStyleTabBar;
 }
 
 // Private Properties
@@ -157,11 +155,8 @@
         _displayToolbar = YES;
         _autoHide = YES;
         
-        UIViewController *previousViewController = (UIViewController*)_delegate;
-        _previousPresentationStyle       = previousViewController.modalPresentationStyle;
-        _previousPresentationStyleNavCon = previousViewController.navigationController.modalPresentationStyle;
-        _previousPresentationStyleTabBar = previousViewController.tabBarController.modalPresentationStyle;
-
+        
+        
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleIDMPhotoLoadingDidEndNotification:)
@@ -213,7 +208,7 @@
 {
     // Initial Setup
     IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-    IDMTapDetectingImageView *moveImageView = scrollView.photoImageView;
+    //IDMTapDetectingImageView *moveImageView = scrollView.photoImageView;
     
     static float firstX, firstY;
     float viewHeight = scrollView.frame.size.height;
@@ -274,8 +269,7 @@
             
             
             
-            // ****** NEW ANIMATION
-            
+            // ****** NEW ANIMATION ****** \\
             
             //CGRect frame = [_senderViewForAnimation convertRect:_senderViewForAnimation.frame toView:[[[UIApplication sharedApplication] delegate] window]];
             //CGRect frame = [_senderViewForAnimation convertRect:_senderViewForAnimation.frame toView:[[[UIApplication sharedApplication] delegate] window]];
@@ -302,6 +296,8 @@
                 
                 [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:2];
             }];*/
+            
+            // ****** NEW ANIMATION ****** //
         }
         else // Continue Showing View
         {
@@ -1120,9 +1116,7 @@ BOOL isFirstViewLoad = YES;
     
     [self dismissViewControllerAnimated:YES completion:^{
         UIViewController *previousViewController = (UIViewController*)_delegate;
-        previousViewController.modalPresentationStyle = _previousPresentationStyle;
-        previousViewController.navigationController.modalPresentationStyle = _previousPresentationStyleNavCon;
-        previousViewController.tabBarController.modalPresentationStyle = _previousPresentationStyleTabBar;
+        previousViewController.modalPresentationStyle = previousViewController.navigationController.modalPresentationStyle = previousViewController.tabBarController.modalPresentationStyle = 0;
     }];
 }
 
