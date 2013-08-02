@@ -35,6 +35,7 @@
 
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayArrowButton;
+@property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayActionButton;
 @property (nonatomic, retain) NSArray *actionButtonTitles;
 

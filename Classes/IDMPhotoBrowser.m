@@ -46,7 +46,11 @@
 	UIToolbar *_toolbar;
 	NSTimer *_controlVisibilityTimer;
 	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
+    
     UIActionSheet *_actionsSheet;
+    
+    UIBarButtonItem *_counterButton;
+    UILabel *_counterLabel;
     
     // Appearance
     UIStatusBarStyle _previousStatusBarStyle;
@@ -59,6 +63,7 @@
     BOOL _displayActionButton;
     BOOL _useDefaultActions;
     BOOL _displayArrowButton;
+    BOOL _displayCounterLabel;
 	BOOL _performingLayout;
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
@@ -128,9 +133,9 @@
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton;
+@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
-@synthesize actionButtonTitles = _actionButtonTitles;
+@synthesize actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize delegate = _delegate;
 
 #pragma mark - NSObject
@@ -152,10 +157,10 @@
         _useDefaultActions = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
+        _displayCounterLabel = NO;
+        
         _displayToolbar = YES;
         _autoHide = YES;
-        
-        
         
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -386,6 +391,16 @@
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(gotoNextPage)];
+
+    _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
+    _counterLabel.textAlignment = UITextAlignmentCenter;
+    _counterLabel.backgroundColor = [UIColor clearColor];
+    _counterLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:18];
+    _counterLabel.textColor = [UIColor whiteColor];
+    _counterLabel.shadowColor = [UIColor darkTextColor];
+    _counterLabel.shadowOffset = CGSizeMake(0, 1);
+    
+    _counterButton = [[UIBarButtonItem alloc] initWithCustomView:_counterLabel];
     
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                   target:self
@@ -503,11 +518,22 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     NSMutableArray *items = [[NSMutableArray alloc] init];
     
-    if (_displayActionButton) [items addObject:fixedLeftSpace];
+    if (_displayActionButton)
+        [items addObject:fixedLeftSpace];
     [items addObject:flexSpace];
-    if (numberOfPhotos > 1 && _displayArrowButton) [items addObject:_previousButton];
+    
+    if (numberOfPhotos > 1 && _displayArrowButton)
+        [items addObject:_previousButton];
+    
+    if(_displayCounterLabel)
+    {
+        [items addObject:flexSpace];
+        [items addObject:_counterButton];
+    }
+    
     [items addObject:flexSpace];
-    if (numberOfPhotos > 1 && _displayArrowButton) [items addObject:_nextButton];
+    if (numberOfPhotos > 1 && _displayArrowButton)
+        [items addObject:_nextButton];
     [items addObject:flexSpace];
     
     if(_displayActionButton)
@@ -987,17 +1013,16 @@ BOOL isFirstViewLoad = YES;
 #pragma mark - Navigation
 
 - (void)updateNavigation {
-	// Title
+    // Counter
 	if ([self numberOfPhotos] > 1) {
-		self.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];		
+		_counterLabel.text = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", nil), [self numberOfPhotos]];
 	} else {
-		self.title = nil;
+		_counterLabel.text = nil;
 	}
-	
+    
 	// Buttons
 	_previousButton.enabled = (_currentPageIndex > 0);
 	_nextButton.enabled = (_currentPageIndex < [self numberOfPhotos]-1);
-	
 }
 
 - (void)jumpToPageAtIndex:(NSUInteger)index {
