@@ -103,7 +103,11 @@
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using initWithPhotos:animatedFromView: method to use the zoom-in animation
     browser.delegate = self;
+    
+    browser.displayActionButton = NO;
+    browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
+    
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     // Show

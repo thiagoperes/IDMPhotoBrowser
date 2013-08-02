@@ -71,11 +71,13 @@ Presenting from a view:
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 ``` 
 
-You can customize the toolbar. There are two boolean properties you can set: displayActionButton and displayArrowButton. If you dont want the toolbar at all, you can set displayToolbar = NO.
-     
+You can customize the toolbar. There are three boolean properties you can set: displayActionButton (default is YES), displayArrowButton (default is YES) and displayCounterLabel (default is NO). If you dont want the toolbar at all, you can set displayToolbar = NO.
+
+Toolbar setup example:
 ``` objective-c     
-    browser.displayActionButton = YES;
+    browser.displayActionButton = NO;
     browser.displayArrowButton = YES;
+    browser.displayCounterLabel = YES;
 ```
 
 If you want to use custom actions, set the actionButtonTitles array with the titles for the actionSheet. Then, implement the photoBrowser:didDismissActionSheetWithButtonIndex: method, from the IDMPhotoBrowser delegate
@@ -127,7 +129,7 @@ Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 ### Including Source Directly Into Your Project
 
-Simply add the files inside `IDMPhotoBrowser/Classes` to your Xcode project, copying them to your project's directory if required.
+Simply add the files inside `IDMPhotoBrowser/Classes` to your Xcode project, copying them to your project's directory if required. And also any library inside `IDMPhotoBrowser/ExternalLibraries` needed.
 
 ### Opensource libraries used
 
