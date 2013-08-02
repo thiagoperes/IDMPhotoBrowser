@@ -48,7 +48,7 @@ First create a photos array containing IDMPhoto objects:
     NSMutableArray *photos = [[NSMutableArray alloc] init];
     
     for (NSURL *url in photosURL) {
-    	IDMPhoto *photo = [IDMPhoto photoWithURL:url];
+        IDMPhoto *photo = [IDMPhoto photoWithURL:url];
     	[photos addObject:photo];
     }
 ````
@@ -120,6 +120,15 @@ Example delegate method for custom caption view:
         return [captionView autorelease];
     }
 
+### Important note
+
+The way this library works now, you NEED to set those things so it will work properly:
+
+``` objective-c
+browser.delegate = self;
+browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
+```
 
 ## Adding to your project
 
