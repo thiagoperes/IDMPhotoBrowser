@@ -376,7 +376,7 @@
     [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
     [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal];
     [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
-    [_doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
+    [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
     _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation]; //CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
     _doneButton.alpha = 1;

@@ -1,0 +1,45 @@
+/* No comment provided by engineer. */
+"Cancel" = "Cancelar";
+
+/* Informing the user an item has finished copying */
+"Copied" = "Copiado";
+
+/* No comment provided by engineer. */
+"Copy" = "Copiar";
+
+/* Displayed with ellipsis as 'Copying...' when an item is in the process of being copied */
+"Copying" = "Copiando";
+
+/* No comment provided by engineer. */
+"Dismiss" = "Fechar";
+
+/* No comment provided by engineer. */
+"Done" = "Fechar";
+
+/* No comment provided by engineer. */
+"Email" = "Email";
+
+/* No comment provided by engineer. */
+"Email failed to send. Please try again." = "Email falhou ao enviar. Por favor, tente novamente.";
+
+/* Informing the user a process has failed */
+"Failed" = "Falhou";
+
+/* Used in the context: 'Showing 1 of 3 items' */
+"of" = "de";
+
+/* No comment provided by engineer. */
+"Photo" = "Foto";
+
+/* Displayed with ellipsis as 'Preparing...' when an item is in the process of being prepared */
+"Preparing" = "Preparando";
+
+/* No comment provided by engineer. */
+"Save" = "Salvar";
+
+/* Informing the user an item has been saved */
+"Saved" = "Salvada";
+
+/* Displayed with ellipsis as 'Saving...' when an item is in the process of being saved */
+"Saving" = "Salvando";
+
