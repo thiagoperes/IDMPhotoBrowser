@@ -64,6 +64,7 @@
     BOOL _useDefaultActions;
     BOOL _displayArrowButton;
     BOOL _displayCounterLabel;
+    BOOL _useWhiteBackgroundColor;
 	BOOL _performingLayout;
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
@@ -133,7 +134,7 @@
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel;
+@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
 @synthesize actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize delegate = _delegate;
@@ -158,6 +159,7 @@
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
+        _useWhiteBackgroundColor = NO;
         
         _displayToolbar = YES;
         _autoHide = YES;
@@ -239,7 +241,8 @@
     
     self.view.opaque = YES;
     
-    self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:newAlpha];
+    self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
+    
     /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
      backgroundImageView.alpha = newAlpha;
      self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
@@ -306,7 +309,7 @@
         }
         else // Continue Showing View
         {
-            self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+            self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             
             CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y); 
@@ -345,7 +348,7 @@
     }
     
     // View
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
     
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
@@ -478,7 +481,8 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = _resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
-    resizableImageView.backgroundColor = [UIColor blackColor];
+    //resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+    resizableImageView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
     
     [UIView animateWithDuration:0.28 animations:^{
@@ -595,6 +599,11 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 - (void)viewWillDisappear:(BOOL)animated {
     // Controls
     [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
+    
+    // Status bar
+    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:animated];
+    }
     
 	// Super
 	[super viewWillDisappear:animated];

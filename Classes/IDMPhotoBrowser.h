@@ -37,6 +37,7 @@
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayActionButton;
+@property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, retain) NSArray *actionButtonTitles;
 
 // Init
