@@ -63,7 +63,6 @@
 	BOOL _performingLayout;
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
-    BOOL _autoHide;
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
@@ -132,6 +131,7 @@
 @implementation IDMPhotoBrowser
 
 // Properties
+@synthesize autoHide = _autoHide;
 @synthesize displayTopToolbar = _displayTopToolbar, displayDoneButton = _displayDoneButton;
 @synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
@@ -380,6 +380,14 @@
     }
     
     return _toolbar;
+}
+
+-(void)setAutoHide:(BOOL)hide{
+    _autoHide = hide;
+    if(hide){
+        //run timer again
+        [self hideControlsAfterDelay];
+    }
 }
 
 #pragma mark - View Loading
@@ -1195,7 +1203,11 @@ BOOL isFirstViewLoad = YES;
 }
 
 - (BOOL)areControlsHidden { return (self.toolbar.alpha == 0); /* [UIApplication sharedApplication].isStatusBarHidden; */ }
-- (void)hideControls { if(_autoHide) [self setControlsHidden:YES animated:YES permanent:NO]; }
+- (void)hideControls {
+    if(_autoHide){
+        [self setControlsHidden:YES animated:YES permanent:NO];
+    }
+}
 - (void)toggleControls { [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO]; }
 
 

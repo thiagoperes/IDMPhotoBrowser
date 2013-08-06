@@ -33,6 +33,9 @@
 // Properties
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
+//Global
+@property (nonatomic) BOOL autoHide;
+
 //Top ToolBar
 @property (nonatomic) BOOL displayTopToolbar;
 @property (nonatomic) BOOL displayDoneButton;
