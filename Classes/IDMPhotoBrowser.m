@@ -1149,6 +1149,10 @@ BOOL isFirstViewLoad = YES;
     //self.view.backgroundColor = [UIColor blackColor];
     
     [self dismissViewControllerAnimated:YES completion:^{
+        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)]) {
+            [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
+        }
+        
         UIViewController *previousViewController = (UIViewController*)_delegate;
         previousViewController.modalPresentationStyle = previousViewController.navigationController.modalPresentationStyle = previousViewController.tabBarController.modalPresentationStyle = 0;
     }];
