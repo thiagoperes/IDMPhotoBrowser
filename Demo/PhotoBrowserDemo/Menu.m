@@ -7,6 +7,7 @@
 //
 
 #import "Menu.h"
+#import "MyPhotoBrowser.h"
 
 @implementation Menu
 
@@ -108,6 +109,7 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     
+    
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     // Show
@@ -118,7 +120,7 @@
 #pragma mark - TableView DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -128,7 +130,9 @@
         rows = 1;
     else if(section == 1)
         rows = 2;
-    else if(section == 2)
+    if(section == 2)
+        rows = 1;
+    else if(section == 3)
         rows = 0;
     
     return rows;
@@ -142,6 +146,8 @@
     else if(section == 1)
         title = @"Multiple photos";
     else if(section == 2)
+        title = @"Customized Photo Browser";
+    else if(section == 3)
         title = @"Photos on screen";
     
     return title;
@@ -160,7 +166,7 @@
     {
         cell.textLabel.text = @"Local photo";
     }
-    else if(indexPath.section == 1)
+    else if(indexPath.section == 1 || indexPath.section == 2)
     {
         if(indexPath.row == 0)
             cell.textLabel.text = @"Local photos";
@@ -184,7 +190,7 @@
         photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
         [photos addObject:photo];
 	}
-    else if(indexPath.section == 1)
+    else if(indexPath.section == 1 || indexPath.section == 2)
     {
         if(indexPath.row == 0)
         {
@@ -210,8 +216,17 @@
         }
     }
     
+    
+    
     // Create and setup browser
-    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
+    IDMPhotoBrowser *browser;
+
+    if(indexPath.section == 2){
+        browser = [[MyPhotoBrowser alloc] initWithPhotos:photos];
+    }else{
+        browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
+    }
+    
     browser.delegate = self;
     browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     

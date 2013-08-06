@@ -23,6 +23,7 @@
 		4C6F97D814AF760500F8389A /* photo3m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C6F97D014AF760500F8389A /* photo3m.jpg */; };
 		4C6F97D914AF760500F8389A /* photo4l.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C6F97D114AF760500F8389A /* photo4l.jpg */; };
 		4C6F97DA14AF760500F8389A /* photo4m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C6F97D214AF760500F8389A /* photo4m.jpg */; };
+		C5C6B84517B12BBA009C1CC6 /* MyPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = C5C6B84417B12BBA009C1CC6 /* MyPhotoBrowser.m */; };
 		D150526F16F7ADD5002BBD4F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */; };
 		D157495C178DB94900B0211A /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D1574935178DB94900B0211A /* AFHTTPClient.m */; };
 		D157495D178DB94900B0211A /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D1574937178DB94900B0211A /* AFHTTPRequestOperation.m */; };
@@ -75,6 +76,8 @@
 		4C6F97D014AF760500F8389A /* photo3m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo3m.jpg; path = Photos/photo3m.jpg; sourceTree = "<group>"; };
 		4C6F97D114AF760500F8389A /* photo4l.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4l.jpg; path = Photos/photo4l.jpg; sourceTree = "<group>"; };
 		4C6F97D214AF760500F8389A /* photo4m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4m.jpg; path = Photos/photo4m.jpg; sourceTree = "<group>"; };
+		C5C6B84317B12BBA009C1CC6 /* MyPhotoBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPhotoBrowser.h; sourceTree = "<group>"; };
+		C5C6B84417B12BBA009C1CC6 /* MyPhotoBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPhotoBrowser.m; sourceTree = "<group>"; };
 		D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		D1574934178DB94900B0211A /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		D1574935178DB94900B0211A /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
@@ -188,6 +191,7 @@
 			children = (
 				D150527116F7B044002BBD4F /* AppDelegate */,
 				D150527216F7B04B002BBD4F /* Menu */,
+				C5C6B84217B12B8F009C1CC6 /* Customization */,
 			);
 			path = PhotoBrowserDemo;
 			sourceTree = "<group>";
@@ -221,6 +225,15 @@
 			);
 			name = Photos;
 			path = PhotoBrowserDemo;
+			sourceTree = "<group>";
+		};
+		C5C6B84217B12B8F009C1CC6 /* Customization */ = {
+			isa = PBXGroup;
+			children = (
+				C5C6B84317B12BBA009C1CC6 /* MyPhotoBrowser.h */,
+				C5C6B84417B12BBA009C1CC6 /* MyPhotoBrowser.m */,
+			);
+			name = Customization;
 			sourceTree = "<group>";
 		};
 		D150527116F7B044002BBD4F /* AppDelegate */ = {
@@ -396,6 +409,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C6F979E14AF734900F8389A /* main.m in Sources */,
+				C5C6B84517B12BBA009C1CC6 /* MyPhotoBrowser.m in Sources */,
 				4C6F97A214AF734900F8389A /* AppDelegate.m in Sources */,
 				4C6F97B314AF737E00F8389A /* Menu.m in Sources */,
 				D157495C178DB94900B0211A /* AFHTTPClient.m in Sources */,

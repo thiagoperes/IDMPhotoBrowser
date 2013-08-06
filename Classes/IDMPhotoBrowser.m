@@ -34,17 +34,13 @@
 	// Views
 	UIScrollView *_pagingScrollView;
 	
-    // Done Button
-    UIButton *_doneButton;
-    
-	// Paging
+    // Paging
 	NSMutableSet *_visiblePages, *_recycledPages;
 	NSUInteger _pageIndexBeforeRotation;
     NSUInteger _currentPageIndex;
 	
 	// Navigation & controls
-	UIToolbar *_toolbar;
-	NSTimer *_controlVisibilityTimer;
+    NSTimer *_controlVisibilityTimer;
 	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
     
     UIActionSheet *_actionsSheet;
@@ -74,6 +70,9 @@
 }
 
 // Private Properties
+@property (nonatomic, strong) UIToolbar *topToolbar;
+@property (nonatomic, strong) UIToolbar *toolbar;
+@property (nonatomic, strong) UIBarButtonItem *doneButton;
 @property (nonatomic, strong) UIBarButtonItem *previousViewControllerBackButton;
 @property (nonatomic, strong) UIActionSheet *actionsSheet;
 
@@ -133,6 +132,7 @@
 @implementation IDMPhotoBrowser
 
 // Properties
+@synthesize displayTopToolbar = _displayTopToolbar, displayDoneButton = _displayDoneButton;
 @synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
 @synthesize actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
@@ -161,6 +161,9 @@
         
         _displayToolbar = YES;
         _autoHide = YES;
+        
+        _displayDoneButton = YES;
+        _displayTopToolbar = YES;
         
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -327,6 +330,58 @@
     }
 }
 
+#pragma mark - Getters/Setters
+
+-(UIToolbar *)topToolbar{
+    if(!_topToolbar){
+        // Toolbar
+        _topToolbar = [[UIToolbar alloc] initWithFrame:[self frameForTopToolbarAtOrientation:self.interfaceOrientation]];
+        _topToolbar.backgroundColor = [UIColor clearColor];
+        _topToolbar.clipsToBounds = YES;
+        _topToolbar.translucent = YES;
+        [_topToolbar setBackgroundImage:[UIImage new]
+                     forToolbarPosition:UIToolbarPositionAny
+                             barMetrics:UIBarMetricsDefault];
+    }
+    
+    return _topToolbar;
+}
+
+-(UIBarButtonItem *)doneButton{
+    if(!_doneButton){
+        // Close Button
+        UIButton *doneBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        doneBarButton.layer.cornerRadius = 3.0f;
+        doneBarButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
+        doneBarButton.layer.borderWidth = 1.0f;
+        [doneBarButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
+        [doneBarButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal];
+        [doneBarButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
+        [doneBarButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+        [doneBarButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
+        [doneBarButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        doneBarButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
+        _doneButton = [[UIBarButtonItem alloc] initWithCustomView:doneBarButton];
+    }
+    
+    return _doneButton;
+}
+
+-(UIToolbar *)toolbar{
+    if(!_toolbar){
+        // Toolbar
+        _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
+        _toolbar.backgroundColor = [UIColor clearColor];
+        _toolbar.clipsToBounds = YES;
+        _toolbar.translucent = YES;
+        [_toolbar setBackgroundImage:[UIImage new]
+                  forToolbarPosition:UIToolbarPositionAny
+                          barMetrics:UIBarMetricsDefault];
+    }
+    
+    return _toolbar;
+}
+
 #pragma mark - View Loading
 
 - (void)viewDidLoad
@@ -359,28 +414,12 @@
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 	[self.view addSubview:_pagingScrollView];
     
-    // Toolbar
-    _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:self.interfaceOrientation]];
-    _toolbar.backgroundColor = [UIColor clearColor];
-    _toolbar.clipsToBounds = YES;
-    _toolbar.translucent = YES;
-    [_toolbar setBackgroundImage:[UIImage new]
-              forToolbarPosition:UIToolbarPositionAny
-                      barMetrics:UIBarMetricsDefault];
-    
-    // Close Button
-    _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _doneButton.layer.cornerRadius = 3.0f;
-    _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
-    _doneButton.layer.borderWidth = 1.0f;
-    [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
-    [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal];
-    [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
-    [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
-    [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-    _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation]; //CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
-    _doneButton.alpha = 1;
-    [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    //Add done button to Top Toolbar
+    if(_displayDoneButton){
+        UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        [self addTopToolBarItem:flexSpace];
+        [self addTopToolBarItem:self.doneButton];
+    }
     
     _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]
                                                        style:UIBarButtonItemStylePlain
@@ -502,15 +541,19 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     [_visiblePages removeAllObjects];
     [_recycledPages removeAllObjects];
     
-    // Toolbar
-    if ( (_displayActionButton || (_displayArrowButton && numberOfPhotos > 1)) && _displayToolbar) {
-        [self.view addSubview:_toolbar];
+    // Top Toolbar
+    if (_displayTopToolbar) {
+        [self.view addSubview:self.topToolbar];
     } else {
-        [_toolbar removeFromSuperview];
+        [self.topToolbar removeFromSuperview];
     }
     
-    // Close button
-    [self.view addSubview:_doneButton];
+    // Toolbar
+    if ( (_displayActionButton || (_displayArrowButton && numberOfPhotos > 1)) && _displayToolbar) {
+        [self.view addSubview:self.toolbar];
+    } else {
+        [self.toolbar removeFromSuperview];
+    }
     
     // Toolbar items & navigation
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
@@ -539,7 +582,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     if(_displayActionButton)
         [items addObject:_actionButton];
     
-    [_toolbar setItems:items];
+    [self.toolbar setItems:items];
 	[self updateNavigation];
     
     // Content offset
@@ -558,6 +601,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     _visiblePages = nil;
     _recycledPages = nil;
     _toolbar = nil;
+    _topToolbar = nil;
     _doneButton = nil;
     _previousButton = nil;
     _nextButton = nil;
@@ -605,6 +649,46 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     _viewIsActive = YES;
 }
 
+#pragma mark - Appearance customization
+
+//Top Toolbar
+-(void)setTopToolBarItems:(NSArray *)items {
+    [self.topToolbar setItems:items];
+}
+
+-(void)addTopToolBarItem:(UIBarButtonItem *)item atPosition:(NSInteger)position{
+    NSMutableArray *items = [self.topToolbar.items count] ? [self.topToolbar.items mutableCopy] : [NSMutableArray array];
+    
+    [items insertObject:item atIndex:position];
+    [self.topToolbar setItems:items];
+}
+
+-(void)addTopToolBarItem:(UIBarButtonItem *)item{
+    NSMutableArray *items = [self.topToolbar.items count] ? [self.topToolbar.items mutableCopy] : [NSMutableArray array];
+    [items addObject:item];
+    
+    [self.topToolbar setItems:items];
+}
+
+//Toolbar
+-(void)setToolBarItems:(NSArray *)items {
+    [self.toolbar setItems:items];
+}
+
+-(void)addToolBarItem:(UIBarButtonItem *)item atPosition:(NSInteger)position{
+    NSMutableArray *items = [self.toolbar.items count] ? [self.toolbar.items mutableCopy] : [NSMutableArray array];
+    
+    [items insertObject:item atIndex:position];
+    [self.toolbar setItems:items];
+}
+
+-(void)addToolBarItem:(UIBarButtonItem *)item{
+    NSMutableArray *items = [self.toolbar.items count] ? [self.toolbar.items mutableCopy] : [NSMutableArray array];
+    [items addObject:item];
+    
+    [self.toolbar setItems:items];
+}
+
 #pragma mark - Layout
 BOOL isFirstViewLoad = YES;
 - (void)viewWillLayoutSubviews
@@ -618,12 +702,10 @@ BOOL isFirstViewLoad = YES;
     //if(!isFirstViewLoad)
     {
         // Toolbar
-        //_toolbar.frame = [self frameForToolbarWhenRotationFromOrientation:self.interfaceOrientation];
-        _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
+        self.toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
         
-        // Done button
-        //_doneButton.frame = [self frameForDoneButtonWhenRotationFromOrientation:self.interfaceOrientation];
-        _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
+        // Top Toolbar
+        _topToolbar.frame = [self frameForTopToolbarAtOrientation:self.interfaceOrientation];
     }
     
     //if(isFirstViewLoad) isFirstViewLoad = NO;
@@ -926,6 +1008,16 @@ BOOL isFirstViewLoad = YES;
 	return CGPointMake(newOffset, 0);
 }
 
+- (CGRect)frameForTopToolbarAtOrientation:(UIInterfaceOrientation)orientation {
+    CGFloat height = 44;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
+        UIInterfaceOrientationIsLandscape(orientation))
+        height = 32;
+    
+    return CGRectMake(0, [UIApplication sharedApplication].statusBarFrame.size.height, CGRectGetWidth(self.view.bounds), height);
+}
+
 - (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation {
     CGFloat height = 44;
     
@@ -947,14 +1039,7 @@ BOOL isFirstViewLoad = YES;
 }
 
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation {
-    CGRect screenBound = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenBound.size.width;
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
-        UIInterfaceOrientationIsLandscape(orientation))
-        screenWidth = screenBound.size.height;
-    
-    return CGRectMake(screenWidth - 55 - 20, 30, 55, 26);
+    return CGRectMake(0, 0, 55, 26);
 }
 
 - (CGRect)frameForDoneButtonWhenRotationFromOrientation:(UIInterfaceOrientation)orientation {
@@ -974,7 +1059,7 @@ BOOL isFirstViewLoad = YES;
     captionView.frame = CGRectMake(0, 0, pageFrame.size.width, 44); // set initial frame
     
     CGSize captionSize = [captionView sizeThatFits:CGSizeMake(pageFrame.size.width, 0)];
-    CGRect captionFrame = CGRectMake(pageFrame.origin.x, pageFrame.size.height - captionSize.height - (_toolbar.superview?_toolbar.frame.size.height:0), pageFrame.size.width, captionSize.height);
+    CGRect captionFrame = CGRectMake(pageFrame.origin.x, pageFrame.size.height - captionSize.height - (self.toolbar.superview?self.toolbar.frame.size.height:0), pageFrame.size.width, captionSize.height);
     
     return captionFrame;
 }
@@ -1080,8 +1165,8 @@ BOOL isFirstViewLoad = YES;
     }
     
     CGFloat alpha = hidden ? 0 : 1;
-	[_toolbar setAlpha:alpha];
-    [_doneButton setAlpha:alpha];
+	[self.toolbar setAlpha:alpha];
+    [self.topToolbar setAlpha:alpha];
     for (UIView *v in captionViews) v.alpha = alpha;
 	if (animated) [UIView commitAnimations];
 	
@@ -1109,7 +1194,7 @@ BOOL isFirstViewLoad = YES;
 	}
 }
 
-- (BOOL)areControlsHidden { return (_toolbar.alpha == 0); /* [UIApplication sharedApplication].isStatusBarHidden; */ }
+- (BOOL)areControlsHidden { return (self.toolbar.alpha == 0); /* [UIApplication sharedApplication].isStatusBarHidden; */ }
 - (void)hideControls { if(_autoHide) [self setControlsHidden:YES animated:YES permanent:NO]; }
 - (void)toggleControls { [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO]; }
 

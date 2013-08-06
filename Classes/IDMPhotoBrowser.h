@@ -33,6 +33,11 @@
 // Properties
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
+//Top ToolBar
+@property (nonatomic) BOOL displayTopToolbar;
+@property (nonatomic) BOOL displayDoneButton;
+
+//Botton ToolBar
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayCounterLabel;
@@ -53,5 +58,17 @@
 
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
+
+/** Customizations **/
+
+// Top toolbar item
+-(void)addTopToolBarItem:(UIBarButtonItem *)item atPosition:(NSInteger)position;
+-(void)addTopToolBarItem:(UIBarButtonItem *)item;
+-(void)setTopToolBarItems:(NSArray *)items;
+
+// Toolbar item
+-(void)addToolBarItem:(UIBarButtonItem *)item atPosition:(NSInteger)position;
+-(void)addToolBarItem:(UIBarButtonItem *)item;
+-(void)setToolBarItems:(NSArray *)items;
 
 @end
