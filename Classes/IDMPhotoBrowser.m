@@ -549,7 +549,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     }
     
     // Toolbar
-    if ( (_displayActionButton || (_displayArrowButton && numberOfPhotos > 1)) && _displayToolbar) {
+    if (_displayToolbar) {
         [self.view addSubview:self.toolbar];
     } else {
         [self.toolbar removeFromSuperview];
