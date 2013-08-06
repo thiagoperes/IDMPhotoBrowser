@@ -227,6 +227,12 @@
 
 #pragma mark - IDMPhotoBrowser Delegate
 
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index
+{
+    id <IDMPhoto> photo = [photoBrowser photoAtIndex:index];
+    NSLog(@"Dissmised with photo index: %d, photo caption: %@",index,photo.caption);
+}
+
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)index
 {
     [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Option %d", index+1] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
