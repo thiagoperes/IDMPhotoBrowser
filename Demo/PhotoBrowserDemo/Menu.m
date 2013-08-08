@@ -62,7 +62,7 @@
     UIButton *buttonSender = (UIButton*)sender;
     
     // DEBUG
-    /*if(buttonSender.tag == 101)
+    if(buttonSender.tag == 101)
     {
         Menu *menu = [[Menu alloc] init];
         [self presentModalViewController:menu animated:YES];
@@ -72,7 +72,7 @@
         [self dismissModalViewControllerAnimated:YES];
     }
     
-    return;*/
+    return;
     
     // Create an array to store IDMPhoto objects
     NSMutableArray *photos = [[NSMutableArray alloc] init];
@@ -108,10 +108,7 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     
-    browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    
     // Show
-    self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
     [self presentViewController:browser animated:YES completion:nil];
 }
 
@@ -213,14 +210,12 @@
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
-    browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
     if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
         browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
     
     // Show
-    self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    [self presentModalViewController:browser animated:YES];
+    [self presentViewController:browser animated:YES completion:nil];
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -230,7 +225,7 @@
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index
 {
     id <IDMPhoto> photo = [photoBrowser photoAtIndex:index];
-    NSLog(@"Dissmised with photo index: %d, photo caption: %@",index,photo.caption);
+    NSLog(@"Dissmised with photo index: %d, photo caption: %@", index, photo.caption);
 }
 
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)index

@@ -34,12 +34,16 @@
 // Properties
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
+// Toolbar customization
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayActionButton;
-@property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, retain) NSArray *actionButtonTitles;
+
+// Customization
+@property (nonatomic) BOOL useWhiteBackgroundColor;
+
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;

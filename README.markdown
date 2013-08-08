@@ -60,15 +60,11 @@ Presenting using a simple fade transition:
 ``` objective-c    
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
-    browser.delegate = self;
-    browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 ``` 
 Presenting from a view:
 ``` objective-c    
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
-    browser.delegate = self;
-    browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 ``` 
 
 You can customize the toolbar. There are three boolean properties you can set: displayActionButton (default is YES), displayArrowButton (default is YES) and displayCounterLabel (default is NO). If you dont want the toolbar at all, you can set displayToolbar = NO.
@@ -90,8 +86,7 @@ Presenting using a modal view controller:
 
 ``` objective-c
     // Show
-    self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    [self presentModalViewController:browser animated:YES];
+    [self presentViewController:browser animated:YES completion:nil];
 ```
 
 
@@ -119,16 +114,6 @@ Example delegate method for custom caption view:
         MyIDMCaptionViewSubclass *captionView = [[MyIDMCaptionViewSubclass alloc] initWithPhoto:photo];
         return [captionView autorelease];
     }
-
-### Important note
-
-The way this library works now, you NEED to set those things so it will work properly:
-
-``` objective-c
-browser.delegate = self;
-browser.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-self.modalPresentationStyle = self.navigationController.modalPresentationStyle = self.tabBarController.modalPresentationStyle = UIModalPresentationCurrentContext;
-```
 
 ## Adding to your project
 

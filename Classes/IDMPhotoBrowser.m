@@ -60,15 +60,11 @@
     UIView *_senderViewForAnimation;
     
     // Misc
-    BOOL _displayActionButton;
-    BOOL _useDefaultActions;
-    BOOL _displayArrowButton;
-    BOOL _displayCounterLabel;
-    BOOL _useWhiteBackgroundColor;
-	BOOL _performingLayout;
+    BOOL _performingLayout;
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
+    BOOL _useDefaultActions;
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
@@ -155,14 +151,18 @@
         _recycledPages = [[NSMutableSet alloc] init];
         _newPhotos = [[NSMutableArray alloc] init];
 
+        _displayToolbar = YES;
+        _autoHide = YES;
         _useDefaultActions = YES;
+
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
         _useWhiteBackgroundColor = NO;
         
-        _displayToolbar = YES;
-        _autoHide = YES;
+        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+        rootViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -215,7 +215,6 @@
 {
     // Initial Setup
     IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-    //IDMTapDetectingImageView *moveImageView = scrollView.photoImageView;
     
     static float firstX, firstY;
     float viewHeight = scrollView.frame.size.height;
@@ -244,8 +243,8 @@
     self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
     
     /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
-     backgroundImageView.alpha = newAlpha;
-     self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
+    backgroundImageView.alpha = 1 - newAlpha;
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
     
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
@@ -272,7 +271,7 @@
             self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             [UIView commitAnimations];
-             
+            
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
             
             
@@ -390,7 +389,7 @@
                                                       target:self
                                                       action:@selector(gotoPreviousPage)];
     
-    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight"]
+    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight.png"]
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(gotoNextPage)];
@@ -481,7 +480,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = _resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
-    //resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
     resizableImageView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
     
@@ -571,14 +569,19 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
 #pragma mark - Appearance
 
-- (void)viewWillAppear:(BOOL)animated
+- (UIImage*)takeScreenshot
 {
-    /*UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
     UIGraphicsBeginImageContext(window.bounds.size);
     [window.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    _backgroundScreenshot = image;*/
+    return image;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    //_backgroundScreenshot = [self takeScreenshot];
     
     // Super
 	[super viewWillAppear:animated];
@@ -615,7 +618,9 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 }
 
 #pragma mark - Layout
-BOOL isFirstViewLoad = YES;
+
+//BOOL isFirstViewLoad = YES;
+
 - (void)viewWillLayoutSubviews
 {
     // Super
@@ -1142,19 +1147,16 @@ BOOL isFirstViewLoad = YES;
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
     // Gesture
-    [[[[UIApplication sharedApplication]delegate]window] removeGestureRecognizer:_panGesture];
+    [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
     
     _autoHide = NO;
     
-    //self.view.backgroundColor = [UIColor blackColor];
-    
     [self dismissViewControllerAnimated:YES completion:^{
-        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)]) {
+        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-        }
         
-        UIViewController *previousViewController = (UIViewController*)_delegate;
-        previousViewController.modalPresentationStyle = previousViewController.navigationController.modalPresentationStyle = previousViewController.tabBarController.modalPresentationStyle = 0;
+        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        rootViewController.modalPresentationStyle = 0;
     }];
 }
 
@@ -1205,7 +1207,9 @@ BOOL isFirstViewLoad = YES;
             }
             else
             {
-                [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex];
+                
+                if ([_delegate respondsToSelector:@selector(didDismissActionSheetWithButtonIndex:)])
+                    [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex];
             }
         }
     }
