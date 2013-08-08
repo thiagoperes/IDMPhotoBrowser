@@ -62,7 +62,7 @@
     UIButton *buttonSender = (UIButton*)sender;
     
     // DEBUG
-    if(buttonSender.tag == 101)
+    /*if(buttonSender.tag == 101)
     {
         Menu *menu = [[Menu alloc] init];
         [self presentModalViewController:menu animated:YES];
@@ -72,7 +72,7 @@
         [self dismissModalViewControllerAnimated:YES];
     }
     
-    return;
+    return;*/
     
     // Create an array to store IDMPhoto objects
     NSMutableArray *photos = [[NSMutableArray alloc] init];

@@ -505,7 +505,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     [_recycledPages removeAllObjects];
     
     // Toolbar
-    if ( (_displayActionButton || (_displayArrowButton && numberOfPhotos > 1)) && _displayToolbar) {
+    if (_displayToolbar) {
         [self.view addSubview:_toolbar];
     } else {
         [_toolbar removeFromSuperview];
@@ -1064,15 +1064,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	
 	// Status bar and nav bar positioning
     if (self.wantsFullScreenLayout) {
-        
-        // Get status bar height if visible
-        CGFloat statusBarHeight = 0;
-        // Get status bar height if visible
-        if (![UIApplication sharedApplication].statusBarHidden) {
-            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
-        }
-        
         // Status Bar
         if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
             [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
