@@ -1210,6 +1210,26 @@ BOOL isFirstViewLoad = YES;
 }
 - (void)toggleControls { [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO]; }
 
+- (void)dismissPhotoBrowser{
+    [self dismissPhotoBrowser:YES];
+}
+
+- (void)dismissPhotoBrowser:(BOOL)animated{
+    // Status Bar
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    
+    // Gesture
+    [[[[UIApplication sharedApplication]delegate]window] removeGestureRecognizer:_panGesture];
+    
+    _autoHide = NO;
+    
+    //self.view.backgroundColor = [UIColor blackColor];
+    
+    [self dismissViewControllerAnimated:animated completion:^{
+        UIViewController *previousViewController = (UIViewController*)_delegate;
+        previousViewController.modalPresentationStyle = previousViewController.navigationController.modalPresentationStyle = previousViewController.tabBarController.modalPresentationStyle = 0;
+    }];
+}
 
 #pragma mark - Properties
 
@@ -1226,20 +1246,7 @@ BOOL isFirstViewLoad = YES;
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    // Status Bar
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    
-    // Gesture
-    [[[[UIApplication sharedApplication]delegate]window] removeGestureRecognizer:_panGesture];
-    
-    _autoHide = NO;
-    
-    //self.view.backgroundColor = [UIColor blackColor];
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        UIViewController *previousViewController = (UIViewController*)_delegate;
-        previousViewController.modalPresentationStyle = previousViewController.navigationController.modalPresentationStyle = previousViewController.tabBarController.modalPresentationStyle = 0;
-    }];
+    [self dismissPhotoBrowser:YES];
 }
 
 - (void)actionButtonPressed:(id)sender {

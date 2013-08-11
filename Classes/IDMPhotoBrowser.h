@@ -62,6 +62,10 @@
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
 
+//Dismiss Photo Browser
+- (void)dismissPhotoBrowser; //animated by default
+- (void)dismissPhotoBrowser:(BOOL)animated;
+
 /** Customizations **/
 
 // Top toolbar item
