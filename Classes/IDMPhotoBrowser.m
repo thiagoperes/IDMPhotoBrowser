@@ -215,7 +215,8 @@
 {
     // Initial Setup
     IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-    
+    //IDMTapDetectingImageView *moveImageView = scrollView.photoImageView;
+
     static float firstX, firstY;
     float viewHeight = scrollView.frame.size.height;
     float viewHalfHeight = viewHeight/2;
@@ -273,38 +274,6 @@
             [UIView commitAnimations];
             
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
-            
-            
-            
-            // ****** NEW ANIMATION ****** \\
-            
-            //CGRect frame = [_senderViewForAnimation convertRect:_senderViewForAnimation.frame toView:[[[UIApplication sharedApplication] delegate] window]];
-            //CGRect frame = [_senderViewForAnimation convertRect:_senderViewForAnimation.frame toView:[[[UIApplication sharedApplication] delegate] window]];
-            
-            //frame.size.width = _senderViewForAnimation.frame.size.width;
-            //frame.size.height = _senderViewForAnimation.frame.size.height;
-            //frame.origin.x = _senderViewForAnimation.frame.origin.x;
-            //frame.origin.y = _senderViewForAnimation.frame.origin.y;
-            
-            //CGFloat animationDuration = 0.35;
-            
-            //UIImageView *resizableImageView = [[UIImageView alloc] initWithFrame:moveView]
-            
-            /*CGRect newFrame = CGRectMake(0,
-                                         0,
-                                         _resizableImageViewFrame.size.width,
-                                         _resizableImageViewFrame.size.height);*/
-            
-            /*[UIView animateWithDuration:0.1 animations:^{
-                [scrollView setFrame:_resizableImageViewFrame];
-            } completion:^(BOOL finished) {
-                //self.view.alpha = 1;
-                //[moveView removeFromSuperview];
-                
-                [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:2];
-            }];*/
-            
-            // ****** NEW ANIMATION ****** //
         }
         else // Continue Showing View
         {
@@ -1066,9 +1035,11 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     if (self.wantsFullScreenLayout) {
         // Status Bar
         if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
+            [[UIApplication sharedApplication] setStatusBarHidden:hidden
+                                                    withAnimation:animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone];
         } else {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
+            [[UIApplication sharedApplication] setStatusBarHidden:hidden
+                                                    withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
         }
     }
     
@@ -1199,7 +1170,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
             else
             {
                 
-                if ([_delegate respondsToSelector:@selector(didDismissActionSheetWithButtonIndex:)])
+                if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:)])
                     [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex];
             }
         }
