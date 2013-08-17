@@ -65,6 +65,7 @@
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
     BOOL _useDefaultActions;
+    BOOL _originalViewAnimationWithFade;
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
@@ -160,6 +161,8 @@
         _displayCounterLabel = NO;
         _useWhiteBackgroundColor = NO;
         
+        _originalViewAnimationWithFade = NO;
+        
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         rootViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -191,6 +194,17 @@
 	return self;
 }
 
+- (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view withFadeAnimation:(BOOL)fadeAnimation;
+{
+    if ((self = [self init])) {
+		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
+        
+        _originalViewAnimationWithFade = YES;
+        [self performAnimationWithView:view];
+	}
+	return self;
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self releaseAllUnderlyingPhotos];
@@ -207,6 +221,34 @@
 	
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
+}
+
+- (void)dismissPhotoBrowserFromGesture:(BOOL)fromGesture
+{
+    // Status Bar
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    
+    // Gesture
+    [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
+    
+    _autoHide = NO;
+    
+    // Only animate to original view if has original view and event is not triggered from pan gesture
+    BOOL animateToOriginalView = _senderViewForAnimation && !fromGesture;
+    
+    // Do not animate the dismiss if we animate to original view
+    [self dismissViewControllerAnimated:!animateToOriginalView completion:^{
+        
+        if(animateToOriginalView) {
+            [self performCloseAnimationFromOrignialView];
+        }
+        
+        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
+            [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
+        
+        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        rootViewController.modalPresentationStyle = 0;
+    }];
 }
 
 #pragma mark - PanGesture
@@ -273,7 +315,9 @@
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             [UIView commitAnimations];
             
-            [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(animationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^(void){
+                [self dismissPhotoBrowserFromGesture:YES];
+            });
         }
         else // Continue Showing View
         {
@@ -450,6 +494,11 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     resizableImageView.frame = _resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
     resizableImageView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+    
+    if(_originalViewAnimationWithFade) {
+        resizableImageView.alpha = 0;
+    }
+    
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
     
     [UIView animateWithDuration:0.28 animations:^{
@@ -458,6 +507,10 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         CGFloat screenHeight = screenBound.size.height;
         
         resizableImageView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+        
+        if(_originalViewAnimationWithFade) {
+            resizableImageView.alpha = 1;
+        }
     } completion:^(BOOL finished) {
         self.view.alpha = 1;
         [resizableImageView removeFromSuperview];
@@ -520,6 +573,28 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     //[self.view.subviews[0] addGestureRecognizer:_panGesture];
     [self.view addGestureRecognizer:_panGesture];
+}
+
+- (void)performCloseAnimationFromOrignialView
+{
+    IDMPhoto *photo = [self photoAtIndex:_currentPageIndex];
+    UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:photo.underlyingImage];
+    resizableImageView.frame = self.view.bounds;
+    resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
+    resizableImageView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+    [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
+    
+    [UIView animateWithDuration:0.28 animations:^{
+        CGFloat screenWidth = _senderViewForAnimation.bounds.size.width;
+        CGFloat screenHeight = _senderViewForAnimation.bounds.size.height;
+        resizableImageView.frame = CGRectMake(_resizableImageViewFrame.origin.x, _resizableImageViewFrame.origin.y, screenWidth, screenHeight);
+        
+        if(_originalViewAnimationWithFade) {
+            resizableImageView.alpha = 0;
+        }
+    } completion:^(BOOL finished) {
+        [resizableImageView removeFromSuperview];
+    }];
 }
 
 // Release any retained subviews of the main view.
@@ -1105,21 +1180,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    // Status Bar
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    
-    // Gesture
-    [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
-    
-    _autoHide = NO;
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
-            [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-        
-        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-        rootViewController.modalPresentationStyle = 0;
-    }];
+    [self dismissPhotoBrowserFromGesture:NO];
 }
 
 - (void)actionButtonPressed:(id)sender {
