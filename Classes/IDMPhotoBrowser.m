@@ -191,17 +191,17 @@
 	return self;
 }
 
-- (id)initWithPhotoUrls:(NSArray *)photoUrlsArray {
+- (id)initWithPhotoURLs:(NSArray *)photoURLsArray {
     if ((self = [self init])) {
-        NSArray *photosArray = [IDMPhoto photosWithURLs:photoUrlsArray];
+        NSArray *photosArray = [IDMPhoto photosWithURLs:photoURLsArray];
 		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
 	}
 	return self;
 }
 
-- (id)initWithPhotoUrls:(NSArray *)photoUrlsArray animatedFromView:(UIView*)view {
+- (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view {
     if ((self = [self init])) {
-        NSArray *photosArray = [IDMPhoto photosWithURLs:photoUrlsArray];
+        NSArray *photosArray = [IDMPhoto photosWithURLs:photoURLsArray];
 		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
         
         [self performAnimationWithView:view];

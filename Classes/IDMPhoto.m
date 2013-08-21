@@ -81,9 +81,13 @@ caption = _caption;
 + (NSArray *)photosWithURLs:(NSArray *)urlsArray {
     NSMutableArray *photos = [NSMutableArray arrayWithCapacity:urlsArray.count];
     
-    for (NSURL *url in urlsArray) {
+    for (id url in urlsArray) {
         if ([url isKindOfClass:[NSURL class]]) {
             IDMPhoto *photo = [IDMPhoto photoWithURL:url];
+            [photos addObject:photo];
+        }
+        else if ([url isKindOfClass:[NSString class]]) {
+            IDMPhoto *photo = [IDMPhoto photoWithURL:[NSURL URLWithString:url]];
             [photos addObject:photo];
         }
     }

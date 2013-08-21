@@ -61,6 +61,8 @@
 {
     UIButton *buttonSender = (UIButton*)sender;
     
+    
+    
     // DEBUG
     /*if(buttonSender.tag == 101)
     {
@@ -73,6 +75,8 @@
     }
     
     return;*/
+    
+    
     
     // Create an array to store IDMPhoto objects
     NSMutableArray *photos = [[NSMutableArray alloc] init];
@@ -200,10 +204,8 @@
         }
         else if(indexPath.row == 1)
         {
-			[photos addObject:[IDMPhoto photoWithURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"]]];
-			[photos addObject:[IDMPhoto photoWithURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"]]];
-			[photos addObject:[IDMPhoto photoWithURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"]]];
-			[photos addObject:[IDMPhoto photoWithURL:[NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]]];
+            NSArray *photosWithURL = [IDMPhoto photosWithURLs:[NSArray arrayWithObjects:[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], @"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg", [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], @"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg", nil]];
+            photos = [NSMutableArray arrayWithArray:photosWithURL];
         }
     }
     
@@ -234,4 +236,3 @@
 }
 
 @end
-

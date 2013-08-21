@@ -44,7 +44,6 @@
 // Customization
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 
-
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
 
@@ -52,10 +51,10 @@
 - (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view;
 
 // Init with NSURL objects
-- (id)initWithPhotoUrls:(NSArray *)photoUrlsArray;
+- (id)initWithPhotoURLs:(NSArray *)photoURLsArray;
 
 // Init with NSURL objects with animation
-- (id)initWithPhotoUrls:(NSArray *)photoUrlsArray animatedFromView:(UIView*)view;
+- (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view;
 
 // Reloads the photo browser and refetches data
 - (void)reloadData;
