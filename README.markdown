@@ -51,6 +51,9 @@ First create a photos array containing IDMPhoto objects:
         IDMPhoto *photo = [IDMPhoto photoWithURL:url];
     	[photos addObject:photo];
     }
+	
+    // Or use this constructor to receive an NSArray of IDMPhoto objects from your NSURL objects
+    NSArray *photos = [IDMPhoto photosWithURLs:photosURL];
 ````
 
 There are two main ways to presente the photoBrowser: With a fade on screen or with a zooming effect from an existing view.
