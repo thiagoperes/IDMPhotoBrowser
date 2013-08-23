@@ -14,4 +14,6 @@
 
     #import <SystemConfiguration/SystemConfiguration.h>
     #import <MobileCoreServices/MobileCoreServices.h>
+
+    #import "ExtendNSLogFunctionality.h"
 #endif

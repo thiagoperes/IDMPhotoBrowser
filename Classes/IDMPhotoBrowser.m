@@ -130,8 +130,9 @@
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor;
+@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneBackgroundImage = _doneBackgroundImage, leftArrowPath = _leftArrowPath, rightArrowPath = _rightArrowPath, leftArrowSelectedPath = _leftArrowSelectedPath, rightArrowSelectedPath = _rightArrowSelectedPath;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
+//@synthesize circularViewTrackColor = _circularViewTrackColor, circularViewProgressColor = _circularViewProgressColor;
 @synthesize actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize delegate = _delegate;
 
@@ -159,6 +160,9 @@
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
         _useWhiteBackgroundColor = NO;
+        
+        _leftArrowPath = _rightArrowPath = _leftArrowSelectedPath = _rightArrowSelectedPath = @"";
+        _doneBackgroundImage = @"";
         
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -359,10 +363,19 @@
     
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _doneButton.layer.cornerRadius = 3.0f;
-    _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
-    _doneButton.layer.borderWidth = 1.0f;
-    [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
+    
+    if([_doneBackgroundImage isEqualToString:@""])
+    {
+        _doneButton.layer.cornerRadius = 3.0f;
+        _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
+        _doneButton.layer.borderWidth = 1.0f;
+        [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
+    }
+    else
+    {
+        [_doneButton setBackgroundImage:[UIImage imageNamed:_doneBackgroundImage] forState:UIControlStateNormal];
+    }
+    
     [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal];
     [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateHighlighted];
     [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
@@ -371,23 +384,34 @@
     _doneButton.alpha = 1;
     [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]
-                                                       style:UIBarButtonItemStylePlain
-                                                      target:self
-                                                      action:@selector(gotoPreviousPage)];
+    NSString *leftButtonImageName = ([_leftArrowPath isEqualToString:@""]) ?
+    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png" : _leftArrowPath;
+    NSString *rightButtonImageName = ([_rightArrowPath isEqualToString:@""]) ?
+    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight.png" : _rightArrowPath;
     
-    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight.png"]
-                                                   style:UIBarButtonItemStylePlain
-                                                  target:self
-                                                  action:@selector(gotoNextPage)];
-
+    NSString *leftButtonSelectedImageName = ([_leftArrowSelectedPath isEqualToString:@""]) ?
+    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft_selected.png" : _leftArrowSelectedPath;
+    NSString *rightButtonSelectedImageName = ([_rightArrowSelectedPath isEqualToString:@""]) ?
+    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight_selected.png" : _rightArrowSelectedPath;
+    
+    _previousButton = [[UIBarButtonItem alloc] initWithCustomView:[self customButton:leftButtonImageName imageSelected:leftButtonSelectedImageName action:@selector(gotoPreviousPage)]];
+    _nextButton = [[UIBarButtonItem alloc] initWithCustomView:[self customButton:rightButtonImageName imageSelected:rightButtonSelectedImageName action:@selector(gotoNextPage)]];
+    
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
     _counterLabel.textAlignment = UITextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
     _counterLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:18];
-    _counterLabel.textColor = [UIColor whiteColor];
-    _counterLabel.shadowColor = [UIColor darkTextColor];
-    _counterLabel.shadowOffset = CGSizeMake(0, 1);
+    
+    if(_useWhiteBackgroundColor)
+    {
+        _counterLabel.textColor = [UIColor blackColor];
+    }
+    else
+    {
+        _counterLabel.textColor = [UIColor whiteColor];
+        _counterLabel.shadowColor = [UIColor darkTextColor];
+        _counterLabel.shadowOffset = CGSizeMake(0, 1);
+    }
     
     _counterButton = [[UIBarButtonItem alloc] initWithCustomView:_counterLabel];
     
@@ -410,6 +434,20 @@
     
 	// Super
     [super viewDidLoad];
+}
+
+- (UIButton*)customButton:(NSString*)imagePath imageSelected:(NSString*)imageSelected action:(SEL)action
+{
+    UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage* imgbtn = [UIImage imageNamed:imagePath];
+    UIImage* imgbtnSelected = [UIImage imageNamed:imageSelected];
+    [nextButton setBackgroundImage:imgbtn forState:UIControlStateNormal];
+    [nextButton setBackgroundImage:imgbtnSelected forState:UIControlStateDisabled];
+    [nextButton addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
+    [nextButton setContentMode:UIViewContentModeCenter];
+    [nextButton setFrame:CGRectMake(0,0, imgbtn.size.width, imgbtn.size.height)];
+    
+    return nextButton;
 }
 
 - (UIImage *)getImageFromView:(UIView *)view
@@ -816,14 +854,12 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	// Add missing pages
 	for (NSUInteger index = (NSUInteger)iFirstIndex; index <= (NSUInteger)iLastIndex; index++) {
 		if (![self isDisplayingPageForIndex:index]) {
-            
             // Add new page
-			IDMZoomingScrollView *page; //= [self dequeueRecycledPage];
-			//if (!page) {
-				page = [[IDMZoomingScrollView alloc] initWithPhotoBrowser:self];
-                page.backgroundColor = [UIColor clearColor];
-                page.opaque = YES;
-			//}
+			IDMZoomingScrollView *page;
+            page = [[IDMZoomingScrollView alloc] initWithPhotoBrowser:self];
+            page.backgroundColor = [UIColor clearColor];
+            page.opaque = YES;
+            
 			[self configurePage:page forIndex:index];
 			[_visiblePages addObject:page];
 			[_pagingScrollView addSubview:page];

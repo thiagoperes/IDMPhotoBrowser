@@ -61,33 +61,18 @@
 {
     UIButton *buttonSender = (UIButton*)sender;
     
-    
-    
-    // DEBUG
-    /*if(buttonSender.tag == 101)
-    {
-        Menu *menu = [[Menu alloc] init];
-        [self presentModalViewController:menu animated:YES];
-    }
-    else
-    {
-        [self dismissModalViewControllerAnimated:YES];
-    }
-    
-    return;*/
-    
-    
-    
     // Create an array to store IDMPhoto objects
     NSMutableArray *photos = [[NSMutableArray alloc] init];
     
     IDMPhoto *photo;
+    
     if(buttonSender.tag == 101)
     {
         photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
         photo.caption = @"Grotto of the Madonna";
         [photos addObject:photo];
     }
+    
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo3l" ofType:@"jpg"]];
     photo.caption = @"York Floods";
     [photos addObject:photo];
@@ -97,6 +82,7 @@
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
     photo.caption = @"Campervan";
     [photos addObject:photo];
+    
     if(buttonSender.tag == 102)
     {
         photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
@@ -107,7 +93,6 @@
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using initWithPhotos:animatedFromView: method to use the zoom-in animation
     browser.delegate = self;
-    
     browser.displayActionButton = NO;
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
@@ -128,7 +113,7 @@
     if(section == 0)
         rows = 1;
     else if(section == 1)
-        rows = 2;
+        rows = 3;
     else if(section == 2)
         rows = 0;
     
@@ -167,6 +152,8 @@
             cell.textLabel.text = @"Local photos";
         else if(indexPath.row == 1)
             cell.textLabel.text = @"Photos from Flickr";
+        else if(indexPath.row == 2)
+            cell.textLabel.text = @"Photos from Flickr - Custom";
     }
     
     return cell;
@@ -179,6 +166,7 @@
 	NSMutableArray *photos = [[NSMutableArray alloc] init];
 
     IDMPhoto *photo;
+    
     if(indexPath.section == 0)
     {
         photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
@@ -202,7 +190,7 @@
             photo.caption = @"Campervan";
 			[photos addObject:photo];
         }
-        else if(indexPath.row == 1)
+        else if(indexPath.row == 1 || indexPath.row == 2)
         {
             NSArray *photosWithURL = [IDMPhoto photosWithURLs:[NSArray arrayWithObjects:[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], @"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg", [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], @"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg", nil]];
             photos = [NSMutableArray arrayWithArray:photosWithURL];
@@ -214,7 +202,21 @@
     browser.delegate = self;
     
     if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
+    {
         browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
+    }
+    
+    if(indexPath.section == 1 && indexPath.row == 2) // Customizations
+    {
+        browser.leftArrowPath = @"IDMPhotoBrowser_arrowLeft.png";
+        browser.rightArrowPath = @"IDMPhotoBrowser_arrowRight.png";
+        browser.leftArrowSelectedPath = @"IDMPhotoBrowser_arrowLeft_selected.png";
+        browser.rightArrowSelectedPath = @"IDMPhotoBrowser_arrowRightSelected.png";
+        browser.doneBackgroundImage = @"IDMPhotoBrowser_doneBtn.png";
+        browser.useWhiteBackgroundColor = YES;
+        browser.displayActionButton = NO;
+        browser.displayCounterLabel = YES;
+    }
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
