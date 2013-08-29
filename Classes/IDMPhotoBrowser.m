@@ -698,7 +698,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 }
 
 #pragma mark - Layout
-BOOL isFirstViewLoad = YES;
 - (void)viewWillLayoutSubviews
 {
     // Super
@@ -707,16 +706,11 @@ BOOL isFirstViewLoad = YES;
 	// Flag
 	_performingLayout = YES;
     
-    //if(!isFirstViewLoad)
-    {
-        // Toolbar
-        self.toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
-        
-        // Top Toolbar
-        _topToolbar.frame = [self frameForTopToolbarAtOrientation:self.interfaceOrientation];
-    }
+    //Top Toolbar
+    self.topToolbar.frame = [self frameForTopToolbarAtOrientation:self.interfaceOrientation];
     
-    //if(isFirstViewLoad) isFirstViewLoad = NO;
+    // Toolbar
+    self.toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
     
     // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
@@ -749,8 +743,18 @@ BOOL isFirstViewLoad = YES;
 
 #pragma mark - Rotation
 
+//iOS 5
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     return YES;
+}
+
+//iOS 6
+-(BOOL)shouldAutorotate {
+    return YES;
+}
+
+-(NSUInteger)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskAll;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -1018,12 +1022,14 @@ BOOL isFirstViewLoad = YES;
 
 - (CGRect)frameForTopToolbarAtOrientation:(UIInterfaceOrientation)orientation {
     CGFloat height = 44;
-    
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
-        UIInterfaceOrientationIsLandscape(orientation))
+        UIInterfaceOrientationIsLandscape(orientation)){
         height = 32;
+        statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.width; //we should use width for statusBar in Landscape mode
+    }
     
-    return CGRectMake(0, [UIApplication sharedApplication].statusBarFrame.size.height, CGRectGetWidth(self.view.bounds), height);
+    return CGRectMake(0, statusBarHeight, CGRectGetWidth(self.view.bounds), height);
 }
 
 - (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation {
