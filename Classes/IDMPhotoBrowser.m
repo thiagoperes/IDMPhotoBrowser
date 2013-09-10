@@ -279,7 +279,7 @@
             CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
             
             if(scrollView.center.y > viewHalfHeight+30) // swipe down
-                finalY = windowsHeigt*2;
+                finalY = windowsHeigt*2; //finalY = viewHeight*2;
             else // swipe up
                 finalY = -viewHalfHeight;
             
@@ -1227,14 +1227,14 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         if (buttonIndex != actionSheet.cancelButtonIndex) {
             if(_useDefaultActions)
             {
-                if(buttonIndex == 0)
-                    [self savePhoto];
-                else if(buttonIndex == 1)
-                    [self emailPhoto];
+                if(buttonIndex == 0) {
+                    [self savePhoto]; return;
+                } else if(buttonIndex == 1) {
+                    [self emailPhoto];  return;
+                }
             }
             else
             {
-                
                 if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:)])
                     [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex];
             }
