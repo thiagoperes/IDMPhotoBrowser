@@ -46,7 +46,6 @@
 @property (nonatomic, weak) NSString *leftArrowPath, *leftArrowSelectedPath;
 @property (nonatomic, weak) NSString *rightArrowPath, *rightArrowSelectedPath;
 @property (nonatomic, weak) NSString *doneBackgroundImage;
-//@property (nonatomic) UIColor *circularViewTrackColor, *circularViewProgressColor;
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;

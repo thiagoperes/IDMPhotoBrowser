@@ -189,8 +189,7 @@
 {
     if ((self = [self init])) {
 		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
-        
-        [self performAnimationWithView:view];
+        _senderViewForAnimation = view;
 	}
 	return self;
 }
@@ -206,9 +205,8 @@
 - (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view {
     if ((self = [self init])) {
         NSArray *photosArray = [IDMPhoto photosWithURLs:photoURLsArray];
-		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];
-        
-        [self performAnimationWithView:view];
+		_newPhotos = [[NSMutableArray alloc] initWithArray:photosArray];        
+        _senderViewForAnimation = view;
 	}
 	return self;
 }
@@ -238,7 +236,7 @@
     // Initial Setup
     IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
     //IDMTapDetectingImageView *moveImageView = scrollView.photoImageView;
-
+    
     static float firstX, firstY;
     float viewHeight = scrollView.frame.size.height;
     float viewHalfHeight = viewHeight/2;
@@ -276,10 +274,10 @@
         {            
             CGFloat finalX = firstX, finalY;
             
-            // CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
+            CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
             
             if(scrollView.center.y > viewHalfHeight+30) // swipe down
-                finalY = viewHeight*2; //finalY = viewHeight*2;
+                finalY = windowsHeigt*2; //finalY = viewHeight*2;
             else // swipe up
                 finalY = -viewHalfHeight;
             
@@ -324,6 +322,8 @@
 
 - (void)viewDidLoad
 {
+    [self performAnimation];
+    
     // Setup animation
     self.view.alpha = 0;
     
@@ -492,17 +492,15 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     return UIGraphicsGetImageFromCurrentImageContext();
 }
 
-- (void)performAnimationWithView:(UIView*)senderView
+- (void)performAnimation
 {
-    _senderViewForAnimation = senderView;
-    
-    UIImage *imageFromView = [self getImageFromView:senderView];
+    UIImage *imageFromView = [self getImageFromView:_senderViewForAnimation];
     
     /*CGRect resizableImageViewFrame = [senderView convertRect:senderView.superview.bounds toView:[[[UIApplication sharedApplication] delegate] window]];
     resizableImageViewFrame.size.height = senderView.frame.size.height;
     resizableImageViewFrame.size.width = senderView.frame.size.width;*/
     
-    _resizableImageViewFrame = [senderView.superview convertRect:senderView.frame toView:nil];
+    _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
     
     /*if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
     {
@@ -516,7 +514,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = _resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
-    resizableImageView.backgroundColor = [UIColor colorWithWhite:0 alpha:1];
+    resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
     
     [UIView animateWithDuration:0.28 animations:^{
