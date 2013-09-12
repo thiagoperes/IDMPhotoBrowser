@@ -276,10 +276,10 @@
         {            
             CGFloat finalX = firstX, finalY;
             
-            CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
+            // CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
             
             if(scrollView.center.y > viewHalfHeight+30) // swipe down
-                finalY = windowsHeigt*2; //finalY = viewHeight*2;
+                finalY = viewHeight*2; //finalY = viewHeight*2;
             else // swipe up
                 finalY = -viewHalfHeight;
             
