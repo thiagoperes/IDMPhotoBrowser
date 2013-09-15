@@ -130,7 +130,7 @@
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneBackgroundImage = _doneBackgroundImage, leftArrowPath = _leftArrowPath, rightArrowPath = _rightArrowPath, leftArrowSelectedPath = _leftArrowSelectedPath, rightArrowSelectedPath = _rightArrowSelectedPath;
+@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneBackgroundImage = _doneBackgroundImage, leftArrowPath = _leftArrowPath, rightArrowPath = _rightArrowPath, leftArrowSelectedPath = _leftArrowSelectedPath, rightArrowSelectedPath = _rightArrowSelectedPath, dismissInterval = _dismissInterval;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
 //@synthesize circularViewTrackColor = _circularViewTrackColor, circularViewProgressColor = _circularViewProgressColor;
 @synthesize actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
@@ -163,6 +163,7 @@
         
         _leftArrowPath = _rightArrowPath = _leftArrowSelectedPath = _rightArrowSelectedPath = @"";
         _doneBackgroundImage = @"";
+        _dismissInterval = 40;
         
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -270,7 +271,7 @@
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
     {
-        if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
+        if(scrollView.center.y > viewHalfHeight+_dismissInterval || scrollView.center.y < viewHalfHeight-_dismissInterval) // Automatic Dismiss View
         {            
             CGFloat finalX = firstX, finalY;
             
