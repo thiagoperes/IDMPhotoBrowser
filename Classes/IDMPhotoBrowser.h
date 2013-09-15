@@ -46,6 +46,7 @@
 @property (nonatomic, weak) NSString *leftArrowPath, *leftArrowSelectedPath;
 @property (nonatomic, weak) NSString *rightArrowPath, *rightArrowSelectedPath;
 @property (nonatomic, weak) NSString *doneBackgroundImage;
+@property (nonatomic) NSInteger dismissInterval;
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
