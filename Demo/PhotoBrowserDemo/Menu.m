@@ -96,7 +96,6 @@
     browser.displayActionButton = NO;
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
-    browser.useWhiteBackgroundColor = YES;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
@@ -209,11 +208,11 @@
     
     if(indexPath.section == 1 && indexPath.row == 2) // Customizations
     {
-        browser.leftArrowPath = @"IDMPhotoBrowser_arrowLeft.png";
-        browser.rightArrowPath = @"IDMPhotoBrowser_arrowRight.png";
-        browser.leftArrowSelectedPath = @"IDMPhotoBrowser_arrowLeft_selected.png";
-        browser.rightArrowSelectedPath = @"IDMPhotoBrowser_arrowRightSelected.png";
-        browser.doneBackgroundImage = @"IDMPhotoBrowser_doneBtn.png";
+        browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
+        browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
+        browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
+        browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
+        browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
         browser.useWhiteBackgroundColor = YES;
         browser.displayActionButton = NO;
         browser.displayCounterLabel = YES;

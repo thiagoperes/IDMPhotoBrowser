@@ -44,7 +44,6 @@
 		// Image view
 		_photoImageView = [[IDMTapDetectingImageView alloc] initWithFrame:CGRectZero];
 		_photoImageView.tapDelegate = self;
-//		_photoImageView.contentMode = UIViewContentModeCenter;
 		_photoImageView.backgroundColor = [UIColor clearColor];
 		[self addSubview:_photoImageView];
         
@@ -58,12 +57,14 @@
             screenHeight = screenBound.size.width;
         }
         
+        BOOL usingWhiteBackground = self.photoBrowser.useWhiteBackgroundColor;
+        
         // Progress view
         _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
         _progressView.roundedCorners = YES;
         _progressView.tag = 101;
-        _progressView.trackTintColor = [UIColor clearColor];
-        [_progressView setTrackTintColor:[UIColor colorWithWhite:0.2 alpha:1]];
+        _progressView.trackTintColor    = usingWhiteBackground ? [UIColor colorWithWhite:0.8 alpha:1] : [UIColor colorWithWhite:0.2 alpha:1];
+        _progressView.progressTintColor = usingWhiteBackground ? [UIColor orangeColor] : [UIColor colorWithWhite:1.0 alpha:1];
         [_progressView setProgress:0.0f];
         [self addSubview:_progressView];
         
@@ -78,7 +79,6 @@
     
     return self;
 }
-
 
 - (void)setPhoto:(id<IDMPhoto>)photo {
     _photoImageView.image = nil; // Release image

@@ -43,9 +43,11 @@
 
 // Customization
 @property (nonatomic) BOOL useWhiteBackgroundColor;
-@property (nonatomic, weak) NSString *leftArrowPath, *leftArrowSelectedPath;
-@property (nonatomic, weak) NSString *rightArrowPath, *rightArrowSelectedPath;
-@property (nonatomic, weak) NSString *doneBackgroundImage;
+//@property (nonatomic, weak) NSString *leftArrowPath, *leftArrowSelectedPath;
+//@property (nonatomic, weak) NSString *rightArrowPath, *rightArrowSelectedPath;
+@property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
+@property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
+@property (nonatomic, weak) UIImage *doneBackgroundImage;
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;

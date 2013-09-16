@@ -130,7 +130,8 @@
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneBackgroundImage = _doneBackgroundImage, leftArrowPath = _leftArrowPath, rightArrowPath = _rightArrowPath, leftArrowSelectedPath = _leftArrowSelectedPath, rightArrowSelectedPath = _rightArrowSelectedPath;
+@synthesize displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneBackgroundImage = _doneBackgroundImage;
+@synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize previousViewControllerBackButton = _previousViewControllerBackButton;
 //@synthesize circularViewTrackColor = _circularViewTrackColor, circularViewProgressColor = _circularViewProgressColor;
 @synthesize actionsSheet = _actionsSheet, displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
@@ -161,8 +162,8 @@
         _displayCounterLabel = NO;
         _useWhiteBackgroundColor = NO;
         
-        _leftArrowPath = _rightArrowPath = _leftArrowSelectedPath = _rightArrowSelectedPath = @"";
-        _doneBackgroundImage = @"";
+        _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
+        _doneBackgroundImage = nil;
         
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -364,7 +365,7 @@
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    if([_doneBackgroundImage isEqualToString:@""])
+    if(_doneBackgroundImage == nil)
     {
         _doneButton.layer.cornerRadius = 3.0f;
         _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
@@ -373,7 +374,7 @@
     }
     else
     {
-        [_doneButton setBackgroundImage:[UIImage imageNamed:_doneBackgroundImage] forState:UIControlStateNormal];
+        [_doneButton setBackgroundImage:_doneBackgroundImage forState:UIControlStateNormal];
     }
     
     if(_useWhiteBackgroundColor)
@@ -395,18 +396,20 @@
     _doneButton.alpha = 1;
     [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    NSString *leftButtonImageName = ([_leftArrowPath isEqualToString:@""]) ?
-    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png" : _leftArrowPath;
-    NSString *rightButtonImageName = ([_rightArrowPath isEqualToString:@""]) ?
-    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight.png" : _rightArrowPath;
+    UIImage *leftButtonImage = (_leftArrowImage == nil) ?
+    [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"] : _leftArrowImage;
+
+    UIImage *rightButtonImage = (_rightArrowImage == nil) ?
+    [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight.png"] : _rightArrowImage;
     
-    NSString *leftButtonSelectedImageName = ([_leftArrowSelectedPath isEqualToString:@""]) ?
-    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft_selected.png" : _leftArrowSelectedPath;
-    NSString *rightButtonSelectedImageName = ([_rightArrowSelectedPath isEqualToString:@""]) ?
-    @"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRight_selected.png" : _rightArrowSelectedPath;
+    UIImage *leftButtonSelectedImage = (_leftArrowSelectedImage == nil) ?
+    [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeftSelected.png"] : _leftArrowSelectedImage;
     
-    _previousButton = [[UIBarButtonItem alloc] initWithCustomView:[self customButton:leftButtonImageName imageSelected:leftButtonSelectedImageName action:@selector(gotoPreviousPage)]];
-    _nextButton = [[UIBarButtonItem alloc] initWithCustomView:[self customButton:rightButtonImageName imageSelected:rightButtonSelectedImageName action:@selector(gotoNextPage)]];
+    UIImage *rightButtonSelectedImage = (_rightArrowSelectedImage == nil) ?
+    [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRightSelected.png"] : _rightArrowSelectedImage;
+    
+    _previousButton = [[UIBarButtonItem alloc] initWithCustomView:[self customButton:leftButtonImage imageSelected:leftButtonSelectedImage action:@selector(gotoPreviousPage)]];
+    _nextButton = [[UIBarButtonItem alloc] initWithCustomView:[self customButton:rightButtonImage imageSelected:rightButtonSelectedImage action:@selector(gotoNextPage)]];
     
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
     _counterLabel.textAlignment = UITextAlignmentCenter;
@@ -447,16 +450,17 @@
     [super viewDidLoad];
 }
 
-- (UIButton*)customButton:(NSString*)imagePath imageSelected:(NSString*)imageSelected action:(SEL)action
+//- (UIButton*)customButton:(NSString*)imagePath imageSelected:(NSString*)imageSelected action:(SEL)action
+- (UIButton*)customButton:(UIImage*)image imageSelected:(UIImage*)selectedImage action:(SEL)action
 {
     UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIImage* imgbtn = [UIImage imageNamed:imagePath];
-    UIImage* imgbtnSelected = [UIImage imageNamed:imageSelected];
-    [nextButton setBackgroundImage:imgbtn forState:UIControlStateNormal];
-    [nextButton setBackgroundImage:imgbtnSelected forState:UIControlStateDisabled];
+    //UIImage* imgbtn = [UIImage imageNamed:imagePath];
+    //UIImage* imgbtnSelected = [UIImage imageNamed:imageSelected];
+    [nextButton setBackgroundImage:image forState:UIControlStateNormal];
+    [nextButton setBackgroundImage:selectedImage forState:UIControlStateDisabled];
     [nextButton addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
     [nextButton setContentMode:UIViewContentModeCenter];
-    [nextButton setFrame:CGRectMake(0,0, imgbtn.size.width, imgbtn.size.height)];
+    [nextButton setFrame:CGRectMake(0,0, image.size.width, image.size.height)];
     
     return nextButton;
 }
