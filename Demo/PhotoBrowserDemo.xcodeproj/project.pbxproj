@@ -44,7 +44,6 @@
 		D157496E178DB94900B0211A /* IDMZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157495B178DB94900B0211A /* IDMZoomingScrollView.m */; };
 		D1574971178DB95300B0211A /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = D157496F178DB95300B0211A /* README.markdown */; };
 		D1574972178DB95300B0211A /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = D1574970178DB95300B0211A /* LICENSE.txt */; };
-		D1890F6E17C669260065C101 /* ExtendNSLogFunctionality.m in Sources */ = {isa = PBXBuildFile; fileRef = D1890F6D17C669260065C101 /* ExtendNSLogFunctionality.m */; };
 		D1890F7217C66CA70065C101 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1890F7117C66CA70065C101 /* ImageIO.framework */; };
 		D19D826017E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825617E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png */; };
 		D19D826117E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825717E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png */; };
@@ -56,6 +55,10 @@
 		D19D826717E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825D17E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected@2x.png */; };
 		D19D826817E8D40700A5859E /* IDMPhotoBrowser_customDoneButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825E17E8D40700A5859E /* IDMPhotoBrowser_customDoneButton.png */; };
 		D19D826917E8D40700A5859E /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825F17E8D40700A5859E /* IDMPhotoBrowser_customDoneButton@2x.png */; };
+		D19D827417E8DDEC00A5859E /* DCCrossHairView.m in Sources */ = {isa = PBXBuildFile; fileRef = D19D826C17E8DDEC00A5859E /* DCCrossHairView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D19D827517E8DDEC00A5859E /* DCFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = D19D826E17E8DDEC00A5859E /* DCFrameView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D19D827617E8DDEC00A5859E /* DCIntrospect.m in Sources */ = {isa = PBXBuildFile; fileRef = D19D827017E8DDEC00A5859E /* DCIntrospect.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		D19D827717E8DDEC00A5859E /* DCStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = D19D827317E8DDEC00A5859E /* DCStatusBarOverlay.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		D1A193581758F37B00CE615F /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A193561758F37B00CE615F /* libz.1.2.5.dylib */; };
 		D1A193591758F37B00CE615F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A193571758F37B00CE615F /* libz.dylib */; };
 		D1A1935B1758F42300CE615F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1935A1758F42300CE615F /* SystemConfiguration.framework */; };
@@ -126,8 +129,6 @@
 		D157495B178DB94900B0211A /* IDMZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMZoomingScrollView.m; sourceTree = "<group>"; };
 		D157496F178DB95300B0211A /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.markdown; path = ../../README.markdown; sourceTree = "<group>"; };
 		D1574970178DB95300B0211A /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../LICENSE.txt; sourceTree = "<group>"; };
-		D1890F6C17C669260065C101 /* ExtendNSLogFunctionality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtendNSLogFunctionality.h; sourceTree = "<group>"; };
-		D1890F6D17C669260065C101 /* ExtendNSLogFunctionality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtendNSLogFunctionality.m; sourceTree = "<group>"; };
 		D1890F7117C66CA70065C101 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		D19D825617E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customArrowLeft.png; sourceTree = "<group>"; };
 		D19D825717E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowLeft@2x.png"; sourceTree = "<group>"; };
@@ -139,6 +140,15 @@
 		D19D825D17E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowRightSelected@2x.png"; sourceTree = "<group>"; };
 		D19D825E17E8D40700A5859E /* IDMPhotoBrowser_customDoneButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customDoneButton.png; sourceTree = "<group>"; };
 		D19D825F17E8D40700A5859E /* IDMPhotoBrowser_customDoneButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customDoneButton@2x.png"; sourceTree = "<group>"; };
+		D19D826B17E8DDEC00A5859E /* DCCrossHairView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCCrossHairView.h; sourceTree = "<group>"; };
+		D19D826C17E8DDEC00A5859E /* DCCrossHairView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCCrossHairView.m; sourceTree = "<group>"; };
+		D19D826D17E8DDEC00A5859E /* DCFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCFrameView.h; sourceTree = "<group>"; };
+		D19D826E17E8DDEC00A5859E /* DCFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCFrameView.m; sourceTree = "<group>"; };
+		D19D826F17E8DDEC00A5859E /* DCIntrospect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCIntrospect.h; sourceTree = "<group>"; };
+		D19D827017E8DDEC00A5859E /* DCIntrospect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCIntrospect.m; sourceTree = "<group>"; };
+		D19D827117E8DDEC00A5859E /* DCIntrospectSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCIntrospectSettings.h; sourceTree = "<group>"; };
+		D19D827217E8DDEC00A5859E /* DCStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCStatusBarOverlay.h; sourceTree = "<group>"; };
+		D19D827317E8DDEC00A5859E /* DCStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCStatusBarOverlay.m; sourceTree = "<group>"; };
 		D1A193561758F37B00CE615F /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		D1A193571758F37B00CE615F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		D1A1935A1758F42300CE615F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -294,6 +304,7 @@
 			children = (
 				D1574933178DB94900B0211A /* AFNetworking */,
 				D1574947178DB94900B0211A /* DACircularProgress */,
+				D19D826A17E8DDEC00A5859E /* DCIntrospect */,
 				D157494A178DB94900B0211A /* SVProgressHUD */,
 			);
 			path = ExternalLibraries;
@@ -344,20 +355,9 @@
 			path = SVProgressHUD;
 			sourceTree = "<group>";
 		};
-		D1890F6F17C66A5F0065C101 /* ExtendNSLogFunctionality */ = {
-			isa = PBXGroup;
-			children = (
-				D1890F6C17C669260065C101 /* ExtendNSLogFunctionality.h */,
-				D1890F6D17C669260065C101 /* ExtendNSLogFunctionality.m */,
-			);
-			name = ExtendNSLogFunctionality;
-			path = ../Demo/PhotoBrowserDemo;
-			sourceTree = "<group>";
-		};
 		D1890F7017C66A7F0065C101 /* Others */ = {
 			isa = PBXGroup;
 			children = (
-				D1890F6F17C66A5F0065C101 /* ExtendNSLogFunctionality */,
 			);
 			name = Others;
 			sourceTree = "<group>";
@@ -377,6 +377,22 @@
 				D19D825F17E8D40700A5859E /* IDMPhotoBrowser_customDoneButton@2x.png */,
 			);
 			path = CustomImages;
+			sourceTree = "<group>";
+		};
+		D19D826A17E8DDEC00A5859E /* DCIntrospect */ = {
+			isa = PBXGroup;
+			children = (
+				D19D826B17E8DDEC00A5859E /* DCCrossHairView.h */,
+				D19D826C17E8DDEC00A5859E /* DCCrossHairView.m */,
+				D19D826D17E8DDEC00A5859E /* DCFrameView.h */,
+				D19D826E17E8DDEC00A5859E /* DCFrameView.m */,
+				D19D826F17E8DDEC00A5859E /* DCIntrospect.h */,
+				D19D827017E8DDEC00A5859E /* DCIntrospect.m */,
+				D19D827117E8DDEC00A5859E /* DCIntrospectSettings.h */,
+				D19D827217E8DDEC00A5859E /* DCStatusBarOverlay.h */,
+				D19D827317E8DDEC00A5859E /* DCStatusBarOverlay.m */,
+			);
+			path = DCIntrospect;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -485,7 +501,10 @@
 				D157496C178DB94900B0211A /* IDMTapDetectingImageView.m in Sources */,
 				D157496D178DB94900B0211A /* IDMTapDetectingView.m in Sources */,
 				D157496E178DB94900B0211A /* IDMZoomingScrollView.m in Sources */,
-				D1890F6E17C669260065C101 /* ExtendNSLogFunctionality.m in Sources */,
+				D19D827417E8DDEC00A5859E /* DCCrossHairView.m in Sources */,
+				D19D827517E8DDEC00A5859E /* DCFrameView.m in Sources */,
+				D19D827617E8DDEC00A5859E /* DCIntrospect.m in Sources */,
+				D19D827717E8DDEC00A5859E /* DCStatusBarOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
