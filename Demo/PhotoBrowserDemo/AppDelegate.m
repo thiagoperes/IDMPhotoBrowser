@@ -17,7 +17,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    Menu *menu = [Menu new];
+    Menu *menu = [[Menu alloc] initWithStyle:UITableViewStyleGrouped];
     self.viewController = (UIViewController *)[[UINavigationController alloc] initWithRootViewController:menu];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
