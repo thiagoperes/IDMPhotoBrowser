@@ -35,30 +35,33 @@
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
 // Toolbar customization
+@property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL displayToolbar;
-@property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayActionButton;
 @property (nonatomic, retain) NSArray *actionButtonTitles;
-
-// Customization
-@property (nonatomic) BOOL useWhiteBackgroundColor;
-//@property (nonatomic, weak) NSString *leftArrowPath, *leftArrowSelectedPath;
-//@property (nonatomic, weak) NSString *rightArrowPath, *rightArrowSelectedPath;
+@property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
+@property (nonatomic, weak) UIColor *trackTintColor;
+@property (nonatomic, weak) UIColor *tprogressTintColor;
+
+
+// View customization
+//@property (nonatomic) BOOL useWhiteBackgroundColor;
+@property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneBackgroundImage;
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
 
-// Init with animation
+// Init (animated)
 - (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view;
 
 // Init with NSURL objects
 - (id)initWithPhotoURLs:(NSArray *)photoURLsArray;
 
-// Init with NSURL objects with animation
+// Init with NSURL objects (animated)
 - (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view;
 
 // Reloads the photo browser and refetches data

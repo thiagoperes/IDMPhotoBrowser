@@ -45,7 +45,7 @@ First create a photos array containing IDMPhoto objects:
     [NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
     
     // Create an array to store IDMPhoto objects
-    NSMutableArray *photos = [[NSMutableArray alloc] init];
+    NSMutableArray *photos = [NSMutableArray new];
     
     for (NSURL *url in photosURL) {
         IDMPhoto *photo = [IDMPhoto photoWithURL:url];

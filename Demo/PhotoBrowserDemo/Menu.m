@@ -62,7 +62,7 @@
     UIButton *buttonSender = (UIButton*)sender;
     
     // Create an array to store IDMPhoto objects
-    NSMutableArray *photos = [[NSMutableArray alloc] init];
+    NSMutableArray *photos = [NSMutableArray new];
     
     IDMPhoto *photo;
     
@@ -163,7 +163,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Create an array to store IDMPhoto objects
-	NSMutableArray *photos = [[NSMutableArray alloc] init];
+	NSMutableArray *photos = [NSMutableArray new];
 
     IDMPhoto *photo;
     
@@ -220,6 +220,9 @@
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
+    
+    //UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:browser];
+    //[self.navigationController presentModalViewController:navCon animated:YES];
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
