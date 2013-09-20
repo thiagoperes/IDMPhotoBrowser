@@ -1006,6 +1006,9 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         // photo loaded so load ajacent now
         [self loadAdjacentPhotosIfNecessary:currentPhoto];
     }
+    if ([_delegate respondsToSelector:@selector(photoBrowser:didShowPhotoAtIndex:)]) {
+        [_delegate photoBrowser:self didShowPhotoAtIndex:index];
+    }
 }
 
 #pragma mark - Frame Calculations
