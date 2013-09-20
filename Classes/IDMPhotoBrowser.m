@@ -159,6 +159,9 @@
         _useWhiteBackgroundColor = NO;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
         _doneBackgroundImage = nil;
+        _backgroundScaleFactor = 1.0;
+        _animationDuration = 0.28;
+        _senderViewForAnimation = nil;
         
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -266,7 +269,13 @@
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded)
     {
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
-        {            
+        {
+            
+            if (_senderViewForAnimation != nil) {
+                [self performCloseAnimationWithScrollView:scrollView];
+                return;
+            }
+            
             CGFloat finalX = firstX, finalY;
             
             CGFloat windowsHeigt = [[[[UIApplication sharedApplication] delegate] window] frame].size.height;
@@ -314,6 +323,21 @@
 }
 
 #pragma mark - View General
+
+- (void)setSenderViewForAnimation:(UIView*)senderView{
+    
+    CGAffineTransform original = [[[UIApplication sharedApplication].delegate window] rootViewController].view.transform;
+    
+    [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:CGAffineTransformIdentity];
+    _senderViewForAnimation.hidden = NO;
+    
+    _senderViewForAnimation = senderView;
+    _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
+    
+    _senderViewForAnimation.hidden = YES;
+    [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:original];
+    
+}
 
 - (UIButton*)customButton:(UIImage*)image imageSelected:(UIImage*)selectedImage action:(SEL)action
 {
@@ -382,22 +406,73 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         newFrame.origin.y = temp;
     }*/
     
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.width;
+    CGFloat screenHeight = screenBound.size.height;
+    
+
+    
+    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
+    fadeView.backgroundColor = [UIColor clearColor];
+    [[[UIApplication sharedApplication].delegate window] addSubview:fadeView];
+    
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = _resizableImageViewFrame;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
     resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
     
-    [UIView animateWithDuration:0.28 animations:^{
-        CGRect screenBound = [[UIScreen mainScreen] bounds];
-        CGFloat screenWidth = screenBound.size.width;
-        CGFloat screenHeight = screenBound.size.height;
+    [UIView animateWithDuration:_animationDuration animations:^{
         
-        resizableImageView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+        CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor
+                                                        , _backgroundScaleFactor);
+        fadeView.backgroundColor = [UIColor blackColor];
+        
+        [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:zoom];
+
+        
+              resizableImageView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     } completion:^(BOOL finished) {
         self.view.alpha = 1;
+        resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
+        [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
+        _senderViewForAnimation.hidden = YES;
+
     }];
+}
+
+-(void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView{
+    
+    UIImage *imageFromView = [scrollView.photo underlyingImage];
+    
+    
+    UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
+    resizableImageView.frame = CGRectMake(0, scrollView.frame.origin.y, scrollView.frame.size.width, scrollView.frame.size.height);
+    resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
+    resizableImageView.backgroundColor = [UIColor clearColor];
+    [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
+    self.view.hidden = YES;
+    
+    [UIView animateWithDuration:_animationDuration animations:^{
+        
+        
+        [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:CGAffineTransformIdentity];
+        
+        resizableImageView.layer.frame = _resizableImageViewFrame;
+        self.view.backgroundColor = [UIColor clearColor];
+        
+    } completion:^(BOOL finished) {
+        
+        _senderViewForAnimation.hidden = NO;
+        _senderViewForAnimation = nil;
+        
+        [resizableImageView removeFromSuperview];
+
+        [self doneButtonPressed:nil];
+        
+    }];
+
 }
 
 - (void)performLayout {
@@ -479,10 +554,10 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         
         if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) // ios 7 or greater
             [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
-                [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
+                [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
             }];
         else // ios 6 or less
-            [UIView animateWithDuration:0.28 animations:^{ self.view.alpha = 1; }];
+            [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
     }
     
     // View
@@ -1189,6 +1264,11 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
     
     _autoHide = NO;
+    
+    if (_senderViewForAnimation) {
+        IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
+        [self performCloseAnimationWithScrollView:scrollView];
+    }
     
     [self dismissViewControllerAnimated:YES completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
