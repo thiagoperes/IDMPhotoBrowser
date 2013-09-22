@@ -23,6 +23,7 @@
 @class IDMPhotoBrowser;
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
@@ -52,6 +53,13 @@
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneBackgroundImage;
 
+//defines zooming of the background defauly 1.0
+@property (nonatomic) float backgroundScaleFactor;
+
+//Animation time defult .28
+@property (nonatomic) float animationDuration;
+
+
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
 
@@ -72,5 +80,9 @@
 
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
+
+//Change Sender View
+- (void)setSenderViewForAnimation:(UIView*)senderView;
+
 
 @end
