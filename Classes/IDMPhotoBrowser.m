@@ -1247,8 +1247,8 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
             }
             else
             {
-                if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:)])
-                    [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex];
+                if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex:)])
+                    [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex photoIndex:_currentPageIndex];
             }
         }
     }

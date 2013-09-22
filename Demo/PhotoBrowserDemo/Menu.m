@@ -235,9 +235,12 @@
     NSLog(@"Dissmised with photo index: %d, photo caption: %@", index, photo.caption);
 }
 
-- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)index
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex
 {
-    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Option %d", index+1] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Option %d", buttonIndex+1] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    
+    id <IDMPhoto> photo = [photoBrowser photoAtIndex:photoIndex];
+    NSLog(@"Dissmised actionSheet with photo index: %d, photo caption: %@", photoIndex, photo.caption);
 }
 
 @end
