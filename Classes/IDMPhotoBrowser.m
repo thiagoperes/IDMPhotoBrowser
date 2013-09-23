@@ -162,6 +162,7 @@
         _backgroundScaleFactor = 1.0;
         _animationDuration = 0.28;
         _senderViewForAnimation = nil;
+        _scaleImage = nil;
         
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -393,18 +394,10 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
 - (void)performAnimation
 {
-    UIImage *imageFromView = [self getImageFromView:_senderViewForAnimation];
+    UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
     
     _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
     
-    /*if(UIInterfaceOrientationIsLandscape(self.interfaceOrientation))
-    {
-        imageFromView = [self rotateImage:imageFromView orientation:UIImageOrientationRight];
-     
-        CGFloat temp = newFrame.origin.x;
-        newFrame.origin.x = newFrame.origin.y;
-        newFrame.origin.y = temp;
-    }*/
     
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
@@ -418,10 +411,12 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = _resizableImageViewFrame;
-    resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
+    resizableImageView.clipsToBounds = YES;
+    resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
-    
+    _senderViewForAnimation.hidden = YES;
+
     [UIView animateWithDuration:_animationDuration animations:^{
         
         CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor
@@ -430,27 +425,45 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         
         [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:zoom];
 
+        float scaleFactor = imageFromView.size.width / screenWidth;
         
-              resizableImageView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+        resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
+
     } completion:^(BOOL finished) {
         self.view.alpha = 1;
         resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
-        _senderViewForAnimation.hidden = YES;
 
     }];
 }
 
 -(void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView{
     
-    UIImage *imageFromView = [scrollView.photo underlyingImage];
+
     
+    float fadeAlpha = 1 - abs(scrollView.frame.origin.y)/scrollView.frame.size.height;
+    
+    
+    UIImage *imageFromView = [scrollView.photo underlyingImage];
+
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenBound.size.width;
+    CGFloat screenHeight = screenBound.size.height;
+    
+    float scaleFactor = imageFromView.size.width / screenWidth;
+    
+    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
+    fadeView.backgroundColor = [UIColor blackColor];
+    fadeView.alpha = fadeAlpha;
+    [[[UIApplication sharedApplication].delegate window] addSubview:fadeView];
+
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = CGRectMake(0, scrollView.frame.origin.y, scrollView.frame.size.width, scrollView.frame.size.height);
-    resizableImageView.contentMode = UIViewContentModeScaleAspectFit;
+    resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2)+scrollView.frame.origin.y, screenWidth, imageFromView.size.height / scaleFactor);
+    resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
+    resizableImageView.clipsToBounds = YES;
     [[[UIApplication sharedApplication].delegate window] addSubview:resizableImageView];
     self.view.hidden = YES;
     
@@ -460,15 +473,19 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:CGAffineTransformIdentity];
         
         resizableImageView.layer.frame = _resizableImageViewFrame;
+        fadeView.alpha = 0;
         self.view.backgroundColor = [UIColor clearColor];
         
     } completion:^(BOOL finished) {
         
         _senderViewForAnimation.hidden = NO;
         _senderViewForAnimation = nil;
+        _scaleImage = nil;
         
+        [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
 
+        
         [self doneButtonPressed:nil];
         
     }];

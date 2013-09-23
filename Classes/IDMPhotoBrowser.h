@@ -46,6 +46,7 @@
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 @property (nonatomic, weak) UIColor *trackTintColor;
 @property (nonatomic, weak) UIColor *tprogressTintColor;
+@property (nonatomic, weak) UIImage *scaleImage;
 
 
 // View customization

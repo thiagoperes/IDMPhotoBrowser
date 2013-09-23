@@ -33,11 +33,11 @@
     UIView *tableViewFooter = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 426 * 0.9 + 40)];
 
     UIButton *buttonWithImageOnScreen1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonWithImageOnScreen1.frame = CGRectMake(15, 0, 640/2 * 0.9, 426/2 * 0.9);
+    buttonWithImageOnScreen1.frame = CGRectMake(15, 0, 640/3 * 0.9, 426/2 * 0.9);
     buttonWithImageOnScreen1.tag = 101;
     buttonWithImageOnScreen1.adjustsImageWhenHighlighted = NO;
     [buttonWithImageOnScreen1 setImage:[UIImage imageNamed:@"photo1m.jpg"] forState:UIControlStateNormal];
-    buttonWithImageOnScreen1.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    buttonWithImageOnScreen1.imageView.contentMode = UIViewContentModeScaleAspectFill;
     buttonWithImageOnScreen1.backgroundColor = [UIColor blackColor];
     [buttonWithImageOnScreen1 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewFooter addSubview:buttonWithImageOnScreen1];
@@ -96,6 +96,8 @@
     browser.displayActionButton = NO;
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
+    browser.animationDuration = 3.0;
+    browser.scaleImage = buttonSender.imageView.image;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
