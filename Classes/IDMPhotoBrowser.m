@@ -64,6 +64,7 @@
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
     BOOL _useDefaultActions;
+    NSInteger _initalPageIndex;
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
@@ -119,11 +120,6 @@
 
 @end
 
-// Handle depreciations and supress hide warnings
-/*@interface UIApplication (DepreciationWarningSuppresion)
-- (void)setStatusBarHidden:(BOOL)hidden animated:(BOOL)animated;
-@end*/
-
 // IDMPhotoBrowser
 @implementation IDMPhotoBrowser
 
@@ -163,6 +159,7 @@
         _animationDuration = 0.28;
         _senderViewForAnimation = nil;
         _scaleImage = nil;
+        _initalPageIndex = 0;
         
         UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
         rootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -250,6 +247,13 @@
         
         firstX = [scrollView center].x;
         firstY = [scrollView center].y;
+        
+        _senderViewForAnimation.hidden = NO;
+        
+        if (_currentPageIndex == _initalPageIndex)
+            _senderViewForAnimation.hidden = YES;
+        else
+            _senderViewForAnimation.hidden = NO;
     }
     
     translatedPoint = CGPointMake(firstX, firstY+translatedPoint.y);
@@ -271,8 +275,7 @@
     {
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
         {
-            
-            if (_senderViewForAnimation != nil) {
+            if (_senderViewForAnimation != nil  && _currentPageIndex == _initalPageIndex) {
                 [self performCloseAnimationWithScrollView:scrollView];
                 return;
             }
@@ -398,12 +401,9 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
     
-    
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     CGFloat screenHeight = screenBound.size.height;
-    
-
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
     fadeView.backgroundColor = [UIColor clearColor];
@@ -418,7 +418,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     _senderViewForAnimation.hidden = YES;
 
     [UIView animateWithDuration:_animationDuration animations:^{
-        
         CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor
                                                         , _backgroundScaleFactor);
         fadeView.backgroundColor = [UIColor blackColor];
@@ -428,22 +427,17 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         float scaleFactor =  (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
         
         resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
-
     } completion:^(BOOL finished) {
         self.view.alpha = 1;
         resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
-
     }];
 }
 
--(void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView{
-    
-
-    
+- (void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView
+{
     float fadeAlpha = 1 - abs(scrollView.frame.origin.y)/scrollView.frame.size.height;
-    
     
     UIImage *imageFromView = [scrollView.photo underlyingImage];
 
@@ -457,7 +451,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     fadeView.backgroundColor = [UIColor blackColor];
     fadeView.alpha = fadeAlpha;
     [[[UIApplication sharedApplication].delegate window] addSubview:fadeView];
-
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2)+scrollView.frame.origin.y, screenWidth, imageFromView.size.height / scaleFactor);
@@ -468,16 +461,12 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     self.view.hidden = YES;
     
     [UIView animateWithDuration:_animationDuration animations:^{
-        
-        
         [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:CGAffineTransformIdentity];
         
         resizableImageView.layer.frame = _resizableImageViewFrame;
         fadeView.alpha = 0;
         self.view.backgroundColor = [UIColor clearColor];
-        
     } completion:^(BOOL finished) {
-        
         _senderViewForAnimation.hidden = NO;
         _senderViewForAnimation = nil;
         _scaleImage = nil;
@@ -486,9 +475,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         [resizableImageView removeFromSuperview];
         
         [self doneButtonPressed:nil];
-        
     }];
-
 }
 
 - (void)performLayout {
@@ -559,12 +546,12 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
 - (void)viewDidLoad
 {
-    [self performAnimation];
-    
     // Setup animation
     self.view.alpha = 0;
     
-    if(!_senderViewForAnimation) // Default presentation (withoung animation)
+    [self performAnimation];
+    
+    /*if(!_senderViewForAnimation) // Default presentation (withoung animation)
     {
         //PB-TODO : test
         
@@ -574,7 +561,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
             }];
         else // ios 6 or less
             [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-    }
+    }*/
     
     // View
 	self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
@@ -1184,14 +1171,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	// Status bar and nav bar positioning
     if (self.wantsFullScreenLayout) {
         // Status Bar
-        /*if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden
-                                                    withAnimation:animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone];
-        } else {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden
-                                                    withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
-        }*/
-        
         if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
             // iOS 7
             [self prefersStatusBarHidden];
@@ -1257,6 +1236,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 - (void)setInitialPageIndex:(NSUInteger)index {
     // Validate
     if (index >= [self numberOfPhotos]) index = [self numberOfPhotos]-1;
+    _initalPageIndex = index;
     _currentPageIndex = index;
 	if ([self isViewLoaded]) {
         [self jumpToPageAtIndex:index];
@@ -1284,7 +1264,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     _autoHide = NO;
     
-    if (_senderViewForAnimation) {
+    if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
