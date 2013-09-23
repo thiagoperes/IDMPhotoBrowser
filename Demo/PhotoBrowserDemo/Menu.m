@@ -96,7 +96,6 @@
     browser.displayActionButton = NO;
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
-    browser.animationDuration = 3.0;
     browser.scaleImage = buttonSender.imageView.image;
     
     // Show

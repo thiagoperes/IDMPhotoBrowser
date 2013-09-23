@@ -425,7 +425,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         
         [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:zoom];
 
-        float scaleFactor = imageFromView.size.width / screenWidth;
+        float scaleFactor =  (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
         
         resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
 
@@ -484,7 +484,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
-
         
         [self doneButtonPressed:nil];
         
