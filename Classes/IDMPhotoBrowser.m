@@ -228,7 +228,7 @@
 
 #pragma mark - Pan Gesture
 
-- (void)move:(id)sender
+- (void)panGestureRecognized:(id)sender
 {
     // Initial Setup
     IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
@@ -537,11 +537,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     [self.view addGestureRecognizer:_panGesture];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 #pragma mark - View Lifecycle
 
 - (void)viewDidLoad
@@ -661,7 +656,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         _actionButtonTitles = [[NSMutableArray alloc] initWithArray:@[NSLocalizedString(@"Save", @"Save"), @"Email"]];
     
     // Gesture
-    _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
+    _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
     [_panGesture setMinimumNumberOfTouches:1];
     [_panGesture setMaximumNumberOfTouches:1];
     
