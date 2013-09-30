@@ -1264,7 +1264,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         [self performCloseAnimationWithScrollView:scrollView];
     }
     
-    [self dismissViewControllerAnimated:YES completion:^{
+    [self dismissViewControllerAnimated:[sender isKindOfClass:[UIButton class]] completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
         
