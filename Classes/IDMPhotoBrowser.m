@@ -627,7 +627,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     // Counter Label
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
-    _counterLabel.textAlignment = UITextAlignmentCenter;
+    _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
     _counterLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:18];
     
