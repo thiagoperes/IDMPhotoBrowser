@@ -26,6 +26,23 @@
     [self setupTableViewFooterView];
 }
 
+#pragma mark - Rotation
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIDeviceOrientationPortrait | UIDeviceOrientationLandscapeLeft | UIDeviceOrientationLandscapeRight;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait;
+}
+
 #pragma mark - General
 
 - (void)setupTableViewFooterView
