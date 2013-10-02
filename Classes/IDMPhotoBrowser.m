@@ -1168,7 +1168,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         // Status Bar
         if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
             // iOS 7
-            [self prefersStatusBarHidden];
+            //[self prefersStatusBarHidden];
             [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
             [[UIApplication sharedApplication] setStatusBarHidden:hidden
                                                     withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
@@ -1246,7 +1246,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     // Status Bar
     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
         // iOS 7
-        [self prefersStatusBarHidden];
+        //[self prefersStatusBarHidden];
         [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     } else {
