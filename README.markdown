@@ -56,19 +56,28 @@ First create a photos array containing IDMPhoto objects:
     NSArray *photos = [IDMPhoto photosWithURLs:photosURL];
 ````
 
-There are two main ways to presente the photoBrowser: With a fade on screen or with a zooming effect from an existing view.
+There are two main ways to presente the photoBrowser, with a fade on screen or with a zooming effect from an existing view.
 
-Presenting using a simple fade transition:
+Using a simple fade transition:
 
 ``` objective-c    
-    // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
 ``` 
-Presenting from a view:
+
+Zooming effect from a view:
 ``` objective-c    
-    // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
-``` 
+```
+ 
+Presenting using a modal view controller:
+
+``` objective-c
+    [self presentViewController:browser animated:YES completion:nil];
+```
+
+### Customization
+
+##### Toolbar
 
 You can customize the toolbar. There are three boolean properties you can set: displayActionButton (default is YES), displayArrowButton (default is YES) and displayCounterLabel (default is NO). If you dont want the toolbar at all, you can set displayToolbar = NO.
 
@@ -79,19 +88,29 @@ Toolbar setup example:
     browser.displayCounterLabel = YES;
 ```
 
+It is possible to use your own image on the toolbar arrows:
+``` objective-c     
+    browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
+        browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
+        browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
+        browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
+```
+
 If you want to use custom actions, set the actionButtonTitles array with the titles for the actionSheet. Then, implement the photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex: method, from the IDMPhotoBrowser delegate
 
 ``` objective-c    
     browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
 ```
 
-Presenting using a modal view controller:
+#### Others
 
-``` objective-c
-    // Show
-    [self presentViewController:browser animated:YES completion:nil];
+Others customizations you can make are: use white background color, don't display the done button and change the done button background image:
+
+``` objective-c    
+	browser.useWhiteBackgroundColor = YES;
+	browser.displayDoneButton = NO;
+	browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
 ```
-
 
 ### Photo Captions
 

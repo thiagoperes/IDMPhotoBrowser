@@ -275,7 +275,7 @@
     {
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
         {
-            if (_senderViewForAnimation != nil  && _currentPageIndex == _initalPageIndex) {
+            if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
                 [self performCloseAnimationWithScrollView:scrollView];
                 return;
             }
@@ -295,7 +295,6 @@
             [UIView setAnimationDuration:animationDuration];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
             [UIView setAnimationDelegate:self];
-            [UIView setAnimationDidStopSelector:@selector(animationDidFinish)];
             [scrollView setCenter:CGPointMake(finalX, finalY)];
             self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
@@ -319,7 +318,6 @@
             [UIView setAnimationDuration:animationDuration];
             [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
             [UIView setAnimationDelegate:self];
-            [UIView setAnimationDidStopSelector:@selector(animationDidFinish)];
             [scrollView setCenter:CGPointMake(finalX, finalY)];
             [UIView commitAnimations];
         }
@@ -418,8 +416,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     _senderViewForAnimation.hidden = YES;
 
     [UIView animateWithDuration:_animationDuration animations:^{
-        CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor
-                                                        , _backgroundScaleFactor);
+        CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor, _backgroundScaleFactor);
         fadeView.backgroundColor = [UIColor blackColor];
         
         [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:zoom];
@@ -474,7 +471,12 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
         
-        [self doneButtonPressed:nil];
+        [self prepareForClosePhotoBrowser];
+        
+        [self dismissViewControllerAnimated:NO completion:^{
+            UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+            rootViewController.modalPresentationStyle = 0;
+        }];
     }];
 }
 
@@ -537,6 +539,32 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     [self.view addGestureRecognizer:_panGesture];
 }
 
+- (void)prepareForClosePhotoBrowser
+{
+    // Status Bar
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7
+        //[self prefersStatusBarHidden];
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    } else {
+        // iOS 6
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    }
+    
+    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
+    }
+    
+    // Gesture
+    [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
+    
+    _autoHide = NO;
+    
+    // Controls
+    [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
+}
+
 #pragma mark - View Lifecycle
 
 - (void)viewDidLoad
@@ -548,8 +576,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     /*if(!_senderViewForAnimation) // Default presentation (withoung animation)
     {
-        //PB-TODO : test
-        
         if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) // ios 7 or greater
             [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
                 [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
@@ -627,7 +653,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     // Counter Label
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
-    _counterLabel.textAlignment = UITextAlignmentCenter;
+    _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
     _counterLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:18];
     
@@ -684,19 +710,6 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     
     // Update UI
 	[self hideControlsAfterDelay];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    // Controls
-    [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
-    
-    // Status bar
-    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:animated];
-    }
-    
-	// Super
-	[super viewWillDisappear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -905,8 +918,8 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	// Ignore padding as paging bounces encroach on that
 	// and lead to false page loads
 	CGRect visibleBounds = _pagingScrollView.bounds;
-	int iFirstIndex = (int)floorf((CGRectGetMinX(visibleBounds)+PADDING*2) / CGRectGetWidth(visibleBounds));
-	int iLastIndex  = (int)floorf((CGRectGetMaxX(visibleBounds)-PADDING*2-1) / CGRectGetWidth(visibleBounds));
+	NSInteger iFirstIndex = (NSInteger) floorf((CGRectGetMinX(visibleBounds)+PADDING*2) / CGRectGetWidth(visibleBounds));
+	NSInteger iLastIndex  = (NSInteger) floorf((CGRectGetMaxX(visibleBounds)-PADDING*2-1) / CGRectGetWidth(visibleBounds));
     if (iFirstIndex < 0) iFirstIndex = 0;
     if (iFirstIndex > [self numberOfPhotos] - 1) iFirstIndex = [self numberOfPhotos] - 1;
     if (iLastIndex < 0) iLastIndex = 0;
@@ -1097,21 +1110,21 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
 #pragma mark - UIScrollView Delegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView  {
     // Checks
-	if (!_viewIsActive || _performingLayout || _rotating) return;
-	
-	// Tile pages
-	[self tilePages];
-	
-	// Calculate current page
-	CGRect visibleBounds = _pagingScrollView.bounds;
-	int index = (int)(floorf(CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds)));
+    if (!_viewIsActive || _performingLayout || _rotating) return;
+    
+    // Tile pages
+    [self tilePages];
+    
+    // Calculate current page
+    CGRect visibleBounds = _pagingScrollView.bounds;
+    NSInteger index = (NSInteger) (floorf(CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds)));
     if (index < 0) index = 0;
-	if (index > [self numberOfPhotos] - 1) index = [self numberOfPhotos] - 1;
-	NSUInteger previousCurrentPage = _currentPageIndex;
-	_currentPageIndex = index;
-	if (_currentPageIndex != previousCurrentPage) {
+    if (index > [self numberOfPhotos] - 1) index = [self numberOfPhotos] - 1;
+    NSUInteger previousCurrentPage = _currentPageIndex;
+    _currentPageIndex = index;
+    if (_currentPageIndex != previousCurrentPage) {
         [self didStartViewingPageAtIndex:index];
     }
 }
@@ -1243,21 +1256,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
 - (void)doneButtonPressed:(id)sender
 {
-    // Status Bar
-    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        // iOS 7
-        //[self prefersStatusBarHidden];
-        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    } else {
-        // iOS 6
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-    }
-    
-    // Gesture
-    [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
-    
-    _autoHide = NO;
+    [self prepareForClosePhotoBrowser];
     
     if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
@@ -1375,7 +1374,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     }
 }
 
-#pragma mark Mail Compose Delegate
+#pragma mark - Mail Compose Delegate
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
     if (result == MFMailComposeResultFailed) {
@@ -1404,6 +1403,5 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         [SVProgressHUD dismiss];
     }
 }
-
 
 @end

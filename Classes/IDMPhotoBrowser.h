@@ -24,9 +24,9 @@
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
-- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
 @end
 
 // IDMPhotoBrowser
@@ -36,30 +36,26 @@
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
 // Toolbar customization
-@property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayActionButton;
-@property (nonatomic, retain) NSArray *actionButtonTitles;
 @property (nonatomic) BOOL displayArrowButton;
+@property (nonatomic, retain) NSArray *actionButtonTitles;
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
-@property (nonatomic, weak) UIColor *trackTintColor;
-@property (nonatomic, weak) UIColor *tprogressTintColor;
-@property (nonatomic, weak) UIImage *scaleImage;
-
 
 // View customization
-//@property (nonatomic) BOOL useWhiteBackgroundColor;
+@property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneBackgroundImage;
+//@property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
+@property (nonatomic, weak) UIImage *scaleImage;
 
-//defines zooming of the background defauly 1.0
+// defines zooming of the background defauly 1.0
 @property (nonatomic) float backgroundScaleFactor;
 
-//Animation time defult .28
+// animation time defult .28
 @property (nonatomic) float animationDuration;
-
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
@@ -84,6 +80,5 @@
 
 //Change Sender View
 - (void)setSenderViewForAnimation:(UIView*)senderView;
-
 
 @end
