@@ -91,9 +91,9 @@ Toolbar setup example:
 It is possible to use your own image on the toolbar arrows:
 ``` objective-c     
     browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
-        browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
-        browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
-        browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
+    browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
+    browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
+    browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
 ```
 
 If you want to use custom actions, set the actionButtonTitles array with the titles for the actionSheet. Then, implement the photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex: method, from the IDMPhotoBrowser delegate
@@ -115,9 +115,10 @@ Others customizations you can make are: use white background color, don't displa
 ### Photo Captions
 
 Photo captions can be displayed simply by setting the `caption` property on specific photos:
-
+``` objective-c
     IDMPhoto *photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
     photo.caption = @"Campervan";
+```
 
 No caption will be displayed if the caption property is not set.
 
@@ -130,12 +131,13 @@ By default, the caption is a simple black transparent view with a label displayi
 3. Implement the `-photoBrowser:captionViewForPhotoAtIndex:` IDMPhotoBrowser delegate method (shown below).
 
 Example delegate method for custom caption view:
-
+``` objective-c
     - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index {
         IDMPhoto *photo = [self.photos objectAtIndex:index];
         MyIDMCaptionViewSubclass *captionView = [[MyIDMCaptionViewSubclass alloc] initWithPhoto:photo];
         return [captionView autorelease];
     }
+```
 
 ## Adding to your project
 

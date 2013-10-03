@@ -248,8 +248,6 @@
         firstX = [scrollView center].x;
         firstY = [scrollView center].y;
         
-        _senderViewForAnimation.hidden = NO;
-        
         if (_currentPageIndex == _initalPageIndex)
             _senderViewForAnimation.hidden = YES;
         else
@@ -1258,9 +1256,17 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 {
     [self prepareForClosePhotoBrowser];
     
-    if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
-        IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-        [self performCloseAnimationWithScrollView:scrollView];
+    if (_senderViewForAnimation)
+    {
+        if(_currentPageIndex == _initalPageIndex)
+        {
+            IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
+            [self performCloseAnimationWithScrollView:scrollView];
+        }
+        else
+        {
+            _senderViewForAnimation.hidden = NO;
+        }
     }
     
     [self dismissViewControllerAnimated:[sender isKindOfClass:[UIButton class]] completion:^{
