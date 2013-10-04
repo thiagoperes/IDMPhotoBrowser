@@ -322,10 +322,10 @@
     }
 }
 
-#pragma mark - View General
+#pragma mark - Animation
 
-- (void)setSenderViewForAnimation:(UIView*)senderView{
-    
+- (void)setSenderViewForAnimation:(UIView*)senderView
+{
     CGAffineTransform original = [[[UIApplication sharedApplication].delegate window] rootViewController].view.transform;
     
     [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:CGAffineTransformIdentity];
@@ -336,60 +336,7 @@
     
     _senderViewForAnimation.hidden = YES;
     [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:original];
-    
 }
-
-- (UIButton*)customButton:(UIImage*)image imageSelected:(UIImage*)selectedImage action:(SEL)action
-{
-    UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [nextButton setBackgroundImage:image forState:UIControlStateNormal];
-    [nextButton setBackgroundImage:selectedImage forState:UIControlStateDisabled];
-    [nextButton addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
-    [nextButton setContentMode:UIViewContentModeCenter];
-    [nextButton setFrame:CGRectMake(0,0, image.size.width, image.size.height)];
-    return nextButton;
-}
-
-- (UIImage *)getImageFromView:(UIView *)view
-{
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2); // 4);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}
-
-static inline double radians (double degrees) {return degrees * M_PI/180;}
-- (UIImage*) rotateImage:(UIImage*)src orientation:(UIImageOrientation) orientation
-{
-    UIGraphicsBeginImageContext(src.size);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    if (orientation == UIImageOrientationRight) {
-        CGContextRotateCTM (context, radians(90));
-    } else if (orientation == UIImageOrientationLeft) {
-        CGContextRotateCTM (context, radians(-90));
-    } else if (orientation == UIImageOrientationDown) {
-        // notinhg
-    } else if (orientation == UIImageOrientationUp) {
-        CGContextRotateCTM (context, radians(90));
-    }
-    
-    [src drawAtPoint:CGPointMake(0, 0)];
-    
-    return UIGraphicsGetImageFromCurrentImageContext();
-}
-
-/*- (UIImage*)takeScreenshot
-{
-    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
-    UIGraphicsBeginImageContext(window.bounds.size);
-    [window.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}*/
 
 - (void)performAnimation
 {
@@ -471,71 +418,11 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         
         [self prepareForClosePhotoBrowser];
         
-        [self dismissViewControllerAnimated:NO completion:^{
-            UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-            rootViewController.modalPresentationStyle = 0;
-        }];
+        [self dismissPhotoBrowserAnimated:NO];
     }];
 }
 
-- (void)performLayout {
-    // Setup
-    _performingLayout = YES;
-    NSUInteger numberOfPhotos = [self numberOfPhotos];
-    
-	// Setup pages
-    [_visiblePages removeAllObjects];
-    [_recycledPages removeAllObjects];
-    
-    // Toolbar
-    if (_displayToolbar) {
-        [self.view addSubview:_toolbar];
-    } else {
-        [_toolbar removeFromSuperview];
-    }
-    
-    // Close button
-    if(_displayDoneButton) [self.view addSubview:_doneButton];
-    
-    // Toolbar items & navigation
-    UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                                                                    target:self action:nil];
-    fixedLeftSpace.width = 32; // To balance action button
-    UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                               target:self action:nil];
-    NSMutableArray *items = [NSMutableArray new];
-    
-    if (_displayActionButton)
-        [items addObject:fixedLeftSpace];
-    [items addObject:flexSpace];
-    
-    if (numberOfPhotos > 1 && _displayArrowButton)
-        [items addObject:_previousButton];
-    
-    if(_displayCounterLabel)
-    {
-        [items addObject:flexSpace];
-        [items addObject:_counterButton];
-    }
-    
-    [items addObject:flexSpace];
-    if (numberOfPhotos > 1 && _displayArrowButton)
-        [items addObject:_nextButton];
-    [items addObject:flexSpace];
-    
-    if(_displayActionButton)
-        [items addObject:_actionButton];
-    
-    [_toolbar setItems:items];
-	[self updateNavigation];
-    
-    // Content offset
-	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
-    [self tilePages];
-    _performingLayout = NO;
-    
-    [self.view addGestureRecognizer:_panGesture];
-}
+#pragma mark - Genaral
 
 - (void)prepareForClosePhotoBrowser
 {
@@ -562,6 +449,47 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
     // Controls
     [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
 }
+
+- (void)dismissPhotoBrowserAnimated:(BOOL)animated
+{
+    [self dismissViewControllerAnimated:animated completion:^{
+        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
+            [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
+        
+        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        rootViewController.modalPresentationStyle = 0;
+    }];
+}
+
+- (UIButton*)customButton:(UIImage*)image imageSelected:(UIImage*)selectedImage action:(SEL)action
+{
+    UIButton* nextButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [nextButton setBackgroundImage:image forState:UIControlStateNormal];
+    [nextButton setBackgroundImage:selectedImage forState:UIControlStateDisabled];
+    [nextButton addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
+    [nextButton setContentMode:UIViewContentModeCenter];
+    [nextButton setFrame:CGRectMake(0,0, image.size.width, image.size.height)];
+    return nextButton;
+}
+
+- (UIImage *)getImageFromView:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2); // 4);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+/*- (UIImage*)takeScreenshot
+{
+    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    UIGraphicsBeginImageContext(window.bounds.size);
+    [window.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}*/
 
 #pragma mark - View Lifecycle
 
@@ -781,6 +709,65 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 	// Reset
 	_currentPageIndex = indexPriorToLayout;
 	_performingLayout = NO;
+}
+
+- (void)performLayout {
+    // Setup
+    _performingLayout = YES;
+    NSUInteger numberOfPhotos = [self numberOfPhotos];
+    
+	// Setup pages
+    [_visiblePages removeAllObjects];
+    [_recycledPages removeAllObjects];
+    
+    // Toolbar
+    if (_displayToolbar) {
+        [self.view addSubview:_toolbar];
+    } else {
+        [_toolbar removeFromSuperview];
+    }
+    
+    // Close button
+    if(_displayDoneButton) [self.view addSubview:_doneButton];
+    
+    // Toolbar items & navigation
+    UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                    target:self action:nil];
+    fixedLeftSpace.width = 32; // To balance action button
+    UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                               target:self action:nil];
+    NSMutableArray *items = [NSMutableArray new];
+    
+    if (_displayActionButton)
+        [items addObject:fixedLeftSpace];
+    [items addObject:flexSpace];
+    
+    if (numberOfPhotos > 1 && _displayArrowButton)
+        [items addObject:_previousButton];
+    
+    if(_displayCounterLabel)
+    {
+        [items addObject:flexSpace];
+        [items addObject:_counterButton];
+    }
+    
+    [items addObject:flexSpace];
+    if (numberOfPhotos > 1 && _displayArrowButton)
+        [items addObject:_nextButton];
+    [items addObject:flexSpace];
+    
+    if(_displayActionButton)
+        [items addObject:_actionButton];
+    
+    [_toolbar setItems:items];
+	[self updateNavigation];
+    
+    // Content offset
+	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
+    [self tilePages];
+    _performingLayout = NO;
+    
+    [self.view addGestureRecognizer:_panGesture];
 }
 
 #pragma mark - Rotation
@@ -1254,28 +1241,17 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
 
 - (void)doneButtonPressed:(id)sender
 {
-    [self prepareForClosePhotoBrowser];
-    
-    if (_senderViewForAnimation)
+    if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex)
     {
-        if(_currentPageIndex == _initalPageIndex)
-        {
-            IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-            [self performCloseAnimationWithScrollView:scrollView];
-        }
-        else
-        {
-            _senderViewForAnimation.hidden = NO;
-        }
+        IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
+        [self performCloseAnimationWithScrollView:scrollView];
     }
-    
-    [self dismissViewControllerAnimated:[sender isKindOfClass:[UIButton class]] completion:^{
-        if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
-            [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-        
-        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
-        rootViewController.modalPresentationStyle = 0;
-    }];
+    else
+    {
+        [self prepareForClosePhotoBrowser];
+        _senderViewForAnimation.hidden = NO;
+        [self dismissPhotoBrowserAnimated:YES];
+    }
 }
 
 - (void)actionButtonPressed:(id)sender {
