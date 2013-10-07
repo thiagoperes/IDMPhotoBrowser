@@ -9,6 +9,7 @@
 #import "IDMZoomingScrollView.h"
 #import "IDMPhotoBrowser.h"
 #import "IDMPhoto.h"
+#import "IDMPBConstants.h"
 
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
@@ -66,6 +67,13 @@
         _progressView.trackTintColor    = usingWhiteBackground ? [UIColor colorWithWhite:0.8 alpha:1] : [UIColor colorWithWhite:0.2 alpha:1];
         _progressView.progressTintColor = usingWhiteBackground ? [UIColor orangeColor] : [UIColor colorWithWhite:1.0 alpha:1];
         [_progressView setProgress:0.0f];
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
+            _progressView.thicknessRatio = 0.1;
+            _progressView.roundedCorners = NO;
+        } else {
+            _progressView.thicknessRatio = 0.2;
+            _progressView.roundedCorners = YES;
+        }
         [self addSubview:_progressView];
         
 		// Setup

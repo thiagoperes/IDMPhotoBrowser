@@ -28,7 +28,7 @@
 
 #pragma mark - Rotation
 
-- (BOOL)shouldAutorotate
+/*- (BOOL)shouldAutorotate
 {
     return YES;
 }
@@ -41,7 +41,7 @@
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
     return UIInterfaceOrientationPortrait;
-}
+}*/
 
 #pragma mark - General
 
