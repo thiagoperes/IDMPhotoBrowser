@@ -58,7 +58,7 @@
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
-    BOOL _useDefaultActions;
+    //BOOL _useDefaultActions;
     NSInteger _initalPageIndex;
     
     CGRect _resizableImageViewFrame;
@@ -67,6 +67,7 @@
 
 // Private Properties
 @property (nonatomic, strong) UIActionSheet *actionsSheet;
+@property (nonatomic, strong) UIActivityViewController *activityViewController;
 
 // Private Methods
 
@@ -142,7 +143,7 @@
 
         _displayToolbar = YES;
         _autoHide = YES;
-        _useDefaultActions = YES;
+        //_useDefaultActions = YES;
         _displayDoneButton = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
@@ -600,10 +601,9 @@
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
     
-    _useDefaultActions = _actionButtonTitles ? NO : YES;
+    //_useDefaultActions = _actionButtonTitles ? NO : YES;
     
-    if(_useDefaultActions)
-        _actionButtonTitles = [[NSMutableArray alloc] initWithArray:@[NSLocalizedString(@"Save", @"Save"), @"Email"]];
+    //if(_useDefaultActions) _actionButtonTitles = [[NSMutableArray alloc] initWithArray:@[NSLocalizedString(@"Save", @"Save"), @"Email"]];
     
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
@@ -1245,7 +1245,7 @@
     }
 }
 
-- (void)actionButtonPressed:(id)sender {
+/*- (void)actionButtonPressed:(id)sender {
     if (_actionsSheet) {
         // Dismiss
         [_actionsSheet dismissWithClickedButtonIndex:_actionsSheet.cancelButtonIndex animated:YES];
@@ -1273,22 +1273,74 @@
             }
         }
     }
-}
+}*/
 
+- (void)actionButtonPressed:(id)sender
+{
+    id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    
+    if ([self numberOfPhotos] > 0 && [photo underlyingImage])
+    {
+        if(!_actionButtonTitles)
+        {
+            NSMutableArray *items = [NSMutableArray arrayWithObject:[photo underlyingImage]];
+            if (photo.caption) [items addObject:photo.caption];
+            
+            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+            
+            // Show loading spinner after a couple of seconds
+            /*double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                if (self.activityViewController) {
+                    [self showProgressHUDWithMessage:nil];
+                }
+            });*/
+            
+            // Show
+            __weak typeof(self) selfBlock = self;
+            [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+                [selfBlock hideControlsAfterDelay];
+                selfBlock.activityViewController = nil;
+                //[weakSelf hideProgressHUD:YES];
+            }];
+            
+            [self presentViewController:self.activityViewController animated:YES completion:nil];
+        }
+        else
+        {
+            // Action sheet
+            self.actionsSheet = [UIActionSheet new];
+            self.actionsSheet.delegate = self;
+            for(NSString *action in _actionButtonTitles) {
+                [self.actionsSheet addButtonWithTitle:action];
+            }
+            
+            self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+            self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+            
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                [_actionsSheet showFromBarButtonItem:sender animated:YES];
+            } else {
+                [_actionsSheet showInView:self.view];
+            }
+        }
+        
+        // Keep controls hidden
+        [self setControlsHidden:NO animated:YES permanent:YES];
+    }
+}
 
 #pragma mark - Action Sheet Delegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == _actionsSheet) {           
+    if (actionSheet == _actionsSheet) {
         // Actions 
         self.actionsSheet = nil;
         if (buttonIndex != actionSheet.cancelButtonIndex) {
-            if(_useDefaultActions)
+            if(!_actionButtonTitles)
             {
-                if(buttonIndex == 0)
-                    [self savePhoto];
-                else if(buttonIndex == 1)
-                    [self emailPhoto];
+                //
             }
             else
             {
@@ -1304,7 +1356,7 @@
 }
 
 
-#pragma mark - Actions
+/*#pragma mark - Actions
 
 - (void)savePhoto {
     id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
@@ -1362,7 +1414,7 @@
 	
     //[self dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
-}
+}*/
 
 #pragma mark - SVProgressHUD
 
