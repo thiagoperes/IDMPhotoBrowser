@@ -58,7 +58,6 @@
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
-    //BOOL _useDefaultActions;
     NSInteger _initalPageIndex;
     
     CGRect _resizableImageViewFrame;
@@ -143,7 +142,6 @@
 
         _displayToolbar = YES;
         _autoHide = YES;
-        //_useDefaultActions = YES;
         _displayDoneButton = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
@@ -471,7 +469,7 @@
 
 - (UIImage *)getImageFromView:(UIView *)view
 {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2); // 4);
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -535,8 +533,11 @@
     
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_doneButton setFrame:[self frameForDoneButtonAtOrientation:self.interfaceOrientation]];
+    [_doneButton setAlpha:1.0f];
+    [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    if(_doneBackgroundImage == nil)
+    if(!_doneBackgroundImage)
     {
         [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
         [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
@@ -550,10 +551,6 @@
     {
         [_doneButton setBackgroundImage:_doneBackgroundImage forState:UIControlStateNormal];
     }
-    
-    [_doneButton setFrame:[self frameForDoneButtonAtOrientation:self.interfaceOrientation]];
-    [_doneButton setAlpha:1.0f];
-    [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
     [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]          : _leftArrowImage;
@@ -582,15 +579,15 @@
     _counterLabel.backgroundColor = [UIColor clearColor];
     _counterLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:18];
     
-    if(_useWhiteBackgroundColor)
-    {
-        _counterLabel.textColor = [UIColor blackColor];
-    }
-    else
+    if(_useWhiteBackgroundColor == NO)
     {
         _counterLabel.textColor = [UIColor whiteColor];
         _counterLabel.shadowColor = [UIColor darkTextColor];
         _counterLabel.shadowOffset = CGSizeMake(0, 1);
+    }
+    else
+    {
+        _counterLabel.textColor = [UIColor blackColor];
     }
     
     // Counter Button
@@ -600,10 +597,6 @@
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
-    
-    //_useDefaultActions = _actionButtonTitles ? NO : YES;
-    
-    //if(_useDefaultActions) _actionButtonTitles = [[NSMutableArray alloc] initWithArray:@[NSLocalizedString(@"Save", @"Save"), @"Email"]];
     
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
@@ -622,9 +615,6 @@
     
     // Super
 	[super viewWillAppear:animated];
-	
-	// Layout manually (iOS < 5)
-    if (SYSTEM_VERSION_LESS_THAN(@"5")) [self viewWillLayoutSubviews];
     
     // Status bar
     if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -657,28 +647,36 @@
 
 #pragma mark - Layout
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return _useWhiteBackgroundColor ? 1 : 0;
+}
+
 //BOOL isFirstViewLoad = YES;
 
 - (void)viewWillLayoutSubviews
 {
     // Super
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5")) [super viewWillLayoutSubviews];
+    [super viewWillLayoutSubviews];
 	
 	// Flag
 	_performingLayout = YES;
     
-    //if(!isFirstViewLoad)
-    {
+    /*if(!isFirstViewLoad) {
         // Toolbar
-        //_toolbar.frame = [self frameForToolbarWhenRotationFromOrientation:self.interfaceOrientation];
-        _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
+        _toolbar.frame = [self frameForToolbarWhenRotationFromOrientation:self.interfaceOrientation];
         
         // Done button
-        //_doneButton.frame = [self frameForDoneButtonWhenRotationFromOrientation:self.interfaceOrientation];
-        _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
+        _doneButton.frame = [self frameForDoneButtonWhenRotationFromOrientation:self.interfaceOrientation];
     }
     
-    //if(isFirstViewLoad) isFirstViewLoad = NO;
+    if(isFirstViewLoad) isFirstViewLoad = NO;*/
+    
+    // Toolbar
+    _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
+    
+    // Done button
+    _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
     
     // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
@@ -726,7 +724,8 @@
     }
     
     // Close button
-    if(_displayDoneButton) [self.view addSubview:_doneButton];
+    if(_displayDoneButton)
+        [self.view addSubview:_doneButton];
     
     // Toolbar items & navigation
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
@@ -743,8 +742,7 @@
     if (numberOfPhotos > 1 && _displayArrowButton)
         [items addObject:_previousButton];
     
-    if(_displayCounterLabel)
-    {
+    if(_displayCounterLabel) {
         [items addObject:flexSpace];
         [items addObject:_counterButton];
     }
@@ -810,8 +808,7 @@
     [self performLayout];
     
     // Layout
-    if (SYSTEM_VERSION_LESS_THAN(@"5")) [self viewWillLayoutSubviews];
-    else [self.view setNeedsLayout];
+    [self.view setNeedsLayout];
 }
 
 - (NSUInteger)numberOfPhotos
@@ -1245,36 +1242,6 @@
     }
 }
 
-/*- (void)actionButtonPressed:(id)sender {
-    if (_actionsSheet) {
-        // Dismiss
-        [_actionsSheet dismissWithClickedButtonIndex:_actionsSheet.cancelButtonIndex animated:YES];
-    } else {
-        id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
-        if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
-            
-            // Keep controls hidden
-            [self setControlsHidden:NO animated:YES permanent:YES];
-            
-            // Action sheet
-            self.actionsSheet = [UIActionSheet new];
-            self.actionsSheet.delegate = self;
-            for(NSString *action in _actionButtonTitles) {
-                [self.actionsSheet addButtonWithTitle:action];
-            }
-            
-            self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-            self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-            
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                [_actionsSheet showFromBarButtonItem:sender animated:YES];
-            } else {
-                [_actionsSheet showInView:self.view];
-            }
-        }
-    }
-}*/
-
 - (void)actionButtonPressed:(id)sender
 {
     id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
@@ -1283,26 +1250,17 @@
     {
         if(!_actionButtonTitles)
         {
-            NSMutableArray *items = [NSMutableArray arrayWithObject:[photo underlyingImage]];
-            if (photo.caption) [items addObject:photo.caption];
+            // Activity view
+            NSMutableArray *activityItems = [NSMutableArray arrayWithObject:[photo underlyingImage]];
+            if (photo.caption) [activityItems addObject:photo.caption];
             
-            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems
+                                                                            applicationActivities:nil];
             
-            // Show loading spinner after a couple of seconds
-            /*double delayInSeconds = 2.0;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                if (self.activityViewController) {
-                    [self showProgressHUDWithMessage:nil];
-                }
-            });*/
-            
-            // Show
             __weak typeof(self) selfBlock = self;
             [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
                 [selfBlock hideControlsAfterDelay];
                 selfBlock.activityViewController = nil;
-                //[weakSelf hideProgressHUD:YES];
             }];
             
             [self presentViewController:self.activityViewController animated:YES completion:nil];
@@ -1333,20 +1291,16 @@
 
 #pragma mark - Action Sheet Delegate
 
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == _actionsSheet) {
-        // Actions 
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (actionSheet == _actionsSheet)
+    {
         self.actionsSheet = nil;
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
-            if(!_actionButtonTitles)
-            {
-                //
-            }
-            else
-            {
-                if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex:)])
-                    [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex photoIndex:_currentPageIndex];
-            }
+        
+        if (buttonIndex != actionSheet.cancelButtonIndex)
+        {
+            if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex:)])
+                [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex photoIndex:_currentPageIndex];
             
             return;
         }
@@ -1354,67 +1308,6 @@
     
     [self hideControlsAfterDelay]; // Continue as normal...
 }
-
-
-/*#pragma mark - Actions
-
-- (void)savePhoto {
-    id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
-    if ([photo underlyingImage]) {
-        [self showProgressHUDWithMessage:[NSString stringWithFormat:@"%@\u2026" , NSLocalizedString(@"Saving", @"Displayed with ellipsis as 'Saving...' when an item is in the process of being saved")]];
-        [self performSelector:@selector(actuallySavePhoto:) withObject:photo afterDelay:0];
-    }
-}
-
-- (void)actuallySavePhoto:(id<IDMPhoto>)photo {
-    if ([photo underlyingImage]) {
-        UIImageWriteToSavedPhotosAlbum([photo underlyingImage], self, 
-                                       @selector(image:didFinishSavingWithError:contextInfo:), nil);
-    }
-}
-
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    [self showProgressHUDCompleteMessage: error ? NSLocalizedString(@"Failed", @"Informing the user a process has failed") : NSLocalizedString(@"Saved", @"Informing the user an item has been saved")];
-    [self hideControlsAfterDelay]; // Continue as normal...
-}
-
-- (void)emailPhoto {
-    id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
-    if ([photo underlyingImage]) {
-        [self showProgressHUDWithMessage:[NSString stringWithFormat:@"%@\u2026" , NSLocalizedString(@"Preparing", @"Displayed with ellipsis as 'Preparing...' when an item is in the process of being prepared")]];
-        [self performSelector:@selector(actuallyEmailPhoto:) withObject:photo afterDelay:0];
-    }
-}
-
-- (void)actuallyEmailPhoto:(id<IDMPhoto>)photo {
-    if ([photo underlyingImage]) {
-        MFMailComposeViewController *emailer = [[MFMailComposeViewController alloc] init];
-        emailer.mailComposeDelegate = self;
-        [emailer setSubject:NSLocalizedString(@"Photo", nil)];
-        [emailer addAttachmentData:UIImagePNGRepresentation([photo underlyingImage]) mimeType:@"png" fileName:@"Photo.png"];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            emailer.modalPresentationStyle = UIModalPresentationPageSheet;
-        }
-        
-        //[self presentModalViewController:emailer animated:YES];
-        [self presentViewController:emailer animated:YES completion:nil];
-        [self hideProgressHUD:NO];
-    }
-}
-
-#pragma mark - Mail Compose Delegate
-
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
-    if (result == MFMailComposeResultFailed) {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Email", nil)
-                                                         message:NSLocalizedString(@"Email failed to send. Please try again.", nil)
-                                                        delegate:nil cancelButtonTitle:NSLocalizedString(@"Dismiss", nil) otherButtonTitles:nil];
-		[alert show];
-    }
-	
-    //[self dismissModalViewControllerAnimated:YES];
-    [self dismissViewControllerAnimated:YES completion:nil];
-}*/
 
 #pragma mark - SVProgressHUD
 
