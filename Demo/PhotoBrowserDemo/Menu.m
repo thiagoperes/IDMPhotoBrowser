@@ -219,28 +219,28 @@
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     
-    if(indexPath.section == 1 && indexPath.row == 1) // 'Photos from Flickr' using custom action
+    if(indexPath.section == 1 && indexPath.row == 1) // Photos from Flickr
     {
-        browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
+        browser.displayCounterLabel = YES;
+        browser.displayActionButton = NO;
     }
     
-    if(indexPath.section == 1 && indexPath.row == 2) // Customizations
+    if(indexPath.section == 1 && indexPath.row == 2) // Photos from Flickr - Custom
     {
+        browser.useWhiteBackgroundColor = YES;
         browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
         browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
         browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
         browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
-        browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
-        browser.useWhiteBackgroundColor = YES;
-        browser.displayActionButton = NO;
+        browser.doneButtonImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+        browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
         browser.displayCounterLabel = YES;
+        browser.view.tintColor = [UIColor orangeColor];
     }
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
-    
-    //UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:browser];
-    //[self.navigationController presentModalViewController:navCon animated:YES];
+    //[self.navigationController pushViewController:browser animated:YES];
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

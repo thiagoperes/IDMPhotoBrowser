@@ -209,13 +209,6 @@ caption = _caption;
 - (void)loadImageFromFileAsync {
     @autoreleasepool {
         @try {
-            /*NSError *error = nil;
-            NSData *data = [NSData dataWithContentsOfFile:_photoPath options:NSDataReadingUncached error:&error];
-            if (!error) {
-                self.underlyingImage = [[UIImage alloc] initWithData:data];
-            } else {
-                self.underlyingImage = nil;
-                IDMLog(@"Photo from file error: %@", error);*/
             self.underlyingImage = [UIImage imageWithContentsOfFile:_photoPath];
             if (!_underlyingImage) {
                 //IDMLog(@"Error loading photo from path: %@", _photoPath);

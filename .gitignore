@@ -1,7 +1,4 @@
-#
 # Xcode
-#
-
 build/
 *~.nib/
 *.moved-aside
@@ -22,27 +19,18 @@ xcuserdata
 *.xcodeproj/project.xcworkspace/
 *.xcodeproj/xcuserdata/
 
-#
 # OS X noise
-#
-
 .DS_Store
 Icon
 .Spotlight-V100
 .Trashes
 
-#
 # Misc
-#
-
 *~
 *.bak
 *.o
 *.pyc
 *.pyo
 
-#
 # Tower
-#
-
 /Icon.png

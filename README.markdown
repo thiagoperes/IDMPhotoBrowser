@@ -38,22 +38,22 @@ See the code snippet below for an example of how to implement the photo browser.
 First create a photos array containing IDMPhoto objects:
 
 ``` objective-c
-    // URLs array
-    NSArray *photosURL = @[[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], 
-    [NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"], 
-    [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], 
-    [NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
+// URLs array
+NSArray *photosURL = @[[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], 
+[NSURL URLWithString:@"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"], 
+[NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], 
+[NSURL URLWithString:@"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg"]];
     
-    // Create an array to store IDMPhoto objects
-    NSMutableArray *photos = [NSMutableArray new];
-    
-    for (NSURL *url in photosURL) {
-        IDMPhoto *photo = [IDMPhoto photoWithURL:url];
-    	[photos addObject:photo];
-    }
+// Create an array to store IDMPhoto objects
+NSMutableArray *photos = [NSMutableArray new];
+
+for (NSURL *url in photosURL) {
+	IDMPhoto *photo = [IDMPhoto photoWithURL:url];
+	[photos addObject:photo];
+}
 	
-    // Or use this constructor to receive an NSArray of IDMPhoto objects from your NSURL objects
-    NSArray *photos = [IDMPhoto photosWithURLs:photosURL];
+// Or use this constructor to receive an NSArray of IDMPhoto objects from your NSURL objects
+NSArray *photos = [IDMPhoto photosWithURLs:photosURL];
 ````
 
 There are two main ways to presente the photoBrowser, with a fade on screen or with a zooming effect from an existing view.
@@ -61,18 +61,18 @@ There are two main ways to presente the photoBrowser, with a fade on screen or w
 Using a simple fade transition:
 
 ``` objective-c    
-    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
+IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
 ``` 
 
 Zooming effect from a view:
 ``` objective-c    
-    IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
+IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
 ```
  
 Presenting using a modal view controller:
 
 ``` objective-c
-    [self presentViewController:browser animated:YES completion:nil];
+[self presentViewController:browser animated:YES completion:nil];
 ```
 
 ### Customization
@@ -83,23 +83,23 @@ You can customize the toolbar. There are three boolean properties you can set: d
 
 Toolbar setup example:
 ``` objective-c     
-    browser.displayActionButton = NO;
-    browser.displayArrowButton = YES;
-    browser.displayCounterLabel = YES;
+browser.displayActionButton = NO;
+browser.displayArrowButton = YES;
+browser.displayCounterLabel = YES;
 ```
 
 It is possible to use your own image on the toolbar arrows:
 ``` objective-c     
-    browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
-    browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
-    browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
-    browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
+browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
+browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
+browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
+browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
 ```
 
 If you want to use custom actions, set the actionButtonTitles array with the titles for the actionSheet. Then, implement the photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex: method, from the IDMPhotoBrowser delegate
 
 ``` objective-c    
-    browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
+browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
 ```
 
 #### Others
@@ -107,17 +107,17 @@ If you want to use custom actions, set the actionButtonTitles array with the tit
 Others customizations you can make are: use white background color, don't display the done button and change the done button background image:
 
 ``` objective-c    
-	browser.useWhiteBackgroundColor = YES;
-	browser.displayDoneButton = NO;
-	browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+browser.useWhiteBackgroundColor = YES;
+browser.displayDoneButton = NO;
+browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
 ```
 
 ### Photo Captions
 
 Photo captions can be displayed simply by setting the `caption` property on specific photos:
 ``` objective-c
-    IDMPhoto *photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
-    photo.caption = @"Campervan";
+IDMPhoto *photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
+photo.caption = @"Campervan";
 ```
 
 No caption will be displayed if the caption property is not set.
@@ -132,11 +132,11 @@ By default, the caption is a simple black transparent view with a label displayi
 
 Example delegate method for custom caption view:
 ``` objective-c
-    - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index {
-        IDMPhoto *photo = [self.photos objectAtIndex:index];
-        MyIDMCaptionViewSubclass *captionView = [[MyIDMCaptionViewSubclass alloc] initWithPhoto:photo];
-        return [captionView autorelease];
-    }
+- (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index {
+	IDMPhoto *photo = [self.photos objectAtIndex:index];
+	MyIDMCaptionViewSubclass *captionView = [[MyIDMCaptionViewSubclass alloc] initWithPhoto:photo];
+	return [captionView autorelease];
+}
 ```
 
 ## Adding to your project

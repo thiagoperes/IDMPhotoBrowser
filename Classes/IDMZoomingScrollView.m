@@ -9,13 +9,13 @@
 #import "IDMZoomingScrollView.h"
 #import "IDMPhotoBrowser.h"
 #import "IDMPhoto.h"
-#import "IDMPBConstants.h"
 
 // Declare private methods of browser
 @interface IDMPhotoBrowser ()
 - (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
 - (void)cancelControlHiding;
 - (void)hideControlsAfterDelay;
+- (void)toggleControls;
 @end
 
 // Private methods and properties
@@ -58,15 +58,10 @@
             screenHeight = screenBound.size.width;
         }
         
-        BOOL usingWhiteBackground = self.photoBrowser.useWhiteBackgroundColor;
-        
         // Progress view
         _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
-        _progressView.roundedCorners = YES;
-        _progressView.tag = 101;
-        _progressView.trackTintColor    = usingWhiteBackground ? [UIColor colorWithWhite:0.8 alpha:1] : [UIColor colorWithWhite:0.2 alpha:1];
-        _progressView.progressTintColor = usingWhiteBackground ? [UIColor orangeColor] : [UIColor colorWithWhite:1.0 alpha:1];
         [_progressView setProgress:0.0f];
+        _progressView.tag = 101;
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
             _progressView.thicknessRatio = 0.1;
             _progressView.roundedCorners = NO;
@@ -74,6 +69,9 @@
             _progressView.thicknessRatio = 0.2;
             _progressView.roundedCorners = YES;
         }
+        BOOL usingWhiteBackground = self.photoBrowser.useWhiteBackgroundColor;
+        _progressView.trackTintColor    = usingWhiteBackground ? [UIColor colorWithWhite:0.8 alpha:1] : [UIColor colorWithWhite:0.2 alpha:1];
+        _progressView.progressTintColor = usingWhiteBackground ? [UIColor orangeColor]                : [UIColor colorWithWhite:1.0 alpha:1];
         [self addSubview:_progressView];
         
 		// Setup
