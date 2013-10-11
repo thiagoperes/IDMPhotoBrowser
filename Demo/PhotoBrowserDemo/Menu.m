@@ -93,9 +93,11 @@
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo3l" ofType:@"jpg"]];
     photo.caption = @"York Floods";
     [photos addObject:photo];
+    
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
     photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
     [photos addObject:photo];
+    
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
     photo.caption = @"Campervan";
     [photos addObject:photo];
@@ -113,7 +115,7 @@
     browser.displayActionButton = NO;
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
-    browser.scaleImage = buttonSender.imageView.image;
+    browser.scaleImage = buttonSender.currentImage;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
@@ -182,35 +184,39 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Create an array to store IDMPhoto objects
 	NSMutableArray *photos = [NSMutableArray new];
-
+    
     IDMPhoto *photo;
     
-    if(indexPath.section == 0)
+    if(indexPath.section == 0) // Local photo
     {
         photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
         photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
         [photos addObject:photo];
 	}
-    else if(indexPath.section == 1)
+    else if(indexPath.section == 1) // Multiple photos
     {
-        if(indexPath.row == 0)
+        if(indexPath.row == 0) // Local Photos
         {
             photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
             photo.caption = @"Grotto of the Madonna";
 			[photos addObject:photo];
+           
             photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
             photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
 			[photos addObject:photo];
+            
             photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo3l" ofType:@"jpg"]];
             photo.caption = @"York Floods";
 			[photos addObject:photo];
+            
             photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
             photo.caption = @"Campervan";
 			[photos addObject:photo];
         }
-        else if(indexPath.row == 1 || indexPath.row == 2)
+        else if(indexPath.row == 1 || indexPath.row == 2) // Photos from Flickr or Flickr - Custom
         {
             NSArray *photosWithURL = [IDMPhoto photosWithURLs:[NSArray arrayWithObjects:[NSURL URLWithString:@"http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"], @"http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg", [NSURL URLWithString:@"http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"], @"http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg", nil]];
+            
             photos = [NSMutableArray arrayWithArray:photosWithURL];
         }
     }
@@ -219,23 +225,25 @@
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
     browser.delegate = self;
     
-    if(indexPath.section == 1 && indexPath.row == 1) // Photos from Flickr
+    if(indexPath.section == 1) // Multiple photos
     {
-        browser.displayCounterLabel = YES;
-        browser.displayActionButton = NO;
-    }
-    
-    if(indexPath.section == 1 && indexPath.row == 2) // Photos from Flickr - Custom
-    {
-        browser.useWhiteBackgroundColor = YES;
-        browser.leftArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
-        browser.rightArrowImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
-        browser.leftArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
-        browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
-        browser.doneButtonImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
-        browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
-        browser.displayCounterLabel = YES;
-        browser.view.tintColor = [UIColor orangeColor];
+        if(indexPath.row == 1) // Photos from Flickr
+        {
+            browser.displayCounterLabel = YES;
+            browser.displayActionButton = NO;
+        }
+        else if(indexPath.row == 2) // Photos from Flickr - Custom
+        {
+            browser.actionButtonTitles      = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4"];
+            browser.displayCounterLabel     = YES;
+            browser.useWhiteBackgroundColor = YES;
+            browser.leftArrowImage          = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeft.png"];
+            browser.rightArrowImage         = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRight.png"];
+            browser.leftArrowSelectedImage  = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
+            browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
+            browser.doneButtonImage         = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+            browser.view.tintColor          = [UIColor orangeColor];
+        }
     }
     
     // Show

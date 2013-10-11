@@ -65,10 +65,17 @@ IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos];
 ``` 
 
 Zooming effect from a view:
+
 ``` objective-c    
 IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
 ```
- 
+
+When using this animation you can set the `scaleImage` property, in case the image from the view is not the same as the one that will be shown on the browser, so it will dynamically scale the image:
+
+``` objective-c    
+browser.scaleImage = buttonSender.currentImage;
+```
+
 Presenting using a modal view controller:
 
 ``` objective-c

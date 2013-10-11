@@ -31,7 +31,6 @@
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser {
     if ((self = [super init])) {
-        
         // Delegate
         self.photoBrowser = browser;
         
@@ -58,20 +57,16 @@
             screenHeight = screenBound.size.width;
         }
         
+        BOOL usingWhiteBackground = self.photoBrowser.useWhiteBackgroundColor;
+        
         // Progress view
         _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
         [_progressView setProgress:0.0f];
         _progressView.tag = 101;
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) {
-            _progressView.thicknessRatio = 0.1;
-            _progressView.roundedCorners = NO;
-        } else {
-            _progressView.thicknessRatio = 0.2;
-            _progressView.roundedCorners = YES;
-        }
-        BOOL usingWhiteBackground = self.photoBrowser.useWhiteBackgroundColor;
+        _progressView.thicknessRatio = SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7") ? 0.1 : 0.2;
+        _progressView.roundedCorners = SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7") ? NO  : YES;
         _progressView.trackTintColor    = usingWhiteBackground ? [UIColor colorWithWhite:0.8 alpha:1] : [UIColor colorWithWhite:0.2 alpha:1];
-        _progressView.progressTintColor = usingWhiteBackground ? [UIColor orangeColor]                : [UIColor colorWithWhite:1.0 alpha:1];
+        _progressView.progressTintColor = usingWhiteBackground ? browser.view.tintColor               : [UIColor colorWithWhite:1.0 alpha:1];
         [self addSubview:_progressView];
         
 		// Setup
@@ -145,14 +140,11 @@
 	}
 }
 
-- (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo
-{
+- (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo {
     IDMPhoto *p = (IDMPhoto*)self.photo;
 
-    if ([photo.photoURL.absoluteString isEqualToString:p.photoURL.absoluteString])
-    {
-        if (_progressView.progress < progress)
-        {
+    if ([photo.photoURL.absoluteString isEqualToString:p.photoURL.absoluteString]) {
+        if (_progressView.progress < progress) {
             [_progressView setProgress:progress animated:YES];
         }
     }

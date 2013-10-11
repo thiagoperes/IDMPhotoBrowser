@@ -135,7 +135,7 @@
         _visiblePages = [NSMutableSet new];
         _recycledPages = [NSMutableSet new];
         _newPhotos = [NSMutableArray new];
-
+        
         _displayToolbar = YES;
         _autoHide = YES;
         _displayDoneButton = YES;
@@ -319,21 +319,6 @@
 
 #pragma mark - Animation
 
-//- (void)setAnimationViewFromSenderView:(UIView*)senderView
-/*- (void)setSenderViewForAnimation:(UIView*)senderView
-{
-    CGAffineTransform original = [[[UIApplication sharedApplication].delegate window] rootViewController].view.transform;
-    
-    [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:CGAffineTransformIdentity];
-    _senderViewForAnimation.hidden = NO;
-    
-    _senderViewForAnimation = senderView;
-    _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
-    
-    _senderViewForAnimation.hidden = YES;
-    [[[[UIApplication sharedApplication].delegate window] rootViewController].view setTransform:original];
-}*/
-
 - (void)performAnimation
 {
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
@@ -466,7 +451,7 @@
     return button;
 }
 
-- (UIImage *)getImageFromView:(UIView *)view
+- (UIImage*)getImageFromView:(UIView *)view
 {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -1158,7 +1143,7 @@
 }
 
 - (void)gotoPreviousPage { [self jumpToPageAtIndex:_currentPageIndex-1]; }
-- (void)gotoNextPage { [self jumpToPageAtIndex:_currentPageIndex+1]; }
+- (void)gotoNextPage     { [self jumpToPageAtIndex:_currentPageIndex+1]; }
 
 #pragma mark - Control Hiding / Showing
 
@@ -1196,8 +1181,7 @@
     } completion:^(BOOL finished) {}];
 	
 	// Control hiding timer
-	// Will cancel existing timer but only begin hiding if
-	// they are visible
+	// Will cancel existing timer but only begin hiding if they are visible
 	if (!permanent) [self hideControlsAfterDelay];
 }
 
@@ -1219,7 +1203,7 @@
 	}
 }
 
-- (BOOL)areControlsHidden { return (_toolbar.alpha == 0); /* [UIApplication sharedApplication].isStatusBarHidden; */ }
+- (BOOL)areControlsHidden { return (_toolbar.alpha == 0); }
 - (void)hideControls { if(_autoHide) [self setControlsHidden:YES animated:YES permanent:NO]; }
 - (void)toggleControls { [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO]; }
 
@@ -1268,7 +1252,7 @@
             
             self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
             
-            __weak typeof(self) selfBlock = self;
+            __typeof__(self) __weak selfBlock = self;
             [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
                 [selfBlock hideControlsAfterDelay];
                 selfBlock.activityViewController = nil;
@@ -1311,9 +1295,10 @@
         if (buttonIndex != actionSheet.cancelButtonIndex)
         {
             if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissActionSheetWithButtonIndex:photoIndex:)])
+            {
                 [_delegate photoBrowser:self didDismissActionSheetWithButtonIndex:buttonIndex photoIndex:_currentPageIndex];
-            
-            return;
+                return;
+            }
         }
     }
     
