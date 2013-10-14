@@ -126,7 +126,6 @@
 - (id)init {
     if ((self = [super init])) {
         // Defaults
-        self.wantsFullScreenLayout = YES;
         self.hidesBottomBarWhenPushed = YES;
         _currentPageIndex = 0;
 		_performingLayout = NO; // Reset on view did appear
@@ -416,9 +415,9 @@
 
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
-    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
-    }
+    }*/
     
     // Gesture
     [[[[UIApplication sharedApplication] delegate] window] removeGestureRecognizer:_panGesture];
@@ -602,10 +601,10 @@
 	[super viewWillAppear:animated];
     
     // Status Bar
-    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
-    }
+    }*/
     
     // Update UI
 	[self hideControlsAfterDelay];
@@ -1152,18 +1151,18 @@
     // Cancel any timers
     [self cancelControlHiding];
     
-    if (self.wantsFullScreenLayout) {
+    /*if (self.wantsFullScreenLayout) {
         // Status Bar
-        /*if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
             //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
             [UIView animateWithDuration:0.3 animations:^(void) {
                 [self setNeedsStatusBarAppearanceUpdate];
             } completion:^(BOOL finished) {}];
-        }*/
-        
-        [[UIApplication sharedApplication] setStatusBarHidden:hidden
-                                                withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
-    }
+        }
+    }*/
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:hidden
+                                            withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
     
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];

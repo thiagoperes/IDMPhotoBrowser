@@ -138,21 +138,23 @@ caption = _caption;
             // Load async from web (using AFNetworking)
             NSURLRequest *request = [NSURLRequest requestWithURL:_photoURL];
             
-            AFImageRequestOperation *operation = [AFImageRequestOperation
-                                                  imageRequestOperationWithRequest:request
-                                                  success:^(UIImage *image) {
-                                                      self.underlyingImage = image;
-                                                      [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
-                                                  }];
+            AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+            op.responseSerializer = [AFImageResponseSerializer serializer];
+
+            [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                UIImage *image = responseObject;
+                self.underlyingImage = image;
+                [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) { }];
             
-            [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
+            [op setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
                 CGFloat progress = ((CGFloat)totalBytesRead)/((CGFloat)totalBytesExpectedToRead);
                 if (self.progressUpdateBlock) {
                     self.progressUpdateBlock(progress);
                 }
             }];
             
-            [operation start];
+            [[NSOperationQueue mainQueue] addOperation:op];
         } else {
             // Failed - no source
             self.underlyingImage = nil;
