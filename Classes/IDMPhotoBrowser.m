@@ -119,6 +119,7 @@
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
+@synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
 
 #pragma mark - NSObject
@@ -588,7 +589,7 @@
     [_panGesture setMaximumNumberOfTouches:1];
     
     // Update
-    [self reloadData];
+    //[self reloadData];
     
 	// Super
     [super viewDidLoad];
@@ -596,6 +597,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     //_backgroundScreenshot = [self takeScreenshot];
+    
+    // Update
+    [self reloadData];
     
     // Super
 	[super viewWillAppear:animated];
