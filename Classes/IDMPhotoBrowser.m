@@ -562,7 +562,7 @@
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
     _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
-    _counterLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:18];
+    _counterLabel.font = [UIFont fontWithName:@"Helvetica" size:17];
     
     if(_useWhiteBackgroundColor == NO)
     {

@@ -8,7 +8,7 @@ We've added both user experience and technical features inspired by Facebook's a
 - Uses ARC
 - Uses AFNetworking for image loading
 - Image progress shown
-- Minimalistic Facebook-like interface, swipe up to dismiss
+- Minimalistic Facebook-like interface, swipe up/down to dismiss
 - Ability to add custom actions on the action sheet
 
 ## Features
@@ -70,7 +70,7 @@ Zooming effect from a view:
 IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender];
 ```
 
-When using this animation you can set the `scaleImage` property, in case the image from the view is not the same as the one that will be shown on the browser, so it will dynamically scale the image:
+When using this animation you can set the `scaleImage` property, in case the image from the view is not the same as the one that will be shown on the browser, so it will dynamically scale it:
 
 ``` objective-c    
 browser.scaleImage = buttonSender.currentImage;
@@ -142,7 +142,7 @@ Example delegate method for custom caption view:
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index {
 	IDMPhoto *photo = [self.photos objectAtIndex:index];
 	MyIDMCaptionViewSubclass *captionView = [[MyIDMCaptionViewSubclass alloc] initWithPhoto:photo];
-	return [captionView autorelease];
+	return captionView;
 }
 ```
 
