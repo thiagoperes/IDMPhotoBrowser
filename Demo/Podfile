@@ -1,0 +1,7 @@
+platform :ios, :deployment_target => '7.0'
+
+xcodeproj 'PhotoBrowserDemo'
+
+pod 'AFNetworking', '~> 2.0.1'
+pod 'DACircularProgress', '~> 2.1.0'
+pod 'SVProgressHUD', '~> 0.9'
