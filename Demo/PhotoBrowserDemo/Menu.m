@@ -8,6 +8,15 @@
 
 #import "Menu.h"
 
+@implementation UIAlertView (UIAlertViewWithTitle)
+
++ (void)showAlertViewWithTitle:(NSString*)title
+{
+    [[[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+@end
+
 @implementation Menu
 
 #pragma mark - Initialization
@@ -26,16 +35,16 @@
     [self setupTableViewFooterView];
 }
 
-#pragma mark - Rotation
+#pragma mark - Interface Orientation
 
 /*- (BOOL)shouldAutorotate
 {
-    return YES;
+    return NO;
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIDeviceOrientationPortrait | UIDeviceOrientationLandscapeLeft | UIDeviceOrientationLandscapeRight;
+    return UIDeviceOrientationPortrait; //| UIDeviceOrientationLandscapeLeft | UIDeviceOrientationLandscapeRight;
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
@@ -257,18 +266,19 @@
 
 #pragma mark - IDMPhotoBrowser Delegate
 
-- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)pageIndex
 {
-    id <IDMPhoto> photo = [photoBrowser photoAtIndex:index];
-    NSLog(@"Dissmised with photo index: %d, photo caption: %@", index, photo.caption);
+    id <IDMPhoto> photo = [photoBrowser photoAtIndex:pageIndex];
+    NSLog(@"Did dismiss photoBrowser with photo index: %d, photo caption: %@", pageIndex, photo.caption);
 }
 
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex
 {
-    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Option %d", buttonIndex+1] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    
     id <IDMPhoto> photo = [photoBrowser photoAtIndex:photoIndex];
-    NSLog(@"Dissmised actionSheet with photo index: %d, photo caption: %@", photoIndex, photo.caption);
+    NSLog(@"Did dismiss actionSheet with photo index: %d, photo caption: %@", photoIndex, photo.caption);
+    
+    NSString *title = [NSString stringWithFormat:@"Option %d", buttonIndex+1];
+    [UIAlertView showAlertViewWithTitle:title];
 }
 
 @end
