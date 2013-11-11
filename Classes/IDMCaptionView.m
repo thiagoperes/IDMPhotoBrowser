@@ -13,13 +13,16 @@
 static const CGFloat labelPadding = 10;
 
 // Private
-@interface IDMCaptionView () {
-    id<IDMPhoto> _photo;
-    UILabel *_label;    
-}
+@interface IDMCaptionView ()
+
+@property (nonatomic, strong, readwrite) id<IDMPhoto> photo;
+
 @end
 
 @implementation IDMCaptionView
+
+@synthesize label = _label;
+@synthesize photo = _photo;
 
 - (id)initWithPhoto:(id<IDMPhoto>)photo {
     CGRect screenBound = [[UIScreen mainScreen] bounds];
