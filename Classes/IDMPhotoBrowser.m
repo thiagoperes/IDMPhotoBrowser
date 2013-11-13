@@ -129,6 +129,8 @@
     if ((self = [super init])) {
         // Defaults
         self.hidesBottomBarWhenPushed = YES;
+        _preferredStatusBarStyle = UIStatusBarStyleDefault;
+        _prefersStatusBarHidden = NO;
         _currentPageIndex = 0;
 		_performingLayout = NO; // Reset on view did appear
 		_rotating = NO;
@@ -491,7 +493,11 @@
 
 #pragma mark - View Lifecycle
 - (BOOL)prefersStatusBarHidden {
-    return YES;
+    return _prefersStatusBarHidden;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return _preferredStatusBarStyle;
 }
 
 - (void)viewDidLoad {
