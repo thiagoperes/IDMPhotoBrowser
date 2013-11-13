@@ -61,7 +61,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializer = [AFHTTPResponseSerializer serializer];
+    self.responseSerializer = [AFJSONResponseSerializer serializer];
 
     return self;
 }
@@ -78,7 +78,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 - (id)responseObject {
     [self.lock lock];
-    if (!_responseObject && [self isFinished] && !self.error) {
+    if (!_responseObject && [self.responseData length] > 0 && [self isFinished] && !self.error) {
         NSError *error = nil;
         self.responseObject = [self.responseSerializer responseObjectForResponse:self.response data:self.responseData error:&error];
         if (error) {
@@ -166,21 +166,21 @@ static dispatch_group_t http_request_operation_completion_group() {
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)decoder {
-    self = [super initWithCoder:decoder];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
     if (!self) {
         return nil;
     }
 
-    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
 
-    [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
+    [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
 }
 
 #pragma mark - NSCopying

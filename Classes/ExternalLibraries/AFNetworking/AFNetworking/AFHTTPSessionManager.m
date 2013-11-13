@@ -22,7 +22,7 @@
 
 #import "AFHTTPSessionManager.h"
 
-#if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090)
+#if (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED >= 1090)
 
 #import "AFHTTPRequestOperation.h"
 
@@ -52,16 +52,8 @@
     return [[AFHTTPSessionManager alloc] initWithBaseURL:nil];
 }
 
-- (instancetype)init {
-    return [self initWithBaseURL:nil];
-}
-
 - (instancetype)initWithBaseURL:(NSURL *)url {
     return [self initWithBaseURL:url sessionConfiguration:nil];
-}
-
-- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration {
-    return [self initWithBaseURL:nil sessionConfiguration:configuration];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)url
@@ -287,28 +279,27 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)decoder {
-    NSURL *baseURL = [decoder decodeObjectForKey:NSStringFromSelector(@selector(baseURL))];
-    NSURLSessionConfiguration *configuration = [decoder decodeObjectForKey:@"sessionConfiguration"];
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    NSURL *baseURL = [aDecoder decodeObjectForKey:@"baseURL"];
+    NSURLSessionConfiguration *configuration = [aDecoder decodeObjectForKey:@"sessionConfiguration"];
 
     self = [self initWithBaseURL:baseURL sessionConfiguration:configuration];
     if (!self) {
         return nil;
     }
 
-    self.requestSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(requestSerializer))];
-    self.responseSerializer = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.requestSerializer = [aDecoder decodeObjectForKey:@"requestSerializer"];
+    self.responseSerializer = [aDecoder decodeObjectForKey:@"responseSerializer"];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)coder {
-    [super encodeWithCoder:coder];
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
 
-    [coder encodeObject:self.baseURL forKey:NSStringFromSelector(@selector(baseURL))];
-    [coder encodeObject:self.session.configuration forKey:@"sessionConfiguration"];
-    [coder encodeObject:self.requestSerializer forKey:NSStringFromSelector(@selector(requestSerializer))];
-    [coder encodeObject:self.responseSerializer forKey:NSStringFromSelector(@selector(responseSerializer))];
+    [aCoder encodeObject:self.baseURL forKey:@"baseURL"];
+    [aCoder encodeObject:self.requestSerializer forKey:@"requestSerializer"];
+    [aCoder encodeObject:self.responseSerializer forKey:@"responseSerializer"];
 }
 
 #pragma mark - NSCopying
