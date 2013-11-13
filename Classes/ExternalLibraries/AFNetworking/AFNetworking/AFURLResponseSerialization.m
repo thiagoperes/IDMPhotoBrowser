@@ -60,7 +60,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode]) {
             NSDictionary *userInfo = @{
-                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
+                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d), got %d", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
                                        NSURLErrorFailingURLErrorKey:[response URL],
                                        AFNetworkingOperationFailingURLResponseErrorKey: response
                                        };
@@ -157,6 +157,8 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     return self;
 }
 
+
+
 #pragma mark - AFURLRequestSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
@@ -171,15 +173,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
     // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
     // See https://github.com/rails/rails/issues/1742
-    NSStringEncoding stringEncoding = self.stringEncoding;
-    if (response.textEncodingName) {
-        CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
-        if (encoding != kCFStringEncodingInvalidId) {
-            stringEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
-        }
-    }
-    
-    NSString *responseString = [[NSString alloc] initWithData:data encoding:stringEncoding];
+    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (responseString && ![responseString isEqualToString:@" "]) {
         // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
         // See http://stackoverflow.com/a/12843465/157142
@@ -398,7 +392,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         }
     }
 
-    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:error];
+    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
 }
 
 #pragma mark - NSCoding
@@ -649,10 +643,8 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             continue;
         }
 
-        NSError *serializerError = nil;
-        id responseObject = [serializer responseObjectForResponse:response data:data error:&serializerError];
+        id responseObject = [serializer responseObjectForResponse:response data:data error:error];
         if (responseObject) {
-            *error = serializerError;
             return responseObject;
         }
     }

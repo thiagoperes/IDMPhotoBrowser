@@ -67,8 +67,6 @@
         self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];
     }
 
-    [self.reachabilityManager startMonitoring];
-
     self.operationQueue = [[NSOperationQueue alloc] init];
 
     return self;
