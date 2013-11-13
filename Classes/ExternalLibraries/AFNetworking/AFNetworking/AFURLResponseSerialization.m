@@ -60,7 +60,7 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     if (response && [response isKindOfClass:[NSHTTPURLResponse class]]) {
         if (self.acceptableStatusCodes && ![self.acceptableStatusCodes containsIndex:(NSUInteger)response.statusCode]) {
             NSDictionary *userInfo = @{
-                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d), got %d", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
+                                       NSLocalizedDescriptionKey: [NSString stringWithFormat:NSLocalizedStringFromTable(@"Request failed: %@ (%d)", @"AFNetworking", nil), [NSHTTPURLResponse localizedStringForStatusCode:response.statusCode], response.statusCode],
                                        NSURLErrorFailingURLErrorKey:[response URL],
                                        AFNetworkingOperationFailingURLResponseErrorKey: response
                                        };
@@ -102,21 +102,21 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (id)initWithCoder:(NSCoder *)decoder {
     self = [self init];
     if (!self) {
         return nil;
     }
 
-    self.acceptableStatusCodes = [aDecoder decodeObjectForKey:@"acceptableStatusCodes"];
-    self.acceptableContentTypes = [aDecoder decodeObjectForKey:@"acceptableContentTypes"];
+    self.acceptableStatusCodes = [decoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    self.acceptableContentTypes = [decoder decodeObjectForKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.acceptableStatusCodes forKey:@"acceptableStatusCodes"];
-    [aCoder encodeObject:self.acceptableContentTypes forKey:@"acceptableContentTypes"];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [coder encodeObject:self.acceptableStatusCodes forKey:NSStringFromSelector(@selector(acceptableStatusCodes))];
+    [coder encodeObject:self.acceptableContentTypes forKey:NSStringFromSelector(@selector(acceptableContentTypes))];
 }
 
 #pragma mark - NSCopying
@@ -157,8 +157,6 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
     return self;
 }
 
-
-
 #pragma mark - AFURLRequestSerialization
 
 - (id)responseObjectForResponse:(NSURLResponse *)response
@@ -173,7 +171,15 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
     // Workaround for behavior of Rails to return a single space for `head :ok` (a workaround for a bug in Safari), which is not interpreted as valid input by NSJSONSerialization.
     // See https://github.com/rails/rails/issues/1742
-    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSStringEncoding stringEncoding = self.stringEncoding;
+    if (response.textEncodingName) {
+        CFStringEncoding encoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName);
+        if (encoding != kCFStringEncodingInvalidId) {
+            stringEncoding = CFStringConvertEncodingToNSStringEncoding(encoding);
+        }
+    }
+    
+    NSString *responseString = [[NSString alloc] initWithData:data encoding:stringEncoding];
     if (responseString && ![responseString isEqualToString:@" "]) {
         // Workaround for a bug in NSJSONSerialization when Unicode character escape codes are used instead of the actual character
         // See http://stackoverflow.com/a/12843465/157142
@@ -200,21 +206,21 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.readingOptions = [aDecoder decodeIntegerForKey:@"readingOptions"];
+    self.readingOptions = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(readingOptions))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.readingOptions forKey:@"readingOptions"];
+    [coder encodeInteger:self.readingOptions forKey:NSStringFromSelector(@selector(readingOptions))];
 }
 
 #pragma mark - NSCopying
@@ -311,21 +317,21 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.options = [aDecoder decodeIntegerForKey:@"options"];
+    self.options = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(options))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.options forKey:@"options"];
+    [coder encodeInteger:self.options forKey:NSStringFromSelector(@selector(options))];
 }
 
 #pragma mark - NSCopying
@@ -392,28 +398,28 @@ extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
         }
     }
 
-    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:nil error:error];
+    return [NSPropertyListSerialization propertyListWithData:data options:self.readOptions format:NULL error:error];
 }
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.format = (NSPropertyListFormat)[aDecoder decodeIntegerForKey:@"format"];
-    self.readOptions = [aDecoder decodeIntegerForKey:@"readOptions"];
+    self.format = (NSPropertyListFormat)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(format))];
+    self.readOptions = [decoder decodeIntegerForKey:NSStringFromSelector(@selector(readOptions))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeInteger:self.format forKey:@"format"];
-    [aCoder encodeInteger:(NSInteger)self.readOptions forKey:@"readOptions"];
+    [coder encodeInteger:self.format forKey:NSStringFromSelector(@selector(format))];
+    [coder encodeInteger:(NSInteger)self.readOptions forKey:NSStringFromSelector(@selector(readOptions))];
 }
 
 #pragma mark - NSCopying
@@ -579,26 +585,26 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    self.imageScale = [aDecoder decodeFloatForKey:@"imageScale"];
-    self.automaticallyInflatesResponseImage = [aDecoder decodeBoolForKey:@"automaticallyInflatesResponseImage"];
+    self.imageScale = [decoder decodeFloatForKey:NSStringFromSelector(@selector(imageScale))];
+    self.automaticallyInflatesResponseImage = [decoder decodeBoolForKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-    [aCoder encodeFloat:self.imageScale forKey:@"imageScale"];
-    [aCoder encodeBool:self.automaticallyInflatesResponseImage forKey:@"automaticallyInflatesResponseImage"];
+    [coder encodeFloat:self.imageScale forKey:NSStringFromSelector(@selector(imageScale))];
+    [coder encodeBool:self.automaticallyInflatesResponseImage forKey:NSStringFromSelector(@selector(automaticallyInflatesResponseImage))];
 #endif
 }
 
@@ -643,8 +649,10 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
             continue;
         }
 
-        id responseObject = [serializer responseObjectForResponse:response data:data error:error];
+        NSError *serializerError = nil;
+        id responseObject = [serializer responseObjectForResponse:response data:data error:&serializerError];
         if (responseObject) {
+            *error = serializerError;
             return responseObject;
         }
     }
@@ -654,21 +662,21 @@ static UIImage * AFInflatedImageFromResponseWithDataAtScale(NSHTTPURLResponse *r
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super initWithCoder:decoder];
     if (!self) {
         return nil;
     }
 
-    self.responseSerializers = [aDecoder decodeObjectForKey:@"responseSerializers"];
+    self.responseSerializers = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseSerializers))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [super encodeWithCoder:aCoder];
+- (void)encodeWithCoder:(NSCoder *)coder {
+    [super encodeWithCoder:coder];
 
-    [aCoder encodeObject:self.responseSerializers forKey:@"responseSerializers"];
+    [coder encodeObject:self.responseSerializers forKey:NSStringFromSelector(@selector(responseSerializers))];
 }
 
 #pragma mark - NSCopying

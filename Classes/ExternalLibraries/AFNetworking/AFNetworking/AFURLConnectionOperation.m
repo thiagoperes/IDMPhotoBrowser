@@ -64,7 +64,6 @@ NSString * const AFNetworkingOperationDidStartNotification = @"com.alamofire.net
 NSString * const AFNetworkingOperationDidFinishNotification = @"com.alamofire.networking.operation.finish";
 
 typedef void (^AFURLConnectionOperationProgressBlock)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
-typedef BOOL (^AFURLConnectionOperationAuthenticationAgainstProtectionSpaceBlock)(NSURLConnection *connection, NSURLProtectionSpace *protectionSpace);
 typedef void (^AFURLConnectionOperationAuthenticationChallengeBlock)(NSURLConnection *connection, NSURLAuthenticationChallenge *challenge);
 typedef NSCachedURLResponse * (^AFURLConnectionOperationCacheResponseBlock)(NSURLConnection *connection, NSCachedURLResponse *cachedResponse);
 typedef NSURLRequest * (^AFURLConnectionOperationRedirectResponseBlock)(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse);
@@ -484,7 +483,11 @@ static inline BOOL AFStateTransitionIsValid(AFOperationState fromState, AFOperat
                       completionBlock:(void (^)(NSArray *operations))completionBlock
 {
     if (!operations || [operations count] == 0) {
-        return 0;
+        return @[[NSBlockOperation blockOperationWithBlock:^{
+            if (completionBlock) {
+                completionBlock(@[]);
+            }
+        }]];
     }
 
     __block dispatch_group_t group = dispatch_group_create();
@@ -606,7 +609,7 @@ didReceiveResponse:(NSURLResponse *)response
 
             NSInteger numberOfBytesWritten = 0;
             while (totalNumberOfBytesWritten < (NSInteger)length) {
-                numberOfBytesWritten = [self.outputStream write:&dataBuffer[0] maxLength:length];
+                numberOfBytesWritten = [self.outputStream write:&dataBuffer[(NSUInteger)totalNumberOfBytesWritten] maxLength:(length - (NSUInteger)totalNumberOfBytesWritten)];
                 if (numberOfBytesWritten == -1) {
                     [self.connection cancel];
                     [self performSelector:@selector(connection:didFailWithError:) withObject:self.connection withObject:self.outputStream.streamError];
@@ -667,44 +670,44 @@ didReceiveResponse:(NSURLResponse *)response
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    NSURLRequest *request = [aDecoder decodeObjectForKey:@"request"];
+- (id)initWithCoder:(NSCoder *)decoder {
+    NSURLRequest *request = [decoder decodeObjectForKey:NSStringFromSelector(@selector(request))];
     
     self = [self initWithRequest:request];
     if (!self) {
         return nil;
     }
     
-    self.state = (AFOperationState)[aDecoder decodeIntegerForKey:@"state"];
-    self.cancelled = [aDecoder decodeBoolForKey:@"isCancelled"];
-    self.response = [aDecoder decodeObjectForKey:@"response"];
-    self.error = [aDecoder decodeObjectForKey:@"error"];
-    self.responseData = [aDecoder decodeObjectForKey:@"responseData"];
-    self.totalBytesRead = [aDecoder decodeInt64ForKey:@"totalBytesRead"];
+    self.state = (AFOperationState)[decoder decodeIntegerForKey:NSStringFromSelector(@selector(state))];
+    self.cancelled = [decoder decodeBoolForKey:NSStringFromSelector(@selector(isCancelled))];
+    self.response = [decoder decodeObjectForKey:NSStringFromSelector(@selector(response))];
+    self.error = [decoder decodeObjectForKey:NSStringFromSelector(@selector(error))];
+    self.responseData = [decoder decodeObjectForKey:NSStringFromSelector(@selector(responseData))];
+    self.totalBytesRead = [decoder decodeInt64ForKey:NSStringFromSelector(@selector(totalBytesRead))];
 
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
+- (void)encodeWithCoder:(NSCoder *)coder {
     [self pause];
     
-    [aCoder encodeObject:self.request forKey:@"request"];
+    [coder encodeObject:self.request forKey:NSStringFromSelector(@selector(request))];
     
     switch (self.state) {
         case AFOperationExecutingState:
         case AFOperationPausedState:
-            [aCoder encodeInteger:AFOperationReadyState forKey:@"state"];
+            [coder encodeInteger:AFOperationReadyState forKey:NSStringFromSelector(@selector(state))];
             break;
         default:
-            [aCoder encodeInteger:self.state forKey:@"state"];
+            [coder encodeInteger:self.state forKey:NSStringFromSelector(@selector(state))];
             break;
     }
     
-    [aCoder encodeBool:[self isCancelled] forKey:@"isCancelled"];
-    [aCoder encodeObject:self.response forKey:@"response"];
-    [aCoder encodeObject:self.error forKey:@"error"];
-    [aCoder encodeObject:self.responseData forKey:@"responseData"];
-    [aCoder encodeInt64:self.totalBytesRead forKey:@"totalBytesRead"];
+    [coder encodeBool:[self isCancelled] forKey:NSStringFromSelector(@selector(isCancelled))];
+    [coder encodeObject:self.response forKey:NSStringFromSelector(@selector(response))];
+    [coder encodeObject:self.error forKey:NSStringFromSelector(@selector(error))];
+    [coder encodeObject:self.responseData forKey:NSStringFromSelector(@selector(responseData))];
+    [coder encodeInt64:self.totalBytesRead forKey:NSStringFromSelector(@selector(totalBytesRead))];
 }
 
 #pragma mark - NSCopying

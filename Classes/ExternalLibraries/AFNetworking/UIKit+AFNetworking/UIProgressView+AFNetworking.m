@@ -39,18 +39,18 @@ static char kAFUploadProgressAnimated;
 static char kAFDownloadProgressAnimated;
 
 @interface AFURLConnectionOperation (_UIProgressView)
-@property (readwrite, nonatomic, copy) void (^af_uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, copy) void (^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
 @property (readwrite, nonatomic, assign, setter = af_setUploadProgressAnimated:) BOOL af_uploadProgressAnimated;
 
-@property (readwrite, nonatomic, copy) void (^af_downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readwrite, nonatomic, copy) void (^downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
 @property (readwrite, nonatomic, assign, setter = af_setDownloadProgressAnimated:) BOOL af_downloadProgressAnimated;
 @end
 
 @implementation AFURLConnectionOperation (_UIProgressView)
-@dynamic af_uploadProgress;
+@dynamic uploadProgress; // Implemented in AFURLConnectionOperation
 @dynamic af_uploadProgressAnimated;
 
-@dynamic af_downloadProgress;
+@dynamic downloadProgress; // Implemented in AFURLConnectionOperation
 @dynamic af_downloadProgressAnimated;
 @end
 
@@ -104,7 +104,7 @@ static char kAFDownloadProgressAnimated;
                                         animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.af_uploadProgress copy];
+    void (^original)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) = [operation.uploadProgress copy];
     [operation setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
         if (original) {
             original(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
@@ -122,7 +122,7 @@ static char kAFDownloadProgressAnimated;
                                           animated:(BOOL)animated
 {
     __weak __typeof(self)weakSelf = self;
-    void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.af_downloadProgress copy];
+    void (^original)(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) = [operation.downloadProgress copy];
     [operation setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
         if (original) {
             original(bytesRead, totalBytesRead, totalBytesExpectedToRead);
@@ -143,6 +143,7 @@ static char kAFDownloadProgressAnimated;
                         change:(__unused NSDictionary *)change
                        context:(void *)context
 {
+#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if (context == AFTaskCountOfBytesSentContext || context == AFTaskCountOfBytesReceivedContext) {
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(countOfBytesSent))]) {
             if ([object countOfBytesExpectedToSend] > 0) {
@@ -160,7 +161,6 @@ static char kAFDownloadProgressAnimated;
             }
         }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(state))]) {
             if ([(NSURLSessionTask *)object state] == NSURLSessionTaskStateCompleted) {
                 @try {
@@ -171,14 +171,14 @@ static char kAFDownloadProgressAnimated;
                     }
 
                     if (context == AFTaskCountOfBytesReceivedContext) {
-                        [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesSent))];
+                        [object removeObserver:self forKeyPath:NSStringFromSelector(@selector(countOfBytesReceived))];
                     }
                 }
                 @catch (NSException * __unused exception) {}
             }
         }
-#endif
     }
+#endif
 }
 
 @end
