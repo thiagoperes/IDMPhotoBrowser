@@ -11,6 +11,8 @@
 #import "IDMZoomingScrollView.h"
 #import "SVProgressHUD.h"
 
+#define kUSE_CURRENT_CONTEXT_PRESENTATION_STYLE 1
+
 // Private
 @interface IDMPhotoBrowser () {
 	// Data
@@ -90,8 +92,10 @@
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation;
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index;
 
+// Toolbar
+- (void)updateToolbar;
+
 // Navigation
-- (void)updateNavigation;
 - (void)jumpToPageAtIndex:(NSUInteger)index;
 - (void)gotoPreviousPage;
 - (void)gotoNextPage;
@@ -142,15 +146,15 @@
         
         _displayDoneButton = YES;
         _doneButtonImage = nil;
-
+        
         _displayToolbar = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
-
+        
         _useWhiteBackgroundColor = NO;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
-
+        
         _backgroundScaleFactor = 1.0;
         _animationDuration = 0.28;
         _senderViewForAnimation = nil;
@@ -163,9 +167,8 @@
         _applicationRootViewController = [_applicationWindow rootViewController];
         
         // if remove this: rotation works, but screw presentation/animation
-        _applicationRootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+        if(kUSE_CURRENT_CONTEXT_PRESENTATION_STYLE) _applicationRootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         
-        //_applicationRootViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
         // Listen for IDMPhoto notifications
@@ -509,7 +512,7 @@
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
 	_pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
-	_pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    //_pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	_pagingScrollView.pagingEnabled = YES;
 	_pagingScrollView.delegate = self;
 	_pagingScrollView.showsHorizontalScrollIndicator = NO;
@@ -659,10 +662,13 @@
 
 #pragma mark - Layout
 
+- (void)viewDidLayoutSubviews {
+    //NSLog(@"viewDidLayoutSubviews  IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+}
+
 - (void)viewWillLayoutSubviews {
-    // Super
-    [super viewWillLayoutSubviews];
-	
+    //NSLog(@"viewWillLayoutSubviews IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+
 	// Flag
 	_performingLayout = YES;
     
@@ -720,6 +726,9 @@
 	// Reset
 	_currentPageIndex = indexPriorToLayout;
 	_performingLayout = NO;
+    
+    // Super
+    [super viewWillLayoutSubviews];
 }
 
 - (void)performLayout {
@@ -771,7 +780,7 @@
         [items addObject:_actionButton];
     
     [_toolbar setItems:items];
-	[self updateNavigation];
+	[self updateToolbar];
     
     // Content offset
 	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
@@ -783,32 +792,59 @@
 
 #pragma mark - Interface Orientation
 
-/*- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    // Remember page index before rotation
-	_pageIndexBeforeRotation = _currentPageIndex;
-	_rotating = YES;
+- (BOOL)shouldAutorotate
+{
+    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
     
-    if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = YES;
-    }
+    return YES;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	// Perform layout
-	_currentPageIndex = _pageIndexBeforeRotation;
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+/*- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}*/
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    //NSLog(@"IDMPB willRotateToInterfaceOrientation");
+    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
+
+    // Remember page index before rotation
+    _pageIndexBeforeRotation = _currentPageIndex;
+	_rotating = YES;
+    
+    /*if ([self areControlsHidden]) {
+        self.navigationController.navigationBarHidden = YES;
+    }*/
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+	_rotating = NO;
+    
+    /*if ([self areControlsHidden]) {
+        self.navigationController.navigationBarHidden = NO;
+        self.navigationController.navigationBar.alpha = 0;
+    }*/
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    //NSLog(@"IDMPB willAnimateRotationToInterfaceOrientation");
+    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
+    
+    _currentPageIndex = _pageIndexBeforeRotation;
 	
 	// Delay control holding
 	[self hideControlsAfterDelay];
 }
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-	_rotating = NO;
-    
-    if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = NO;
-        self.navigationController.navigationBar.alpha = 0;
-    }
-}*/
 
 #pragma mark - Data
 
@@ -1105,13 +1141,13 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	// Update nav when page changes
-	[self updateNavigation];
+	// Update toolbar when page changes
+	[self updateToolbar];
 }
 
-#pragma mark - Navigation
+#pragma mark - Toolbar
 
-- (void)updateNavigation {
+- (void)updateToolbar {
     // Counter
 	if ([self numberOfPhotos] > 1) {
 		_counterLabel.text = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", nil), [self numberOfPhotos]];
@@ -1129,7 +1165,7 @@
 	if (index < [self numberOfPhotos]) {
 		CGRect pageFrame = [self frameForPageAtIndex:index];
 		_pagingScrollView.contentOffset = CGPointMake(pageFrame.origin.x - PADDING, 0);
-		[self updateNavigation];
+		[self updateToolbar];
 	}
 	
 	// Update timer to give more time

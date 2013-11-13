@@ -7,11 +7,11 @@
 //
 
 #import "Menu.h"
+//#import <objc/message.h>
 
 @implementation UIAlertView (UIAlertViewWithTitle)
 
-+ (void)showAlertViewWithTitle:(NSString*)title
-{
++ (void)showAlertViewWithTitle:(NSString*)title {
     [[[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
@@ -37,19 +37,45 @@
 
 #pragma mark - Interface Orientation
 
-/*- (BOOL)shouldAutorotate
+- (BOOL)shouldAutorotate
 {
-    return NO;
+    return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIDeviceOrientationPortrait; //| UIDeviceOrientationLandscapeLeft | UIDeviceOrientationLandscapeRight;
+    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    return UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+/*- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    NSLog(@"Menu  willRotateToInterfaceOrientation");
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"Menu  didRotateFromInterfaceOrientation");
+}*/
+
+#pragma mark - Layout
+
+/*- (void)viewWillLayoutSubviews
+{
+    //NSLog(@"viewWillLayoutSubviews Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+    [super viewWillLayoutSubviews];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    //NSLog(@"viewDidLayoutSubviews  Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+    [super viewDidLayoutSubviews];
 }*/
 
 #pragma mark - General
