@@ -657,14 +657,6 @@
 
 #pragma mark - Status Bar
 
-/*- (BOOL)prefersStatusBarHidden {
-    return YES;
-}*/
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return _useWhiteBackgroundColor ? 1 : 0;
-}
-
 /*- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
     return UIStatusBarAnimationFade;
 }*/
