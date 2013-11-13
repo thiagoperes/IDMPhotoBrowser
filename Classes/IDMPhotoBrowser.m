@@ -250,7 +250,7 @@
         firstX = [scrollView center].x;
         firstY = [scrollView center].y;
         
-        _senderViewForAnimation.hidden = (_currentPageIndex == _initalPageIndex);
+        _senderViewForAnimation.hidden = (_keepSenderViewHiddenWhenIndexChanged || _currentPageIndex == _initalPageIndex);
     }
     
     translatedPoint = CGPointMake(firstX, firstY+translatedPoint.y);

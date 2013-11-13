@@ -31,6 +31,7 @@
 
 // Toolbar customization
 @property (nonatomic) BOOL use3DEffect;
+@property (nonatomic) BOOL keepSenderViewHiddenWhenIndexChanged;
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayArrowButton;
