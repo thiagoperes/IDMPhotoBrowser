@@ -18,6 +18,7 @@
 @optional
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
 @end
@@ -29,6 +30,7 @@
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
 // Toolbar customization
+@property (nonatomic) BOOL use3DEffect;
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayArrowButton;
@@ -71,6 +73,7 @@
 
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
+- (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
 
 // Change Sender View
 //- (void)setSenderViewForAnimation:(UIView*)senderView;

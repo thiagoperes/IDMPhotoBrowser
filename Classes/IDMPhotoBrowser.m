@@ -452,6 +452,9 @@
 - (void)dismissPhotoBrowserAnimated:(BOOL)animated {
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     
+    if ([_delegate respondsToSelector:@selector(photoBrowser:willDismissAtPageIndex:)])
+        [_delegate photoBrowser:self willDismissAtPageIndex:_currentPageIndex];
+    
     [self dismissViewControllerAnimated:animated completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
@@ -487,6 +490,9 @@
 }*/
 
 #pragma mark - View Lifecycle
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
 
 - (void)viewDidLoad {
     // Transition animation
@@ -1090,12 +1096,22 @@
     // Calculate current page
     CGRect visibleBounds = _pagingScrollView.bounds;
     NSInteger index = (NSInteger) (floorf(CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds)));
+    
     if (index < 0) index = 0;
     if (index > [self numberOfPhotos] - 1) index = [self numberOfPhotos] - 1;
     NSUInteger previousCurrentPage = _currentPageIndex;
     _currentPageIndex = index;
     if (_currentPageIndex != previousCurrentPage) {
         [self didStartViewingPageAtIndex:index];
+    }
+    
+    // Add 3D rotation effect
+    if (_use3DEffect) {
+        CGFloat movingPercent = CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds) - 0.5;
+        CGFloat movingOutIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
+        CGFloat movingInIndex = floorf(CGRectGetMaxX(visibleBounds) / CGRectGetWidth(visibleBounds));
+        [self pageDisplayedAtIndex:movingOutIndex].layer.transform = CATransform3DMakeRotation((movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
+        [self pageDisplayedAtIndex:movingInIndex].layer.transform = CATransform3DMakeRotation((movingPercent - movingInIndex) * M_PI, 0, 1, 1);
     }
 }
 
@@ -1114,7 +1130,7 @@
 - (void)updateNavigation {
     // Counter
 	if ([self numberOfPhotos] > 1) {
-		_counterLabel.text = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", nil), [self numberOfPhotos]];
+		_counterLabel.text = [NSString stringWithFormat:@"%i/%i", _currentPageIndex+1, [self numberOfPhotos]];
 	} else {
 		_counterLabel.text = nil;
 	}
