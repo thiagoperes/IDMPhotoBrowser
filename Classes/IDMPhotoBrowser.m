@@ -550,7 +550,7 @@
     if(!_doneButtonImage) {
         [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
         [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
-        [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
+        [_doneButton.titleLabel setFont:_doneButtonLabelFont ? _doneButtonLabelFont : [UIFont boldSystemFontOfSize:11.0f]];
         [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
         _doneButton.layer.cornerRadius = 3.0f;
         _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
@@ -586,7 +586,7 @@
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
     _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
-    _counterLabel.font = [UIFont fontWithName:@"Helvetica" size:17];
+    _counterLabel.font = _countLabelFont ? _countLabelFont : [UIFont fontWithName:@"Helvetica" size:17];
     
     if(_useWhiteBackgroundColor == NO) {
         _counterLabel.textColor = [UIColor whiteColor];
@@ -1101,6 +1101,7 @@
     _currentPageIndex = index;
     if (_currentPageIndex != previousCurrentPage) {
         [self didStartViewingPageAtIndex:index];
+        [self updateNavigation];
     }
     
     if (_custimzedEffectBlock) {
@@ -1111,11 +1112,6 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	// Hide controls when dragging begins
 	[self setControlsHidden:YES animated:YES permanent:NO];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	// Update nav when page changes
-	[self updateNavigation];
 }
 
 #pragma mark - Navigation
@@ -1137,8 +1133,7 @@
     // Change page
 	if (index < [self numberOfPhotos]) {
 		CGRect pageFrame = [self frameForPageAtIndex:index];
-		_pagingScrollView.contentOffset = CGPointMake(pageFrame.origin.x - PADDING, 0);
-		[self updateNavigation];
+		[_pagingScrollView setContentOffset:CGPointMake(pageFrame.origin.x - PADDING, 0) animated:YES];
 	}
 	
 	// Update timer to give more time
