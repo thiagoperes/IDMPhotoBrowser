@@ -1101,6 +1101,7 @@
     _currentPageIndex = index;
     if (_currentPageIndex != previousCurrentPage) {
         [self didStartViewingPageAtIndex:index];
+        [self updateNavigation];
     }
     
     // Add 3D rotation effect
@@ -1116,11 +1117,6 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	// Hide controls when dragging begins
 	[self setControlsHidden:YES animated:YES permanent:NO];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	// Update nav when page changes
-	[self updateNavigation];
 }
 
 #pragma mark - Navigation
@@ -1142,8 +1138,7 @@
     // Change page
 	if (index < [self numberOfPhotos]) {
 		CGRect pageFrame = [self frameForPageAtIndex:index];
-		_pagingScrollView.contentOffset = CGPointMake(pageFrame.origin.x - PADDING, 0);
-		[self updateNavigation];
+		[_pagingScrollView setContentOffset:CGPointMake(pageFrame.origin.x - PADDING, 0) animated:YES];
 	}
 	
 	// Update timer to give more time
