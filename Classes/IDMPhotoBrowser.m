@@ -1109,8 +1109,10 @@
         CGFloat movingPercent = CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds) - 0.5;
         CGFloat movingOutIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
         CGFloat movingInIndex = floorf(CGRectGetMaxX(visibleBounds) / CGRectGetWidth(visibleBounds));
-        [self pageDisplayedAtIndex:movingOutIndex].layer.transform = CATransform3DMakeRotation((movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
-        [self pageDisplayedAtIndex:movingInIndex].layer.transform = CATransform3DMakeRotation((movingPercent - movingInIndex) * M_PI, 0, 1, 1);
+        CATransform3D t = CATransform3DIdentity;
+        t.m34 = 1.0 / -500.0f;
+        [self pageDisplayedAtIndex:movingOutIndex].layer.transform = CATransform3DRotate(t, (movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
+        [self pageDisplayedAtIndex:movingInIndex].layer.transform = CATransform3DRotate(t, (movingPercent - movingInIndex) * M_PI, 0, 1, 1);
     }
 }
 
