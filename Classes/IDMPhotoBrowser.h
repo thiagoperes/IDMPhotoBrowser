@@ -37,10 +37,13 @@
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayActionButton;
-@property (nonatomic, retain) NSArray *actionButtonTitles;
+@property (nonatomic, strong) NSArray *actionButtonTitles;
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) UIFont *countLabelFont;
+@property (nonatomic, strong) UIFont *doneButtonLabelFont;
+
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
