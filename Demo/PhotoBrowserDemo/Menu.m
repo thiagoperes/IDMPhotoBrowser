@@ -125,6 +125,16 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     browser.scaleImage = buttonSender.currentImage;
+    __weak IDMPhotoBrowser *weakBrowser = browser;
+    browser.custimzedEffectBlock = ^(UIScrollView *scrollView) {
+        // Add 3D rotation effect
+        CGRect visibleBounds = scrollView.bounds;
+        CGFloat movingPercent = CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds) - 0.5;
+        CGFloat movingOutIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
+        CGFloat movingInIndex = floorf(CGRectGetMaxX(visibleBounds) / CGRectGetWidth(visibleBounds));
+        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingOutIndex]).layer.transform = CATransform3DMakeRotation((movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
+        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingInIndex]).layer.transform = CATransform3DMakeRotation((movingPercent - movingInIndex) * M_PI, 0, 1, 1);
+    };
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];

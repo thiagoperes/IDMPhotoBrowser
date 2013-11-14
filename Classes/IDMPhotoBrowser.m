@@ -1103,13 +1103,8 @@
         [self didStartViewingPageAtIndex:index];
     }
     
-    // Add 3D rotation effect
-    if (_use3DEffect) {
-        CGFloat movingPercent = CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds) - 0.5;
-        CGFloat movingOutIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
-        CGFloat movingInIndex = floorf(CGRectGetMaxX(visibleBounds) / CGRectGetWidth(visibleBounds));
-        [self pageDisplayedAtIndex:movingOutIndex].layer.transform = CATransform3DMakeRotation((movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
-        [self pageDisplayedAtIndex:movingInIndex].layer.transform = CATransform3DMakeRotation((movingPercent - movingInIndex) * M_PI, 0, 1, 1);
+    if (_custimzedEffectBlock) {
+        _custimzedEffectBlock(scrollView);
     }
 }
 

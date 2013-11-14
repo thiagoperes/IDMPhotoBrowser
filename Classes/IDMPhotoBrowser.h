@@ -14,6 +14,8 @@
 
 // Delgate
 @class IDMPhotoBrowser;
+@class IDMZoomingScrollView;
+
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
@@ -31,7 +33,6 @@
 
 // Toolbar customization
 @property (nonatomic) BOOL prefersStatusBarHidden;
-@property (nonatomic) BOOL use3DEffect;
 @property (nonatomic) BOOL keepSenderViewHiddenWhenIndexChanged;
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayCounterLabel;
@@ -41,6 +42,7 @@
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) void (^custimzedEffectBlock)(UIScrollView *scrollView);
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;
@@ -77,6 +79,7 @@
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
 - (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
+- (IDMZoomingScrollView *)pageDisplayedAtIndex:(NSUInteger)index;
 
 // Change Sender View
 //- (void)setSenderViewForAnimation:(UIView*)senderView;
