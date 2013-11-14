@@ -750,6 +750,11 @@
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                                                                     target:self action:nil];
     fixedLeftSpace.width = 32; // To balance action button
+    
+    UIBarButtonItem *fixedArrowButtonSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+                                                                                           target:self action:nil];
+    fixedArrowButtonSpace.width = -30;
+    
     UIBarButtonItem *flexSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                                target:self action:nil];
     NSMutableArray *items = [NSMutableArray new];
@@ -758,19 +763,23 @@
         [items addObject:fixedLeftSpace];
     [items addObject:flexSpace];
     
-    if (numberOfPhotos > 1 && _displayArrowButton)
+    if (numberOfPhotos > 1 && _displayArrowButton) {
         [items addObject:_previousButton];
+        [items addObject:fixedArrowButtonSpace];
+    }
     
-    if(_displayCounterLabel) {
-        [items addObject:flexSpace];
+    if (_displayCounterLabel) {
         [items addObject:_counterButton];
+    } else {
+        [items addObject:flexSpace];
+    }
+    
+    if (numberOfPhotos > 1 && _displayArrowButton) {
+        [items addObject:fixedArrowButtonSpace];
+        [items addObject:_nextButton];
     }
     
     [items addObject:flexSpace];
-    if (numberOfPhotos > 1 && _displayArrowButton)
-        [items addObject:_nextButton];
-    [items addObject:flexSpace];
-    
     if(_displayActionButton)
         [items addObject:_actionButton];
     
