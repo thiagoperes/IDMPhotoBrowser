@@ -19,9 +19,6 @@
 	// Views
 	UIScrollView *_pagingScrollView;
 	
-    // Gesture
-    UIPanGestureRecognizer *_panGesture;
-    
 	// Paging
     NSMutableSet *_visiblePages, *_recycledPages;
     NSUInteger _pageIndexBeforeRotation;
@@ -46,9 +43,6 @@
     // Appearance
     UIStatusBarStyle _previousStatusBarStyle;
     
-    // Present
-    UIView *_senderViewForAnimation;
-    
     // Misc
     BOOL _performingLayout;
 	BOOL _rotating;
@@ -58,9 +52,6 @@
     
     CGRect _resizableImageViewFrame;
     //UIImage *_backgroundScreenshot;
-    
-    UIWindow *_applicationWindow;
-    UIViewController *_applicationRootViewController;
 }
 
 // Private Properties
@@ -153,20 +144,10 @@
 
         _backgroundScaleFactor = 1.0;
         _animationDuration = 0.28;
-        _senderViewForAnimation = nil;
         _scaleImage = nil;
         
         if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
             self.automaticallyAdjustsScrollViewInsets = NO;
-        
-        _applicationWindow = [[[UIApplication sharedApplication] delegate] window];
-        _applicationRootViewController = [_applicationWindow rootViewController];
-        
-        // if remove this: rotation works, but screw presentation/animation
-        _applicationRootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
-        
-        //_applicationRootViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -185,27 +166,10 @@
 	return self;
 }
 
-- (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view {
-    if ((self = [self init])) {
-		_photos = [[NSMutableArray alloc] initWithArray:photosArray];
-        _senderViewForAnimation = view;
-	}
-	return self;
-}
-
 - (id)initWithPhotoURLs:(NSArray *)photoURLsArray {
     if ((self = [self init])) {
         NSArray *photosArray = [IDMPhoto photosWithURLs:photoURLsArray];
 		_photos = [[NSMutableArray alloc] initWithArray:photosArray];
-	}
-	return self;
-}
-
-- (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view {
-    if ((self = [self init])) {
-        NSArray *photosArray = [IDMPhoto photosWithURLs:photoURLsArray];
-		_photos = [[NSMutableArray alloc] initWithArray:photosArray];        
-        _senderViewForAnimation = view;
 	}
 	return self;
 }
@@ -231,95 +195,6 @@
 
 #pragma mark - Pan Gesture
 
-- (void)panGestureRecognized:(id)sender {
-    // Initial Setup
-    IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-    //IDMTapDetectingImageView *scrollView.photoImageView = scrollView.photoImageView;
-    
-    static float firstX, firstY;
-    
-    float viewHeight = scrollView.frame.size.height;
-    float viewHalfHeight = viewHeight/2;
-    
-    CGPoint translatedPoint = [(UIPanGestureRecognizer*)sender translationInView:self.view];
-    
-    // Gesture Began
-    if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateBegan) {
-        [self setControlsHidden:YES animated:YES permanent:YES];
-        
-        firstX = [scrollView center].x;
-        firstY = [scrollView center].y;
-        
-        _senderViewForAnimation.hidden = (_currentPageIndex == _initalPageIndex);
-    }
-    
-    translatedPoint = CGPointMake(firstX, firstY+translatedPoint.y);
-    [scrollView setCenter:translatedPoint];
-    
-    float newY = scrollView.center.y - viewHalfHeight;
-    float newAlpha = 1 - abs(newY)/viewHeight; //abs(newY)/viewHeight * 1.8;
-    
-    self.view.opaque = YES;
-    
-    self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
-    
-    /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
-    backgroundImageView.alpha = 1 - newAlpha;
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
-    
-    // Gesture Ended
-    if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
-        if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
-        {
-            if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
-                [self performCloseAnimationWithScrollView:scrollView];
-                return;
-            }
-            
-            CGFloat finalX = firstX, finalY;
-            
-            CGFloat windowsHeigt = [_applicationWindow frame].size.height;
-            
-            if(scrollView.center.y > viewHalfHeight+30) // swipe down
-                finalY = windowsHeigt*2;
-            else // swipe up
-                finalY = -viewHalfHeight;
-            
-            CGFloat animationDuration = 0.35;
-            
-            [UIView beginAnimations:nil context:NULL];
-            [UIView setAnimationDuration:animationDuration];
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-            [UIView setAnimationDelegate:self];
-            [scrollView setCenter:CGPointMake(finalX, finalY)];
-            self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
-            //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
-            [UIView commitAnimations];
-            
-            [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
-        }
-        else // Continue Showing View
-        {
-            self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
-            //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
-            
-            CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y); 
-            
-            CGFloat finalX = firstX;
-            CGFloat finalY = viewHalfHeight;
-            
-            CGFloat animationDuration = (ABS(velocityY)*.0002)+.2;
-            
-            [UIView beginAnimations:nil context:NULL];
-            [UIView setAnimationDuration:animationDuration];
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-            [UIView setAnimationDelegate:self];
-            [scrollView setCenter:CGPointMake(finalX, finalY)];
-            [UIView commitAnimations];
-        }
-    }
-}
-
 #pragma mark - Animation
 
 - (UIImage*)rotateImageToCurrentOrientation:(UIImage*)image
@@ -336,91 +211,6 @@
     }
     
     return image;
-}
-
-- (void)performPresentAnimation {
-    self.view.alpha = 0.0f;
-    
-    UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
-    imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
-    
-    _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
-    
-    CGRect screenBound = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenBound.size.width;
-    CGFloat screenHeight = screenBound.size.height;
-    
-    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor = [UIColor clearColor];
-    [_applicationWindow addSubview:fadeView];
-    
-    UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = _resizableImageViewFrame;
-    resizableImageView.clipsToBounds = YES;
-    resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
-    resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
-    [_applicationWindow addSubview:resizableImageView];
-    _senderViewForAnimation.hidden = YES;
-    
-    [UIView animateWithDuration:_animationDuration animations:^{
-        /*CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor, _backgroundScaleFactor);
-        [_applicationRootViewController.view setTransform:zoom];*/
-        
-        fadeView.backgroundColor = [UIColor blackColor];
-
-        float scaleFactor =  (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
-        
-        resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
-    } completion:^(BOOL finished) {
-        self.view.alpha = 1.0f;
-        resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
-        [fadeView removeFromSuperview];
-        [resizableImageView removeFromSuperview];
-    }];
-}
-
-- (void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView {
-    float fadeAlpha = 1 - abs(scrollView.frame.origin.y)/scrollView.frame.size.height;
-    
-    UIImage *imageFromView = [scrollView.photo underlyingImage];
-    //imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
-
-    CGRect screenBound = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenBound.size.width;
-    CGFloat screenHeight = screenBound.size.height;
-    
-    float scaleFactor = imageFromView.size.width / screenWidth;
-    
-    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor = [UIColor blackColor];
-    fadeView.alpha = fadeAlpha;
-    [_applicationWindow addSubview:fadeView];
-    
-    UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = (imageFromView) ? CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2)+scrollView.frame.origin.y, screenWidth, imageFromView.size.height / scaleFactor) : CGRectZero;
-    resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
-    resizableImageView.backgroundColor = [UIColor clearColor];
-    resizableImageView.clipsToBounds = YES;
-    [_applicationWindow addSubview:resizableImageView];
-    self.view.hidden = YES;
-    
-    [UIView animateWithDuration:_animationDuration animations:^{
-        //[_applicationRootViewController.view setTransform:CGAffineTransformIdentity];
-        
-        resizableImageView.layer.frame = _resizableImageViewFrame;
-        fadeView.alpha = 0;
-        self.view.backgroundColor = [UIColor clearColor];
-    } completion:^(BOOL finished) {
-        _senderViewForAnimation.hidden = NO;
-        _senderViewForAnimation = nil;
-        _scaleImage = nil;
-        
-        [fadeView removeFromSuperview];
-        [resizableImageView removeFromSuperview];
-        
-        [self prepareForClosePhotoBrowser];
-        [self dismissPhotoBrowserAnimated:YES];
-    }];
 }
 
 #pragma mark - Genaral
@@ -440,23 +230,17 @@
         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
     }*/
     
-    // Gesture
-    [_applicationWindow removeGestureRecognizer:_panGesture];
-    
     _autoHide = NO;
     
     // Controls
     [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
 }
 
-- (void)dismissPhotoBrowserAnimated:(BOOL)animated {
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    
+- (void)dismissPhotoBrowserAnimated:(BOOL)animated;
+{
     [self dismissViewControllerAnimated:animated completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-        
-        _applicationRootViewController.modalPresentationStyle = 0;
     }];
 }
 
@@ -489,18 +273,6 @@
 #pragma mark - View Lifecycle
 
 - (void)viewDidLoad {
-    // Transition animation
-    [self performPresentAnimation];
-    
-    /*if(!_senderViewForAnimation) // Default presentation (withoung animation) {
-        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) // ios 7 or greater
-            [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
-                [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-            }];
-        else // ios 6 or less
-            [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-    }*/
-    
     // View
 	self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
     
@@ -592,11 +364,6 @@
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
-    
-    // Gesture
-    _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
-    [_panGesture setMinimumNumberOfTouches:1];
-    [_panGesture setMaximumNumberOfTouches:1];
     
     // Update
     //[self reloadData];
@@ -777,8 +544,6 @@
 	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
     [self tilePages];
     _performingLayout = NO;
-    
-    [self.view addGestureRecognizer:_panGesture];
 }
 
 #pragma mark - Interface Orientation
@@ -1218,15 +983,8 @@
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
-        IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
-        [self performCloseAnimationWithScrollView:scrollView];
-    }
-    else {
-        _senderViewForAnimation.hidden = NO;
-        [self prepareForClosePhotoBrowser];
-        [self dismissPhotoBrowserAnimated:YES];
-    }
+    [self prepareForClosePhotoBrowser];
+    [self dismissPhotoBrowserAnimated:YES];
 }
 
 - (void)actionButtonPressed:(id)sender {
