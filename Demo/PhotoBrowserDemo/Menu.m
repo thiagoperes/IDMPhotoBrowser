@@ -7,7 +7,6 @@
 //
 
 #import "Menu.h"
-//#import <objc/message.h>
 
 @implementation UIAlertView (UIAlertViewWithTitle)
 
@@ -151,6 +150,7 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     browser.scaleImage = buttonSender.currentImage;
+    if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];

@@ -368,6 +368,7 @@
 				D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */,
 				D1574950178DB94900B0211A /* IDMPhoto.h */,
 				D1574951178DB94900B0211A /* IDMPhoto.m */,
+				D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */,
 				D1574953178DB94900B0211A /* IDMPhotoBrowser.h */,
 				D1574954178DB94900B0211A /* IDMPhotoBrowser.m */,
 				D1574955178DB94900B0211A /* IDMPhotoProtocol.h */,
@@ -377,7 +378,6 @@
 				D1574959178DB94900B0211A /* IDMTapDetectingView.m */,
 				D157495A178DB94900B0211A /* IDMZoomingScrollView.h */,
 				D157495B178DB94900B0211A /* IDMZoomingScrollView.m */,
-				D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */,
 			);
 			name = Classes;
 			path = ../Classes;

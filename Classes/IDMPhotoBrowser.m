@@ -123,6 +123,7 @@
 @synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
+@synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
@@ -154,6 +155,8 @@
         
         _useWhiteBackgroundColor = NO;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
+        
+        _arrowButtonsChangePhotosAnimated = YES;
         
         _backgroundScaleFactor = 1.0;
         _animationDuration = 0.28;
@@ -369,9 +372,9 @@
         /*CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor, _backgroundScaleFactor);
         [_applicationRootViewController.view setTransform:zoom];*/
         
-        fadeView.backgroundColor = [UIColor blackColor];
+        fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
 
-        float scaleFactor =  (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
+        float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
         
         resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
     } completion:^(BOOL finished) {
@@ -395,7 +398,7 @@
     float scaleFactor = imageFromView.size.width / screenWidth;
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor = [UIColor blackColor];
+    fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
     fadeView.alpha = fadeAlpha;
     [_applicationWindow addSubview:fadeView];
     
@@ -1132,6 +1135,8 @@
     _currentPageIndex = index;
     if (_currentPageIndex != previousCurrentPage) {
         [self didStartViewingPageAtIndex:index];
+        
+        if(_arrowButtonsChangePhotosAnimated) [self updateToolbar];
     }
 }
 
@@ -1142,7 +1147,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// Update toolbar when page changes
-	[self updateToolbar];
+	if(! _arrowButtonsChangePhotosAnimated) [self updateToolbar];
 }
 
 #pragma mark - Toolbar
@@ -1164,8 +1169,16 @@
     // Change page
 	if (index < [self numberOfPhotos]) {
 		CGRect pageFrame = [self frameForPageAtIndex:index];
-		_pagingScrollView.contentOffset = CGPointMake(pageFrame.origin.x - PADDING, 0);
-		[self updateToolbar];
+
+		if(_arrowButtonsChangePhotosAnimated)
+        {
+            [_pagingScrollView setContentOffset:CGPointMake(pageFrame.origin.x - PADDING, 0) animated:YES];
+        }
+        else
+        {
+            _pagingScrollView.contentOffset = CGPointMake(pageFrame.origin.x - PADDING, 0);
+            [self updateToolbar];
+        }
 	}
 	
 	// Update timer to give more time

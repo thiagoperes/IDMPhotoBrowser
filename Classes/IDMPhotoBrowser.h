@@ -33,7 +33,7 @@
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayActionButton;
-@property (nonatomic, retain) NSArray *actionButtonTitles;
+@property (nonatomic, strong) NSArray *actionButtonTitles;
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 
@@ -44,6 +44,8 @@
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 
 @property (nonatomic, weak) UIImage *scaleImage;
+
+@property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
 
 // defines zooming of the background defauly 1.0
 @property (nonatomic) float backgroundScaleFactor;
