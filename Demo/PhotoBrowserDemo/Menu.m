@@ -127,13 +127,10 @@
     NSMutableArray *photos = [NSMutableArray new];
     
     IDMPhoto *photo;
-    
-    if(buttonSender.tag == 101)
-    {
-        photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
-        photo.caption = @"Grotto of the Madonna";
-        [photos addObject:photo];
-    }
+
+    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
+    photo.caption = @"Grotto of the Madonna";
+    [photos addObject:photo];
     
     photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo3l" ofType:@"jpg"]];
     photo.caption = @"York Floods";
@@ -146,7 +143,13 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     browser.scaleImage = buttonSender.currentImage;
-    if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
+    
+    if (buttonSender.tag == 101) {
+        [browser setInitialPageIndex:0];
+    } else if (buttonSender.tag == 102) {
+        [browser setInitialPageIndex:1];
+        browser.useWhiteBackgroundColor = YES;
+    }
     
     self.browserForButtonsWithImageOnScreen = browser;
     
