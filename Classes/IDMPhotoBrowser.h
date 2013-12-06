@@ -16,10 +16,11 @@
 @class IDMPhotoBrowser;
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
-- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index oldIndex:(NSUInteger)oldIndex;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
+- (UIView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser destinationViewForPhotoAtIndex:(NSUInteger)index;
 @end
 
 // IDMPhotoBrowser
