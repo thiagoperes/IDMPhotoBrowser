@@ -8,6 +8,14 @@
 
 #import "Menu.h"
 
+@interface Menu ()
+
+@property (nonatomic, strong) UIView *buttonWithImageOnScreen1;
+@property (nonatomic, strong) UIView *buttonWithImageOnScreen2;
+@property (nonatomic, strong) IDMPhotoBrowser *browserForButtonsWithImageOnScreen;
+
+@end
+
 @implementation UIAlertView (UIAlertViewWithTitle)
 
 + (void)showAlertViewWithTitle:(NSString*)title {
@@ -103,6 +111,9 @@
     [buttonWithImageOnScreen2 addTarget:self action:@selector(buttonWithImageOnScreenPressed:) forControlEvents:UIControlEventTouchUpInside];
     [tableViewFooter addSubview:buttonWithImageOnScreen2];
     
+    self.buttonWithImageOnScreen1 = buttonWithImageOnScreen1;
+    self.buttonWithImageOnScreen2 = buttonWithImageOnScreen2;
+    
     self.tableView.tableFooterView = tableViewFooter;
 }
 
@@ -128,21 +139,6 @@
     photo.caption = @"York Floods";
     [photos addObject:photo];
     
-    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
-    photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
-    [photos addObject:photo];
-    
-    photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo4l" ofType:@"jpg"]];
-    photo.caption = @"Campervan";
-    [photos addObject:photo];
-    
-    if(buttonSender.tag == 102)
-    {
-        photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo1l" ofType:@"jpg"]];
-        photo.caption = @"Grotto of the Madonna";
-        [photos addObject:photo];
-    }
-    
     // Create and setup browser
     IDMPhotoBrowser *browser = [[IDMPhotoBrowser alloc] initWithPhotos:photos animatedFromView:sender]; // using initWithPhotos:animatedFromView: method to use the zoom-in animation
     browser.delegate = self;
@@ -151,6 +147,8 @@
     browser.displayCounterLabel = YES;
     browser.scaleImage = buttonSender.currentImage;
     if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
+    
+    self.browserForButtonsWithImageOnScreen = browser;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
@@ -305,6 +303,34 @@
     
     NSString *title = [NSString stringWithFormat:@"Option %d", buttonIndex+1];
     [UIAlertView showAlertViewWithTitle:title];
+}
+
+- (UIView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser destinationViewForPhotoAtIndex:(NSUInteger)index
+{
+    if (photoBrowser == self.browserForButtonsWithImageOnScreen) {
+        if (index == 0) {
+            return self.buttonWithImageOnScreen1;
+        } else if (index == 1) {
+            return self.buttonWithImageOnScreen2;
+        }
+    }
+    
+    return nil;
+}
+
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index oldIndex:(NSUInteger)oldIndex
+{
+    if (photoBrowser == self.browserForButtonsWithImageOnScreen) {
+        CGRect photoRect = CGRectZero;
+        
+        if (index == 0) {
+            photoRect = [self.tableView convertRect:self.buttonWithImageOnScreen1.bounds fromView:self.buttonWithImageOnScreen1];
+        } else if (index == 1) {
+            photoRect = [self.tableView convertRect:self.buttonWithImageOnScreen2.bounds fromView:self.buttonWithImageOnScreen2];
+        }
+        
+        [self.tableView scrollRectToVisible:photoRect animated:NO];
+    }
 }
 
 @end
