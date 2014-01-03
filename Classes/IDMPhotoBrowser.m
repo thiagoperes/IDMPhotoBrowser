@@ -52,6 +52,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Appearance
     UIStatusBarStyle _previousStatusBarStyle;
+	BOOL _statusBarOriginallyHidden;
     
     // Present
     UIView *_senderViewForAnimation;
@@ -444,8 +445,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             [self setNeedsStatusBarAppearanceUpdate];
         } completion:^(BOOL finished) {}];
     }*/
-
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
     /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
@@ -633,11 +632,23 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Update UI
 	[self hideControlsAfterDelay];
+	
+	_statusBarOriginallyHidden = [UIApplication sharedApplication].statusBarHidden;
+	[[UIApplication sharedApplication] setStatusBarHidden:YES
+											withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     _viewIsActive = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	
+	[[UIApplication sharedApplication] setStatusBarHidden:_statusBarOriginallyHidden
+											withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
 }
 
 // Release any retained subviews of the main view.
@@ -656,17 +667,17 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 #pragma mark - Status Bar
 
-/*- (BOOL)prefersStatusBarHidden {
-    return YES;
-}*/
-
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return _useWhiteBackgroundColor ? 1 : 0;
 }
 
-/*- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationFade;
-}*/
+- (BOOL)prefersStatusBarHidden {
+	return YES;
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+	return UIStatusBarAnimationFade;
+}
 
 #pragma mark - Layout
 
@@ -1209,9 +1220,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             } completion:^(BOOL finished) {}];
         }
     }*/
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:hidden
-                                            withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
     
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
