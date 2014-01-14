@@ -65,6 +65,11 @@
 
 #pragma mark - Layout
 
+- (BOOL)prefersStatusBarHidden
+{
+	return NO;
+}
+
 /*- (void)viewWillLayoutSubviews
 {
     //NSLog(@"viewWillLayoutSubviews Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
