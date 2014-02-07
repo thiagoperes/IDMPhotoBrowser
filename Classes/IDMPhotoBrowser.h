@@ -47,6 +47,7 @@
 @property (nonatomic, strong) UIFont *doneButtonLabelFont;
 
 // View customization
+@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneButtonImage;

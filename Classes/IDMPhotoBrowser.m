@@ -218,7 +218,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view {
     if ((self = [self init])) {
         NSArray *photosArray = [IDMPhoto photosWithURLs:photoURLsArray];
-		_photos = [[NSMutableArray alloc] initWithArray:photosArray];        
+		_photos = [[NSMutableArray alloc] initWithArray:photosArray];
         _senderViewForAnimation = view;
 	}
 	return self;
@@ -275,11 +275,16 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     self.view.opaque = YES;
     
-    self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
+    if (_backgroundView) {
+        self.view.backgroundColor = [UIColor clearColor];
+        _backgroundView.alpha = newAlpha;
+    } else {
+        self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
+    }
     
     /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
-    backgroundImageView.alpha = 1 - newAlpha;
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
+     backgroundImageView.alpha = 1 - newAlpha;
+     self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
     
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
@@ -306,7 +311,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
             [UIView setAnimationDelegate:self];
             [scrollView setCenter:CGPointMake(finalX, finalY)];
-            self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
+            if (_backgroundView) {
+                _backgroundView.alpha = 0;
+                self.view.backgroundColor = [UIColor clearColor];
+            } else {
+                self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
+            }
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             [UIView commitAnimations];
             
@@ -314,10 +324,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }
         else // Continue Showing View
         {
-            self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+            if (_backgroundView) {
+                _backgroundView.alpha = 1;
+                self.view.backgroundColor = [UIColor clearColor];
+            } else {
+                self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+            }
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             
-            CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y); 
+            CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y);
             
             CGFloat finalX = firstX;
             CGFloat finalY = viewHalfHeight;
@@ -365,7 +380,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGFloat screenHeight = screenBound.size.height;
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor = [UIColor clearColor];
+    if (_backgroundView) {
+        [fadeView addSubview:[_backgroundView snapshotViewAfterScreenUpdates:YES]];
+    } else {
+        fadeView.backgroundColor = [UIColor clearColor];
+    }
     [_applicationWindow addSubview:fadeView];
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
@@ -378,10 +397,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     [UIView animateWithDuration:_animationDuration animations:^{
         /*CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor, _backgroundScaleFactor);
-        [_applicationRootViewController.view setTransform:zoom];*/
+         [_applicationRootViewController.view setTransform:zoom];*/
         
-        fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
-
+        if (!_backgroundView) {
+            fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
+        }
+        
         float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
         
         resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
@@ -398,7 +419,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     UIImage *imageFromView = [scrollView.photo underlyingImage];
     //imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
-
+    
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
     CGFloat screenHeight = screenBound.size.height;
@@ -406,7 +427,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     float scaleFactor = imageFromView.size.width / screenWidth;
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
+    if (_backgroundView) {
+        [fadeView addSubview:[_backgroundView snapshotViewAfterScreenUpdates:YES]];
+    } else {
+        fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
+    }
     fadeView.alpha = fadeAlpha;
     [_applicationWindow addSubview:fadeView];
     
@@ -442,15 +467,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)prepareForClosePhotoBrowser {
     // Status Bar
     /*if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-        [UIView animateWithDuration:0.3 animations:^(void) {
-            [self setNeedsStatusBarAppearanceUpdate];
-        } completion:^(BOOL finished) {}];
-    }*/
+     //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+     [UIView animateWithDuration:0.3 animations:^(void) {
+     [self setNeedsStatusBarAppearanceUpdate];
+     } completion:^(BOOL finished) {}];
+     }*/
     
     /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
-    }*/
+     [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
+     }*/
     
     // Gesture
     [_applicationWindow removeGestureRecognizer:_panGesture];
@@ -494,12 +519,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 /*- (UIImage*)takeScreenshot {
-    UIGraphicsBeginImageContext(_applicationWindow.bounds.size);
-    [window.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}*/
+ UIGraphicsBeginImageContext(_applicationWindow.bounds.size);
+ [window.layer renderInContext:UIGraphicsGetCurrentContext()];
+ UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+ UIGraphicsEndImageContext();
+ return image;
+ }*/
 
 #pragma mark - View Lifecycle
 - (BOOL)prefersStatusBarHidden {
@@ -511,20 +536,28 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)viewDidLoad {
+    // Super
+    [super viewDidLoad];
+    
     // Transition animation
     [self performPresentAnimation];
     
     /*if(!_senderViewForAnimation) // Default presentation (withoung animation) {
-        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) // ios 7 or greater
-            [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
-                [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-            }];
-        else // ios 6 or less
-            [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-    }*/
+     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) // ios 7 or greater
+     [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
+     [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
+     }];
+     else // ios 6 or less
+     [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
+     }*/
     
     // View
-	self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+    if (_backgroundView) {
+        [self.view addSubview:_backgroundView];
+        self.view.backgroundColor = [UIColor clearColor];
+    } else {
+        self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+    }
     
     self.view.clipsToBounds = YES;
     
@@ -541,7 +574,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	[self.view addSubview:_pagingScrollView];
     
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
-
+    
     // Toolbar
     _toolbar = [[UIToolbar alloc] initWithFrame:[self frameForToolbarAtOrientation:currentOrientation]];
     _toolbar.backgroundColor = [UIColor clearColor];
@@ -622,9 +655,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Update
     //[self reloadData];
-    
-	// Super
-    [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -638,9 +668,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Status Bar
     /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
-    }*/
+     _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
+     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
+     }*/
     
     // Update UI
 	[self hideControlsAfterDelay];
@@ -691,36 +721,36 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)viewWillLayoutSubviews {
     //NSLog(@"viewWillLayoutSubviews IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
-
+    
 	// Flag
 	_performingLayout = YES;
     
     /*static BOOL isFirstViewLoad = YES;
-    if(isFirstViewLoad) {
-        // Toolbar
-        _toolbar.frame = [self frameForToolbarFirstTimeAtOrientation:self.interfaceOrientation];
-        
-        // Done button
-        _doneButton.frame = [self frameForDoneButtonFirstTimeAtOrientation:self.interfaceOrientation];
-
-        isFirstViewLoad = NO;
-    }
-    else {
+     if(isFirstViewLoad) {
      // Toolbar
-        _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
-        
-        // Done button
-        _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
-    }*/
+     _toolbar.frame = [self frameForToolbarFirstTimeAtOrientation:self.interfaceOrientation];
+     
+     // Done button
+     _doneButton.frame = [self frameForDoneButtonFirstTimeAtOrientation:self.interfaceOrientation];
+     
+     isFirstViewLoad = NO;
+     }
+     else {
+     // Toolbar
+     _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
+     
+     // Done button
+     _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
+     }*/
     
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
-
+    
     // Toolbar
     _toolbar.frame = [self frameForToolbarAtOrientation:currentOrientation];
     
     // Done button
     _doneButton.frame = [self frameForDoneButtonAtOrientation:currentOrientation];
-
+    
     
     // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
@@ -838,23 +868,23 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 /*- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
-    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}*/
+ {
+ return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+ //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+ }*/
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     //NSLog(@"IDMPB willRotateToInterfaceOrientation");
     //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
-
+    
     // Remember page index before rotation
     _pageIndexBeforeRotation = _currentPageIndex;
 	_rotating = YES;
     
     /*if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = YES;
-    }*/
+     self.navigationController.navigationBarHidden = YES;
+     }*/
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -862,9 +892,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	_rotating = NO;
     
     /*if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = NO;
-        self.navigationController.navigationBar.alpha = 0;
-    }*/
+     self.navigationController.navigationBarHidden = NO;
+     self.navigationController.navigationBar.alpha = 0;
+     }*/
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
@@ -910,7 +940,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }
     }
     captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha
-
+    
     return captionView;
 }
 
@@ -1226,14 +1256,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self cancelControlHiding];
     
     /*if (self.wantsFullScreenLayout) {
-        // Status Bar
-        if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-            //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-            [UIView animateWithDuration:0.3 animations:^(void) {
-                [self setNeedsStatusBarAppearanceUpdate];
-            } completion:^(BOOL finished) {}];
-        }
-    }*/
+     // Status Bar
+     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+     //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+     [UIView animateWithDuration:0.3 animations:^(void) {
+     [self setNeedsStatusBarAppearanceUpdate];
+     } completion:^(BOOL finished) {}];
+     }
+     }*/
     
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
