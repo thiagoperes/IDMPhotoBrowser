@@ -381,7 +381,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
     if (_backgroundView) {
-        [fadeView addSubview:[_backgroundView snapshotViewAfterScreenUpdates:YES]];
+        [fadeView addSubview:_backgroundView];
     } else {
         fadeView.backgroundColor = [UIColor clearColor];
     }
@@ -411,6 +411,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
+        [self.view insertSubview:_backgroundView atIndex:0];
     }];
 }
 
@@ -428,7 +429,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
     if (_backgroundView) {
-        [fadeView addSubview:[_backgroundView snapshotViewAfterScreenUpdates:YES]];
+        [fadeView addSubview:_backgroundView];
     } else {
         fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
     }
@@ -456,7 +457,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
-        
+        [self.view insertSubview:_backgroundView atIndex:0];
         [self prepareForClosePhotoBrowser];
         [self dismissPhotoBrowserAnimated:YES];
     }];
@@ -553,7 +554,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // View
     if (_backgroundView) {
-        [self.view addSubview:_backgroundView];
         self.view.backgroundColor = [UIColor clearColor];
     } else {
         self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
