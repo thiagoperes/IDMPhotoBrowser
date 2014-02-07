@@ -10,8 +10,7 @@
 
 @implementation UIAlertView (UIAlertViewWithTitle)
 
-+ (void)showAlertViewWithTitle:(NSString*)title
-{
++ (void)showAlertViewWithTitle:(NSString*)title {
     [[[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
@@ -37,19 +36,50 @@
 
 #pragma mark - Interface Orientation
 
-/*- (BOOL)shouldAutorotate
+- (BOOL)shouldAutorotate
 {
-    return NO;
+    return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIDeviceOrientationPortrait; //| UIDeviceOrientationLandscapeLeft | UIDeviceOrientationLandscapeRight;
+    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    return UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+/*- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    NSLog(@"Menu  willRotateToInterfaceOrientation");
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"Menu  didRotateFromInterfaceOrientation");
+}*/
+
+#pragma mark - Layout
+
+- (BOOL)prefersStatusBarHidden
+{
+	return NO;
+}
+
+/*- (void)viewWillLayoutSubviews
+{
+    //NSLog(@"viewWillLayoutSubviews Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+    [super viewWillLayoutSubviews];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    //NSLog(@"viewDidLayoutSubviews  Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+    [super viewDidLayoutSubviews];
 }*/
 
 #pragma mark - General
@@ -125,6 +155,7 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     browser.scaleImage = buttonSender.currentImage;
+    // custimzed page change effect
     __weak IDMPhotoBrowser *weakBrowser = browser;
     browser.custimzedEffectBlock = ^(UIScrollView *scrollView) {
         // Add 3D rotation effect
@@ -132,12 +163,22 @@
         CGFloat movingPercent = CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds) - 0.5;
         CGFloat movingOutIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
         CGFloat movingInIndex = floorf(CGRectGetMaxX(visibleBounds) / CGRectGetWidth(visibleBounds));
-        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingOutIndex]).layer.transform = CATransform3DMakeRotation((movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
-        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingInIndex]).layer.transform = CATransform3DMakeRotation((movingPercent - movingInIndex) * M_PI, 0, 1, 1);
+        CGFloat movingOutPercent = movingPercent - movingOutIndex;
+        CGFloat movingInPercent = movingInIndex - movingPercent;
+        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingOutIndex]).layer.transform = [self makeTransform:movingOutPercent >= 1 ? 0 : movingOutPercent];
+        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingInIndex]).layer.transform = [self makeTransform:movingInPercent >= 1 ? 0 : -movingInPercent];
     };
+    if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
+}
+
+- (CATransform3D)makeTransform:(CGFloat)percent {
+    CATransform3D t1 = CATransform3DIdentity;
+    t1.m34 = 1.0f/-900.0f;
+    t1 = CATransform3DRotate(t1, 45.0f * M_PI/180.0f * percent, 0.0f, 0.5f, 0.0f);
+    return t1;
 }
 
 #pragma mark - TableView DataSource

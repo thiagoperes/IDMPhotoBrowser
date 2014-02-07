@@ -22,6 +22,8 @@
 		4C6F97D814AF760500F8389A /* photo3m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C6F97D014AF760500F8389A /* photo3m.jpg */; };
 		4C6F97D914AF760500F8389A /* photo4l.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C6F97D114AF760500F8389A /* photo4l.jpg */; };
 		4C6F97DA14AF760500F8389A /* photo4m.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C6F97D214AF760500F8389A /* photo4m.jpg */; };
+		727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */; };
+		727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */; };
 		D11CD1A5180C353F009320DD /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D11CD122180C353E009320DD /* AFHTTPRequestOperation.m */; };
 		D11CD1A6180C353F009320DD /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D11CD124180C353E009320DD /* AFHTTPRequestOperationManager.m */; };
 		D11CD1A7180C353F009320DD /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D11CD126180C353E009320DD /* AFHTTPSessionManager.m */; };
@@ -71,7 +73,6 @@
 		D1A1935B1758F42300CE615F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1935A1758F42300CE615F /* SystemConfiguration.framework */; };
 		D1A1935D1758F42A00CE615F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A1935C1758F42A00CE615F /* MobileCoreServices.framework */; };
 		D1B43D551721876000D8B807 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1B43D541721875F00D8B807 /* QuartzCore.framework */; };
-		D1E6EFD317AC40C200D1F530 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1E6EFD017AC40C200D1F530 /* Localizable.strings */; };
 		D1FA3A911805C340000FFE18 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1FA3A901805C340000FFE18 /* Security.framework */; };
 /* End PBXBuildFile section */
 
@@ -96,6 +97,8 @@
 		4C6F97D014AF760500F8389A /* photo3m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo3m.jpg; path = Photos/photo3m.jpg; sourceTree = "<group>"; };
 		4C6F97D114AF760500F8389A /* photo4l.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4l.jpg; path = Photos/photo4l.jpg; sourceTree = "<group>"; };
 		4C6F97D214AF760500F8389A /* photo4m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4m.jpg; path = Photos/photo4m.jpg; sourceTree = "<group>"; };
+		727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IDMPBLocalizations.bundle; sourceTree = "<group>"; };
+		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
 		D11CD121180C353E009320DD /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		D11CD122180C353E009320DD /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
@@ -178,8 +181,6 @@
 		D1A1935A1758F42300CE615F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D1A1935C1758F42A00CE615F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		D1B43D541721875F00D8B807 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		D1E6EFD117AC40C200D1F530 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		D1E6EFD217AC40C200D1F530 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D1FA3A901805C340000FFE18 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -208,6 +209,7 @@
 		4C6F978214AF734800F8389A = {
 			isa = PBXGroup;
 			children = (
+				727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */,
 				D1574931178DB94900B0211A /* Classes */,
 				4C6F979714AF734900F8389A /* PhotoBrowserDemo */,
 				4C6F97CA14AF75D300F8389A /* Photos */,
@@ -260,7 +262,6 @@
 				D1574970178DB95300B0211A /* LICENSE.txt */,
 				D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */,
 				4C6F979914AF734900F8389A /* PhotoBrowserDemo-Info.plist */,
-				D1E6EFD017AC40C200D1F530 /* Localizable.strings */,
 				4C6F979D14AF734900F8389A /* main.m */,
 				4C6F979F14AF734900F8389A /* PhotoBrowserDemo-Prefix.pch */,
 			);
@@ -368,6 +369,8 @@
 				D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */,
 				D1574950178DB94900B0211A /* IDMPhoto.h */,
 				D1574951178DB94900B0211A /* IDMPhoto.m */,
+				727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */,
+				D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */,
 				D1574953178DB94900B0211A /* IDMPhotoBrowser.h */,
 				D1574954178DB94900B0211A /* IDMPhotoBrowser.m */,
 				D1574955178DB94900B0211A /* IDMPhotoProtocol.h */,
@@ -377,7 +380,6 @@
 				D1574959178DB94900B0211A /* IDMTapDetectingView.m */,
 				D157495A178DB94900B0211A /* IDMZoomingScrollView.h */,
 				D157495B178DB94900B0211A /* IDMZoomingScrollView.m */,
-				D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -511,7 +513,6 @@
 				D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */,
 				D1574971178DB95300B0211A /* README.markdown in Resources */,
 				D1574972178DB95300B0211A /* LICENSE.txt in Resources */,
-				D1E6EFD317AC40C200D1F530 /* Localizable.strings in Resources */,
 				D19D826017E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png in Resources */,
 				D19D826117E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */,
 				D19D826217E8D40700A5859E /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */,
@@ -519,7 +520,9 @@
 				D19D826417E8D40700A5859E /* IDMPhotoBrowser_customArrowRight.png in Resources */,
 				D19D826517E8D40700A5859E /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */,
 				D19D826617E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected.png in Resources */,
+				727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */,
 				D19D826717E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */,
+				727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */,
 				D19D826817E8D40700A5859E /* IDMPhotoBrowser_customDoneButton.png in Resources */,
 				D19D826917E8D40700A5859E /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */,
 			);
@@ -567,18 +570,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		D1E6EFD017AC40C200D1F530 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D1E6EFD117AC40C200D1F530 /* en */,
-				D1E6EFD217AC40C200D1F530 /* pt */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4C6F97AC14AF734900F8389A /* Debug */ = {

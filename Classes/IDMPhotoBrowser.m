@@ -11,6 +11,13 @@
 #import "IDMZoomingScrollView.h"
 #import "SVProgressHUD.h"
 
+#define kUSE_CURRENT_CONTEXT_PRESENTATION_STYLE 1
+
+#ifndef IDMPhotoBrowserLocalizedStrings
+#define IDMPhotoBrowserLocalizedStrings(key) \
+NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
+#endif
+
 // Private
 @interface IDMPhotoBrowser () {
 	// Data
@@ -45,6 +52,7 @@
     
     // Appearance
     UIStatusBarStyle _previousStatusBarStyle;
+	BOOL _statusBarOriginallyHidden;
     
     // Present
     UIView *_senderViewForAnimation;
@@ -90,8 +98,10 @@
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation;
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index;
 
+// Toolbar
+- (void)updateToolbar;
+
 // Navigation
-- (void)updateNavigation;
 - (void)jumpToPageAtIndex:(NSUInteger)index;
 - (void)gotoPreviousPage;
 - (void)gotoNextPage;
@@ -119,6 +129,7 @@
 @synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
+@synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
@@ -144,15 +155,17 @@
         
         _displayDoneButton = YES;
         _doneButtonImage = nil;
-
+        
         _displayToolbar = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
-
+        
         _useWhiteBackgroundColor = NO;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
-
+        
+        _arrowButtonsChangePhotosAnimated = YES;
+        
         _backgroundScaleFactor = 1.0;
         _animationDuration = 0.28;
         _senderViewForAnimation = nil;
@@ -165,9 +178,8 @@
         _applicationRootViewController = [_applicationWindow rootViewController];
         
         // if remove this: rotation works, but screw presentation/animation
-        _applicationRootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+        if(kUSE_CURRENT_CONTEXT_PRESENTATION_STYLE) _applicationRootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         
-        //_applicationRootViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
         // Listen for IDMPhoto notifications
@@ -368,9 +380,9 @@
         /*CGAffineTransform zoom = CGAffineTransformScale(CGAffineTransformIdentity, _backgroundScaleFactor, _backgroundScaleFactor);
         [_applicationRootViewController.view setTransform:zoom];*/
         
-        fadeView.backgroundColor = [UIColor blackColor];
+        fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
 
-        float scaleFactor =  (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
+        float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
         
         resizableImageView.frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
     } completion:^(BOOL finished) {
@@ -394,7 +406,7 @@
     float scaleFactor = imageFromView.size.width / screenWidth;
     
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor = [UIColor blackColor];
+    fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
     fadeView.alpha = fadeAlpha;
     [_applicationWindow addSubview:fadeView];
     
@@ -435,8 +447,6 @@
             [self setNeedsStatusBarAppearanceUpdate];
         } completion:^(BOOL finished) {}];
     }*/
-
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     
     /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
@@ -521,7 +531,7 @@
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
 	_pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
-	_pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    //_pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	_pagingScrollView.pagingEnabled = YES;
 	_pagingScrollView.delegate = self;
 	_pagingScrollView.showsHorizontalScrollIndicator = NO;
@@ -549,7 +559,7 @@
     
     if(!_doneButtonImage) {
         [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
-        [_doneButton setTitle:NSLocalizedString(@"Done", nil) forState:UIControlStateNormal];
+        [_doneButton setTitle:IDMPhotoBrowserLocalizedStrings(@"Done") forState:UIControlStateNormal];
         [_doneButton.titleLabel setFont:_doneButtonLabelFont ? _doneButtonLabelFont : [UIFont boldSystemFontOfSize:11.0f]];
         [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
         _doneButton.layer.cornerRadius = 3.0f;
@@ -634,11 +644,23 @@
     
     // Update UI
 	[self hideControlsAfterDelay];
+	
+	_statusBarOriginallyHidden = [UIApplication sharedApplication].statusBarHidden;
+	[[UIApplication sharedApplication] setStatusBarHidden:YES
+											withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     _viewIsActive = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	
+	[[UIApplication sharedApplication] setStatusBarHidden:_statusBarOriginallyHidden
+											withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
 }
 
 // Release any retained subviews of the main view.
@@ -657,16 +679,19 @@
 
 #pragma mark - Status Bar
 
-/*- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationFade;
-}*/
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+	return UIStatusBarAnimationFade;
+}
 
 #pragma mark - Layout
 
+- (void)viewDidLayoutSubviews {
+    //NSLog(@"viewDidLayoutSubviews  IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+}
+
 - (void)viewWillLayoutSubviews {
-    // Super
-    [super viewWillLayoutSubviews];
-	
+    //NSLog(@"viewWillLayoutSubviews IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+
 	// Flag
 	_performingLayout = YES;
     
@@ -724,6 +749,9 @@
 	// Reset
 	_currentPageIndex = indexPriorToLayout;
 	_performingLayout = NO;
+    
+    // Super
+    [super viewWillLayoutSubviews];
 }
 
 - (void)performLayout {
@@ -784,7 +812,7 @@
         [items addObject:_actionButton];
     
     [_toolbar setItems:items];
-	[self updateNavigation];
+	[self updateToolbar];
     
     // Content offset
 	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
@@ -796,32 +824,59 @@
 
 #pragma mark - Interface Orientation
 
-/*- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    // Remember page index before rotation
-	_pageIndexBeforeRotation = _currentPageIndex;
-	_rotating = YES;
+- (BOOL)shouldAutorotate
+{
+    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
     
-    if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = YES;
-    }
+    return YES;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-	// Perform layout
-	_currentPageIndex = _pageIndexBeforeRotation;
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+/*- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}*/
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    //NSLog(@"IDMPB willRotateToInterfaceOrientation");
+    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
+
+    // Remember page index before rotation
+    _pageIndexBeforeRotation = _currentPageIndex;
+	_rotating = YES;
+    
+    /*if ([self areControlsHidden]) {
+        self.navigationController.navigationBarHidden = YES;
+    }*/
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+	_rotating = NO;
+    
+    /*if ([self areControlsHidden]) {
+        self.navigationController.navigationBarHidden = NO;
+        self.navigationController.navigationBar.alpha = 0;
+    }*/
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    //NSLog(@"IDMPB willAnimateRotationToInterfaceOrientation");
+    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
+    
+    _currentPageIndex = _pageIndexBeforeRotation;
 	
 	// Delay control holding
 	[self hideControlsAfterDelay];
 }
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-	_rotating = NO;
-    
-    if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = NO;
-        self.navigationController.navigationBar.alpha = 0;
-    }
-}*/
 
 #pragma mark - Data
 
@@ -1110,12 +1165,10 @@
     _currentPageIndex = index;
     if (_currentPageIndex != previousCurrentPage) {
         [self didStartViewingPageAtIndex:index];
-        [self updateNavigation];
     }
     
-    if (_custimzedEffectBlock) {
-        _custimzedEffectBlock(scrollView);
-    }
+    if (_custimzedEffectBlock) _custimzedEffectBlock(scrollView);
+    if(_arrowButtonsChangePhotosAnimated) [self updateToolbar];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -1124,8 +1177,13 @@
 }
 
 #pragma mark - Navigation
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	// Update toolbar when page changes
+	if(! _arrowButtonsChangePhotosAnimated) [self updateToolbar];
+}
 
-- (void)updateNavigation {
+#pragma mark - Toolbar
+- (void)updateToolbar {
     // Counter
 	if ([self numberOfPhotos] > 1) {
 		_counterLabel.text = [NSString stringWithFormat:@"%i/%i", _currentPageIndex+1, [self numberOfPhotos]];
@@ -1142,7 +1200,15 @@
     // Change page
 	if (index < [self numberOfPhotos]) {
 		CGRect pageFrame = [self frameForPageAtIndex:index];
-		[_pagingScrollView setContentOffset:CGPointMake(pageFrame.origin.x - PADDING, 0) animated:YES];
+		if(_arrowButtonsChangePhotosAnimated)
+        {
+            [_pagingScrollView setContentOffset:CGPointMake(pageFrame.origin.x - PADDING, 0) animated:YES];
+        }
+        else
+        {
+            _pagingScrollView.contentOffset = CGPointMake(pageFrame.origin.x - PADDING, 0);
+            [self updateToolbar];
+        }
 	}
 	
 	// Update timer to give more time
@@ -1168,9 +1234,6 @@
             } completion:^(BOOL finished) {}];
         }
     }*/
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:hidden
-                                            withAnimation:(animated ? UIStatusBarAnimationFade : UIStatusBarAnimationNone)];
     
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
@@ -1271,7 +1334,7 @@
                 [self.actionsSheet addButtonWithTitle:action];
             }
             
-            self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+            self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:IDMPhotoBrowserLocalizedStrings(@"Cancel")];
             self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
             
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
