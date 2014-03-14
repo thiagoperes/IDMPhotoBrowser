@@ -466,7 +466,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
         
-        _applicationRootViewController.modalPresentationStyle = 0;
+        _applicationRootViewController.modalPresentationStyle = 1;
     }];
 }
 
