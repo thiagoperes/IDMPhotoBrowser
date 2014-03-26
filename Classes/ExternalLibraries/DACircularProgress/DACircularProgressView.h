@@ -14,6 +14,7 @@
 @property(nonatomic, strong) UIColor *progressTintColor UI_APPEARANCE_SELECTOR;
 @property(nonatomic) NSInteger roundedCorners UI_APPEARANCE_SELECTOR; // Can not use BOOL with UI_APPEARANCE_SELECTOR :-(
 @property(nonatomic) CGFloat thicknessRatio UI_APPEARANCE_SELECTOR;
+@property(nonatomic) NSInteger clockwiseProgress UI_APPEARANCE_SELECTOR; // Can not use BOOL with UI_APPEARANCE_SELECTOR :-(
 @property(nonatomic) CGFloat progress;
 
 @property(nonatomic) CGFloat indeterminateDuration UI_APPEARANCE_SELECTOR;

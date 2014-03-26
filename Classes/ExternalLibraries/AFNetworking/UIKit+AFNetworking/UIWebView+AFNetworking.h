@@ -28,11 +28,13 @@
 
 #import <UIKit/UIKit.h>
 
-#import "AFURLRequestSerialization.h"
-#import "AFURLResponseSerialization.h"
+@class AFHTTPRequestSerializer, AFHTTPResponseSerializer;
+@protocol AFURLRequestSerialization, AFURLResponseSerialization;
 
 /**
  This category adds methods to the UIKit framework's `UIWebView` class. The methods in this category provide increased control over the request cycle, including progress monitoring and success / failure handling.
+ 
+ @discussion When using these category methods, make sure to assign `delegate` for the web view, which implements `–webView:shouldStartLoadWithRequest:navigationType:` appropriately. This allows for tapped links to be loaded through AFNetworking, and can ensure that `canGoBack` & `canGoForward` update their values correctly.
  */
 @interface UIWebView (AFNetworking)
 
@@ -55,7 +57,7 @@
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes a single argument: the error that occurred.
  */
 - (void)loadRequest:(NSURLRequest *)request
-           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+           progress:(void (^)(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))progress
             success:(NSString * (^)(NSHTTPURLResponse *response, NSString *HTML))success
             failure:(void (^)(NSError *error))failure;
 
@@ -72,7 +74,7 @@
 - (void)loadRequest:(NSURLRequest *)request
            MIMEType:(NSString *)MIMEType
    textEncodingName:(NSString *)textEncodingName
-           progress:(void (^)(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite))progress
+           progress:(void (^)(NSUInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite))progress
             success:(NSData * (^)(NSHTTPURLResponse *response, NSData *data))success
             failure:(void (^)(NSError *error))failure;
 
