@@ -282,7 +282,13 @@
             browser.leftArrowSelectedImage  = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowLeftSelected.png"];
             browser.rightArrowSelectedImage = [UIImage imageNamed:@"IDMPhotoBrowser_customArrowRightSelected.png"];
             browser.doneButtonImage         = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+            
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
             browser.view.tintColor          = [UIColor orangeColor];
+#else
+            
+#endif
+            
             browser.progressTintColor       = [UIColor orangeColor];
             browser.trackTintColor          = [UIColor colorWithWhite:0.8 alpha:1];
         }
