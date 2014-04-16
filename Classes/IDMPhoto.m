@@ -147,7 +147,7 @@ caption = _caption;
                 [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) { }];
             
-            [op setDownloadProgressBlock:^(NSUInteger bytesRead, NSInteger totalBytesRead, NSInteger totalBytesExpectedToRead) {
+            [op setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
                 CGFloat progress = ((CGFloat)totalBytesRead)/((CGFloat)totalBytesExpectedToRead);
                 if (self.progressUpdateBlock) {
                     self.progressUpdateBlock(progress);

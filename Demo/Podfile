@@ -1,0 +1,15 @@
+# Uncomment this line to define a global platform for your project
+# platform :ios, "6.0"
+
+# ignoring warning from pods
+inhibit_all_warnings!
+
+target "PhotoBrowserDemo" do
+
+pod 'AFNetworking', '~> 2.2.2'
+pod 'DACircularProgress', '~> 2.2'
+pod 'SVProgressHUD', '~> 1.0'
+
+pod 'DCIntrospect-ARC'
+
+end
