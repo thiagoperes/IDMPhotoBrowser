@@ -1041,8 +1041,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     page.photo = [self photoAtIndex:index];
     
     __block __weak IDMPhoto *photo = (IDMPhoto*)page.photo;
+    __weak IDMZoomingScrollView* weakPage = page;
     photo.progressUpdateBlock = ^(CGFloat progress){
-        [page setProgress:progress forPhoto:photo];
+        [weakPage setProgress:progress forPhoto:photo];
     };
 }
 
