@@ -49,7 +49,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     NSTimer *_controlVisibilityTimer;
     
     // Appearance
-    UIStatusBarStyle _previousStatusBarStyle;
+    //UIStatusBarStyle _previousStatusBarStyle;
 	BOOL _statusBarOriginallyHidden;
     
     // Present
@@ -639,7 +639,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
     }*/
-    
+    _statusBarOriginallyHidden = [UIApplication sharedApplication].statusBarHidden;
+  
     // Update UI
 	[self hideControlsAfterDelay];
 }
@@ -666,17 +667,20 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Status Bar
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    return _useWhiteBackgroundColor ? 0 : 1;
+    return _useWhiteBackgroundColor ? 1 : 0;
 }
 
 - (BOOL)prefersStatusBarHidden {
     if(_isdraggingPhoto)
     {
-        return NO;
+        if(_statusBarOriginallyHidden)
+            return YES;
+        else
+            return NO;
     }
     else
     {
-       return [self areControlsHidden];
+        return [self areControlsHidden];
     }
 }
 
