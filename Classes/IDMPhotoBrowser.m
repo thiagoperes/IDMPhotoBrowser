@@ -565,7 +565,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _doneButton.layer.borderWidth = 1.0f;
     }
     else {
-        [_doneButton setBackgroundImage:_doneButtonImage forState:UIControlStateNormal];
+        [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
         _doneButton.contentMode = UIViewContentModeScaleAspectFit;
     }
     
