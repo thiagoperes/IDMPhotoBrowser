@@ -80,6 +80,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 // Layout
 - (void)performLayout;
+- (UIColor *)changeColorAlpha:(UIColor *)color toAlpha:(CGFloat)alpha;
 
 // Paging
 - (void)tilePages;
@@ -161,6 +162,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayCounterLabel = NO;
         
         _useWhiteBackgroundColor = NO;
+        _fadeBackgroundToBlack = NO;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
         
         _arrowButtonsChangePhotosAnimated = YES;
@@ -279,13 +281,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     float newAlpha = 1 - abs(newY)/viewHeight; //abs(newY)/viewHeight * 1.8;
     
     self.view.opaque = YES;
-    
-    self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
-    
-    /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
-    backgroundImageView.alpha = 1 - newAlpha;
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
-    
+    self.view.backgroundColor = [self changeColorAlpha:self.view.backgroundColor toAlpha:newAlpha];
+
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
@@ -322,7 +319,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             _isdraggingPhoto = NO;
             [self setNeedsStatusBarAppearanceUpdate];
             
-            self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+            self.view.backgroundColor = [self changeColorAlpha:self.view.backgroundColor toAlpha:1.0];
             //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             
             CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y); 
@@ -818,6 +815,16 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self.view addGestureRecognizer:_panGesture];
 }
 
+- (UIColor *)changeColorAlpha:(UIColor *)color toAlpha:(CGFloat)alpha
+{
+    CGFloat red;
+    CGFloat green;
+    CGFloat blue;
+    CGFloat a;
+    BOOL success = [color getRed:&red green:&green blue:&blue alpha:&a];
+    return success ? [UIColor colorWithRed:red green:green blue:blue alpha:alpha] : nil;
+}
+
 #pragma mark - Interface Orientation
 
 - (BOOL)shouldAutorotate
@@ -1245,6 +1252,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setAlpha:alpha];
         for (UIView *v in captionViews) v.alpha = alpha;
     } completion:^(BOOL finished) {}];
+    
+    // Switch background color
+    if (self.fadeBackgroundToBlack) {
+        [UIView animateWithDuration:(animated ? 0.1 : 0) animations:^(void) {
+            self.view.backgroundColor = [UIColor colorWithWhite:(hidden ? 0 : 1) alpha:1];
+        } completion:nil];
+    }
 
 	// Control hiding timer
 	// Will cancel existing timer but only begin hiding if they are visible
