@@ -9,7 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
-#import "SVProgressHUD.h"
 
 #ifndef IDMPhotoBrowserLocalizedStrings
 #define IDMPhotoBrowserLocalizedStrings(key) \
@@ -1181,7 +1180,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)updateToolbar {
     // Counter
 	if ([self numberOfPhotos] > 1) {
-		_counterLabel.text = [NSString stringWithFormat:@"%lu %@ %lu", _currentPageIndex+1, IDMPhotoBrowserLocalizedStrings(@"of"), (unsigned long)[self numberOfPhotos]];
+		_counterLabel.text = [NSString stringWithFormat:@"%u %@ %lu", _currentPageIndex+1, IDMPhotoBrowserLocalizedStrings(@"of"), (unsigned long)[self numberOfPhotos]];
 	} else {
 		_counterLabel.text = nil;
 	}
@@ -1362,24 +1361,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     
     [self hideControlsAfterDelay]; // Continue as normal...
-}
-
-#pragma mark - SVProgressHUD
-
-- (void)showProgressHUDWithMessage:(NSString *)message {
-    [SVProgressHUD showWithStatus:message];
-}
-
-- (void)hideProgressHUD:(BOOL)animated {
-    [SVProgressHUD dismiss];
-}
-
-- (void)showProgressHUDCompleteMessage:(NSString *)message {
-    if (message) {
-        [SVProgressHUD showSuccessWithStatus:message];
-    } else {
-        [SVProgressHUD dismiss];
-    }
 }
 
 @end
