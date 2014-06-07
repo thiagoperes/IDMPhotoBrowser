@@ -57,6 +57,8 @@
 
 @property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
 
+@property (nonatomic, strong) NSString *localizationsBundleName;
+
 // defines zooming of the background defauly 1.0
 @property (nonatomic) float backgroundScaleFactor;
 
