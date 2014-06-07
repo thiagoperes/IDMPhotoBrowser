@@ -10,8 +10,7 @@
 
 @implementation UIAlertView (UIAlertViewWithTitle)
 
-+ (void)showAlertViewWithTitle:(NSString*)title
-{
++ (void)showAlertViewWithTitle:(NSString*)title {
     [[[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
@@ -37,19 +36,50 @@
 
 #pragma mark - Interface Orientation
 
-/*- (BOOL)shouldAutorotate
+- (BOOL)shouldAutorotate
 {
-    return NO;
+    return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIDeviceOrientationPortrait; //| UIDeviceOrientationLandscapeLeft | UIDeviceOrientationLandscapeRight;
+    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    return UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
+    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
+}
+
+/*- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    NSLog(@"Menu  willRotateToInterfaceOrientation");
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"Menu  didRotateFromInterfaceOrientation");
+}*/
+
+#pragma mark - Layout
+
+- (BOOL)prefersStatusBarHidden
+{
+	return NO;
+}
+
+/*- (void)viewWillLayoutSubviews
+{
+    //NSLog(@"viewWillLayoutSubviews Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+    [super viewWillLayoutSubviews];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    //NSLog(@"viewDidLayoutSubviews  Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
+    [super viewDidLayoutSubviews];
 }*/
 
 #pragma mark - General
@@ -135,6 +165,7 @@
         ((UIView *)[weakBrowser pageDisplayedAtIndex:movingOutIndex]).layer.transform = CATransform3DMakeRotation((movingPercent - movingOutIndex) * M_PI, 0, 1, 1);
         ((UIView *)[weakBrowser pageDisplayedAtIndex:movingInIndex]).layer.transform = CATransform3DMakeRotation((movingPercent - movingInIndex) * M_PI, 0, 1, 1);
     };
+    if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];

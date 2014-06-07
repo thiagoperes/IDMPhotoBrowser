@@ -50,7 +50,7 @@
         CGRect screenBound = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenBound.size.width;
         CGFloat screenHeight = screenBound.size.height;
-
+        
         if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
             [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
             screenWidth = screenBound.size.height;
@@ -63,10 +63,8 @@
         _progressView.tag = 101;
         _progressView.thicknessRatio = 0.1; //SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7") ? 0.1 : 0.2;
         _progressView.roundedCorners = NO;  //SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7") ? NO  : YES;
-        
         _progressView.trackTintColor    = browser.trackTintColor    ? self.photoBrowser.trackTintColor    : [UIColor colorWithWhite:0.2 alpha:1];
         _progressView.progressTintColor = browser.progressTintColor ? self.photoBrowser.progressTintColor : [UIColor colorWithWhite:1.0 alpha:1];
-        
         [self addSubview:_progressView];
         
 		// Setup
@@ -100,7 +98,6 @@
 // Get and display image
 - (void)displayImage {
 	if (_photo && _photoImageView.image == nil) {
-		
 		// Reset
 		self.maximumZoomScale = 1;
 		self.minimumZoomScale = 1;
@@ -112,7 +109,7 @@
 		UIImage *img = [self.photoBrowser imageForPhoto:_photo];
 		if (img) {
             // Hide ProgressView
-            // _progressView.alpha = 0.0f;
+            //_progressView.alpha = 0.0f;
             [_progressView removeFromSuperview];
             
             // Set image
@@ -199,16 +196,15 @@
 	[self setNeedsLayout];    
 }
 
-
 #pragma mark - Layout
 
 - (void)layoutSubviews {
 	// Update tap view frame
 	_tapView.frame = self.bounds;
-
+    
 	// Super
 	[super layoutSubviews];
-	
+    
     // Center the image as it becomes smaller than the size of the screen
     CGSize boundsSize = self.bounds.size;
     CGRect frameToCenter = _photoImageView.frame;
