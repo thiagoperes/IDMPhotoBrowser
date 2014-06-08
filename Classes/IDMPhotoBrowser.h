@@ -39,8 +39,8 @@
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayActionButton;
 @property (nonatomic, strong) NSArray *actionButtonTitles;
-@property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
-@property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
+@property (nonatomic, strong) UIImage *leftArrowImage, *leftArrowSelectedImage;
+@property (nonatomic, strong) UIImage *rightArrowImage, *rightArrowSelectedImage;
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
 @property (nonatomic, strong) void (^custimzedEffectBlock)(UIScrollView *scrollView);
 @property (nonatomic, strong) UIFont *countLabelFont;
