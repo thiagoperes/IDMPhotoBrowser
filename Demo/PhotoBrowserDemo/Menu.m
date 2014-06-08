@@ -155,10 +155,30 @@
     browser.displayArrowButton = YES;
     browser.displayCounterLabel = YES;
     browser.scaleImage = buttonSender.currentImage;
+    // custimzed page change effect
+    __weak IDMPhotoBrowser *weakBrowser = browser;
+    browser.custimzedEffectBlock = ^(UIScrollView *scrollView) {
+        // Add 3D rotation effect
+        CGRect visibleBounds = scrollView.bounds;
+        CGFloat movingPercent = CGRectGetMidX(visibleBounds) / CGRectGetWidth(visibleBounds) - 0.5;
+        CGFloat movingOutIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
+        CGFloat movingInIndex = floorf(CGRectGetMaxX(visibleBounds) / CGRectGetWidth(visibleBounds));
+        CGFloat movingOutPercent = movingPercent - movingOutIndex;
+        CGFloat movingInPercent = movingInIndex - movingPercent;
+        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingOutIndex]).layer.transform = [self makeTransform:movingOutPercent >= 1 ? 0 : movingOutPercent];
+        ((UIView *)[weakBrowser pageDisplayedAtIndex:movingInIndex]).layer.transform = [self makeTransform:movingInPercent >= 1 ? 0 : -movingInPercent];
+    };
     if(buttonSender.tag == 102) browser.useWhiteBackgroundColor = YES;
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
+}
+
+- (CATransform3D)makeTransform:(CGFloat)percent {
+    CATransform3D t1 = CATransform3DIdentity;
+    t1.m34 = 1.0f/-900.0f;
+    t1 = CATransform3DRotate(t1, 45.0f * M_PI/180.0f * percent, 0.0f, 0.5f, 0.0f);
+    return t1;
 }
 
 #pragma mark - TableView DataSource

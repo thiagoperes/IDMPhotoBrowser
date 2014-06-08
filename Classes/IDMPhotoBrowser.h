@@ -14,10 +14,13 @@
 
 // Delgate
 @class IDMPhotoBrowser;
+@class IDMZoomingScrollView;
+
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
 @end
@@ -29,15 +32,22 @@
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
 
 // Toolbar customization
+@property (nonatomic) BOOL prefersStatusBarHidden;
+@property (nonatomic) BOOL keepSenderViewHiddenWhenIndexChanged;
 @property (nonatomic) BOOL displayToolbar;
 @property (nonatomic) BOOL displayCounterLabel;
 @property (nonatomic) BOOL displayArrowButton;
 @property (nonatomic) BOOL displayActionButton;
 @property (nonatomic, strong) NSArray *actionButtonTitles;
-@property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
-@property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
+@property (nonatomic, strong) UIImage *leftArrowImage, *leftArrowSelectedImage;
+@property (nonatomic, strong) UIImage *rightArrowImage, *rightArrowSelectedImage;
+@property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, strong) void (^custimzedEffectBlock)(UIScrollView *scrollView);
+@property (nonatomic, strong) UIFont *countLabelFont;
+@property (nonatomic, strong) UIFont *doneButtonLabelFont;
 
 // View customization
+@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneButtonImage;
@@ -46,6 +56,8 @@
 @property (nonatomic, weak) UIImage *scaleImage;
 
 @property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
+
+@property (nonatomic, strong) NSString *localizationsBundleName;
 
 // defines zooming of the background defauly 1.0
 @property (nonatomic) float backgroundScaleFactor;
@@ -73,6 +85,8 @@
 
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
+- (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
+- (IDMZoomingScrollView *)pageDisplayedAtIndex:(NSUInteger)index;
 
 // Change Sender View
 //- (void)setSenderViewForAnimation:(UIView*)senderView;
