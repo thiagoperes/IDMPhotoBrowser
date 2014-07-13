@@ -178,7 +178,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         _previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
 
-        _applicationTopViewController = [self topViewtController];
+        _applicationTopViewController = [self topviewController];
         _applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -479,15 +479,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return image;
 }
 
-- (UIViewController *)topViewtController
+- (UIViewController *)topviewController
 {
-    UIViewController *topViewtController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *topviewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     
-    while (topViewtController.presentedViewController) {
-        topViewtController = topViewtController.presentedViewController;
+    while (topviewController.presentedViewController) {
+        topviewController = topviewController.presentedViewController;
     }
     
-    return topViewtController;
+    return topviewController;
 }
 
 #pragma mark - View Lifecycle
