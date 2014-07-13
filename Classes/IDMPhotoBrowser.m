@@ -176,9 +176,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
         _applicationWindow = [[[UIApplication sharedApplication] delegate] window];
         
+        _applicationTopViewController = [self topviewController];
+
         _previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
 
-        _applicationTopViewController = [self topviewController];
         _applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
