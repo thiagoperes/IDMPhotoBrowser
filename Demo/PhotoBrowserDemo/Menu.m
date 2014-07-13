@@ -34,53 +34,12 @@
     [self setupTableViewFooterView];
 }
 
-#pragma mark - Interface Orientation
-
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
-    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
-    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}
-
-/*- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    NSLog(@"Menu  willRotateToInterfaceOrientation");
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    NSLog(@"Menu  didRotateFromInterfaceOrientation");
-}*/
-
 #pragma mark - Layout
 
 - (BOOL)prefersStatusBarHidden
 {
 	return NO;
 }
-
-/*- (void)viewWillLayoutSubviews
-{
-    //NSLog(@"viewWillLayoutSubviews Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
-    [super viewWillLayoutSubviews];
-}
-
-- (void)viewDidLayoutSubviews
-{
-    //NSLog(@"viewDidLayoutSubviews  Menu  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
-    [super viewDidLayoutSubviews];
-}*/
 
 #pragma mark - General
 
@@ -290,12 +249,17 @@
     
     // Show
     [self presentViewController:browser animated:YES completion:nil];
-    //[self.navigationController pushViewController:browser animated:YES];
     
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - IDMPhotoBrowser Delegate
+
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)pageIndex
+{
+    id <IDMPhoto> photo = [photoBrowser photoAtIndex:pageIndex];
+    NSLog(@"Did show photoBrowser with photo index: %d, photo caption: %@", pageIndex, photo.caption);
+}
 
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)pageIndex
 {

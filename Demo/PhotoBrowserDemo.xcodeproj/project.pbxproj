@@ -78,7 +78,7 @@
 		4C6F97D214AF760500F8389A /* photo4m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4m.jpg; path = Photos/photo4m.jpg; sourceTree = "<group>"; };
 		7223DFC84A3E4E949E51E3F0 /* Pods-PhotoBrowserDemo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.xcconfig"; path = "Pods/Pods-PhotoBrowserDemo.xcconfig"; sourceTree = "<group>"; };
 		727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IDMPBLocalizations.bundle; sourceTree = "<group>"; };
-		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
+		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
 		D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		D157494E178DB94900B0211A /* IDMCaptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMCaptionView.h; sourceTree = "<group>"; };
@@ -142,7 +142,6 @@
 		4C6F978214AF734800F8389A = {
 			isa = PBXGroup;
 			children = (
-				727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */,
 				D1574931178DB94900B0211A /* Classes */,
 				4C6F979714AF734900F8389A /* PhotoBrowserDemo */,
 				4C6F97CA14AF75D300F8389A /* Photos */,
@@ -193,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				D19D825517E8D40700A5859E /* CustomImages */,
+				727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */,
 				D157496F178DB95300B0211A /* README.markdown */,
 				D1574970178DB95300B0211A /* LICENSE.txt */,
 				D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */,

@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "Menu.h"
-#import "DCIntrospect.h"
 
 @implementation AppDelegate
 
@@ -24,10 +23,6 @@
     
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
-    
-#if TARGET_IPHONE_SIMULATOR
-    [[DCIntrospect sharedIntrospector] start];
-#endif
     
     return YES;
 }

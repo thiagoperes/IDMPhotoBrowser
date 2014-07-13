@@ -47,7 +47,7 @@
 
 @property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
 
-// defines zooming of the background defauly 1.0
+// defines zooming of the background (default 1.0)
 @property (nonatomic) float backgroundScaleFactor;
 
 // animation time defult .28
@@ -73,8 +73,5 @@
 
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
-
-// Change Sender View
-//- (void)setSenderViewForAnimation:(UIView*)senderView;
 
 @end

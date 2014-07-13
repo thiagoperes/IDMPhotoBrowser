@@ -67,7 +67,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     //UIImage *_backgroundScreenshot;
     
     UIWindow *_applicationWindow;
-    UIViewController *_applicationRootViewController;
+    UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
 }
 
@@ -176,10 +176,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
         _applicationWindow = [[[UIApplication sharedApplication] delegate] window];
         
-        _previousModalPresentationStyle = _applicationRootViewController.modalPresentationStyle;
+        _previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
 
-        _applicationRootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        _applicationRootViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+        _applicationTopViewController = [self topViewtController];
+        _applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
@@ -281,10 +281,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
     
-    /*UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:_backgroundScreenshot];
-    backgroundImageView.alpha = 1 - newAlpha;
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];*/
-    
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
@@ -311,7 +307,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             [UIView setAnimationDelegate:self];
             [scrollView setCenter:CGPointMake(finalX, finalY)];
             self.view.backgroundColor = [UIColor colorWithWhite:0 alpha:0];
-            //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             [UIView commitAnimations];
             
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
@@ -322,7 +317,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             [self setNeedsStatusBarAppearanceUpdate];
             
             self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
-            //self.view.backgroundColor = [UIColor colorWithPatternImage:[self getImageFromView:backgroundImageView]];
             
             CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y); 
             
@@ -447,18 +441,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Genaral
 
 - (void)prepareForClosePhotoBrowser {
-    // Status Bar
-    /*if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-        [UIView animateWithDuration:0.3 animations:^(void) {
-            [self setNeedsStatusBarAppearanceUpdate];
-        } completion:^(BOOL finished) {}];
-    }*/
-    
-    /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
-    }*/
-    
     // Gesture
     [_applicationWindow removeGestureRecognizer:_panGesture];
     
@@ -475,7 +457,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
         
-        _applicationRootViewController.modalPresentationStyle = _previousModalPresentationStyle;
+        _applicationTopViewController.modalPresentationStyle = _previousModalPresentationStyle;
     }];
 }
 
@@ -497,28 +479,22 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return image;
 }
 
-/*- (UIImage*)takeScreenshot {
-    UIGraphicsBeginImageContext(_applicationWindow.bounds.size);
-    [window.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
-}*/
+- (UIViewController *)topViewtController
+{
+    UIViewController *topViewtController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topViewtController.presentedViewController) {
+        topViewtController = topViewtController.presentedViewController;
+    }
+    
+    return topViewtController;
+}
 
 #pragma mark - View Lifecycle
 
 - (void)viewDidLoad {
     // Transition animation
     [self performPresentAnimation];
-    
-    /*if(!_senderViewForAnimation) // Default presentation (withoung animation) {
-        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7")) // ios 7 or greater
-            [UIView animateWithDuration:0.0 animations:^{ } completion:^(BOOL finished) {
-                [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-            }];
-        else // ios 6 or less
-            [UIView animateWithDuration:_animationDuration animations:^{ self.view.alpha = 1; }];
-    }*/
     
     // View
 	self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
@@ -625,8 +601,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    //_backgroundScreenshot = [self takeScreenshot];
-    
     // Update
     [self reloadData];
     
@@ -634,10 +608,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	[super viewWillAppear:animated];
     
     // Status Bar
-    /*if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
-    }*/
     _statusBarOriginallyHidden = [UIApplication sharedApplication].statusBarHidden;
   
     // Update UI
@@ -689,33 +659,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 #pragma mark - Layout
 
-- (void)viewDidLayoutSubviews {
-    //NSLog(@"viewDidLayoutSubviews  IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
-}
-
 - (void)viewWillLayoutSubviews {
-    //NSLog(@"viewWillLayoutSubviews IDMPB  |  statusBarOrientation = %d", [[UIApplication sharedApplication] statusBarOrientation]);
-
 	// Flag
 	_performingLayout = YES;
-    
-    /*static BOOL isFirstViewLoad = YES;
-    if(isFirstViewLoad) {
-        // Toolbar
-        _toolbar.frame = [self frameForToolbarFirstTimeAtOrientation:self.interfaceOrientation];
-        
-        // Done button
-        _doneButton.frame = [self frameForDoneButtonFirstTimeAtOrientation:self.interfaceOrientation];
-
-        isFirstViewLoad = NO;
-    }
-    else {
-     // Toolbar
-        _toolbar.frame = [self frameForToolbarAtOrientation:self.interfaceOrientation];
-        
-        // Done button
-        _doneButton.frame = [self frameForDoneButtonAtOrientation:self.interfaceOrientation];
-    }*/
     
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
 
@@ -815,62 +761,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _performingLayout = NO;
     
     [self.view addGestureRecognizer:_panGesture];
-}
-
-#pragma mark - Interface Orientation
-
-- (BOOL)shouldAutorotate
-{
-    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
-    
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    //return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
-    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}
-
-/*- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationPortrait | UIInterfaceOrientationLandscapeLeft | UIInterfaceOrientationLandscapeRight;
-    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}*/
-
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    //NSLog(@"IDMPB willRotateToInterfaceOrientation");
-    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
-
-    // Remember page index before rotation
-    _pageIndexBeforeRotation = _currentPageIndex;
-	_rotating = YES;
-    
-    /*if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = YES;
-    }*/
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-	_rotating = NO;
-    
-    /*if ([self areControlsHidden]) {
-        self.navigationController.navigationBarHidden = NO;
-        self.navigationController.navigationBar.alpha = 0;
-    }*/
-}
-
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    //NSLog(@"IDMPB willAnimateRotationToInterfaceOrientation");
-    //NSLog(@"before = %d  |  current = %d", _pageIndexBeforeRotation, _currentPageIndex);
-    
-    _currentPageIndex = _pageIndexBeforeRotation;
-	
-	// Delay control holding
-	[self hideControlsAfterDelay];
 }
 
 #pragma mark - Data
@@ -1219,16 +1109,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated permanent:(BOOL)permanent {
     // Cancel any timers
     [self cancelControlHiding];
-    
-    /*if (self.wantsFullScreenLayout) {
-        // Status Bar
-        if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-            //[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-            [UIView animateWithDuration:0.3 animations:^(void) {
-                [self setNeedsStatusBarAppearanceUpdate];
-            } completion:^(BOOL finished) {}];
-        }
-    }*/
     
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
