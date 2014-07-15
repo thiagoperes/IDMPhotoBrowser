@@ -112,11 +112,20 @@ browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4
 #### Others
 
 Others customizations you can make are: use white background color, don't display the done button and change the done button background image:
-
 ``` objective-c    
 browser.useWhiteBackgroundColor = YES;
 browser.displayDoneButton = NO;
 browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+```
+
+You can use a smooth [pop](https://github.com/facebook/pop) animation when presenting and dismissing a photo:
+``` objective-c
+    browser.usePopAnimation = YES;
+```
+
+If the presenting view controller doesn't have a status bar, in some cases you can force it to be hidden:
+``` objective-c
+    browser.forceHideStatusBar = YES;
 ```
 
 ### Photo Captions
