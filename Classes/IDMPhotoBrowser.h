@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+
 #import "IDMPhoto.h"
 #import "IDMPhotoProtocol.h"
 #import "IDMCaptionView.h"
@@ -47,10 +48,12 @@
 
 @property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
 
+@property (nonatomic) BOOL usePopAnimation;
+
 // defines zooming of the background (default 1.0)
 @property (nonatomic) float backgroundScaleFactor;
 
-// animation time defult .28
+// animation time (default .28)
 @property (nonatomic) float animationDuration;
 
 // Init

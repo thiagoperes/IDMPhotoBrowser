@@ -21,13 +21,16 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - DACircularProgress (2.2.0)
+  - pop (1.0.6)
 
 DEPENDENCIES:
   - AFNetworking
   - DACircularProgress
+  - pop
 
 SPEC CHECKSUMS:
   AFNetworking: 6d7b76aa5d04c8c37daad3eef4b7e3f2a7620da3
   DACircularProgress: 3b41941891a56dc6aa17971f5322a9a38a6f446e
+  pop: e518794da38942c05255eb64b36d894e70cb4f00
 
 COCOAPODS: 0.33.1

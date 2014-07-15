@@ -10,6 +10,8 @@
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
 
+#import "pop/POP.h"
+
 #ifndef IDMPhotoBrowserLocalizedStrings
 #define IDMPhotoBrowserLocalizedStrings(key) \
 NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
@@ -130,6 +132,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
+@synthesize usePopAnimation = _usePopAnimation;
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
@@ -158,6 +161,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
+        
+        _usePopAnimation = NO;
         
         _useWhiteBackgroundColor = NO;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
@@ -420,13 +425,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_applicationWindow addSubview:resizableImageView];
     self.view.hidden = YES;
     
-    [UIView animateWithDuration:_animationDuration animations:^{
-        //[_applicationRootViewController.view setTransform:CGAffineTransformIdentity];
-        
-        resizableImageView.layer.frame = _resizableImageViewFrame;
-        fadeView.alpha = 0;
-        self.view.backgroundColor = [UIColor clearColor];
-    } completion:^(BOOL finished) {
+    void (^completion)() = ^() {
         _senderViewForAnimation.hidden = NO;
         _senderViewForAnimation = nil;
         _scaleImage = nil;
@@ -436,7 +435,27 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         [self prepareForClosePhotoBrowser];
         [self dismissPhotoBrowserAnimated:YES];
-    }];
+    };
+    
+    [UIView animateWithDuration:_animationDuration animations:^{
+        fadeView.alpha = 0;
+        self.view.backgroundColor = [UIColor clearColor];
+    } completion:nil];
+    
+    if(_usePopAnimation)
+    {
+        [self animateView:resizableImageView
+                  toFrame:_resizableImageViewFrame
+               completion:completion];
+    }
+    else
+    {
+        [UIView animateWithDuration:_animationDuration animations:^{
+            resizableImageView.layer.frame = _resizableImageViewFrame;
+        } completion:^(BOOL finished) {
+            completion();
+        }];
+    }
 }
 
 #pragma mark - Genaral
@@ -1242,6 +1261,24 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     
     [self hideControlsAfterDelay]; // Continue as normal...
+}
+
+#pragma mark - pop Animation
+
+- (void)animateView:(UIView *)view toFrame:(CGRect)frame completion:(void (^)(void))completion
+{
+	POPSpringAnimation *animation = [POPSpringAnimation animationWithPropertyNamed:kPOPViewFrame];
+	[animation setSpringBounciness:6];
+	[animation setDynamicsMass:1];
+    [animation setToValue:[NSValue valueWithCGRect:frame]];
+	[view pop_addAnimation:animation forKey:nil];
+    
+    if (completion)
+	{
+		[animation setCompletionBlock:^(POPAnimation *animation, BOOL finished) {
+			completion();
+		}];
+	}
 }
 
 @end
