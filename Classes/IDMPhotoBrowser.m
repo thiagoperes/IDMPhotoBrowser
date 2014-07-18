@@ -65,7 +65,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     BOOL _isdraggingPhoto;
     
-    CGRect _resizableImageViewFrame;
+    CGRect _senderViewOriginalFrame;
     //UIImage *_backgroundScreenshot;
     
     UIWindow *_applicationWindow;
@@ -367,7 +367,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
     imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
     
-    _resizableImageViewFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
+    _senderViewOriginalFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
     
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenBound.size.width;
@@ -378,7 +378,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_applicationWindow addSubview:fadeView];
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = _resizableImageViewFrame;
+    resizableImageView.frame = _senderViewOriginalFrame;
     resizableImageView.clipsToBounds = YES;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
@@ -396,19 +396,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
     } completion:nil];
     
+    float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
+    CGRect finalImageViewFrame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
+    
     if(_usePopAnimation)
     {
-        float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
-        CGRect frame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
-        
         [self animateView:resizableImageView
-                  toFrame:frame
+                  toFrame:finalImageViewFrame
                completion:completion];
     }
     else
     {
         [UIView animateWithDuration:_animationDuration animations:^{
-            resizableImageView.layer.frame = _resizableImageViewFrame;
+            resizableImageView.layer.frame = finalImageViewFrame;
         } completion:^(BOOL finished) {
             completion();
         }];
@@ -460,13 +460,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if(_usePopAnimation)
     {
         [self animateView:resizableImageView
-                  toFrame:_resizableImageViewFrame
+                  toFrame:_senderViewOriginalFrame
                completion:completion];
     }
     else
     {
         [UIView animateWithDuration:_animationDuration animations:^{
-            resizableImageView.layer.frame = _resizableImageViewFrame;
+            resizableImageView.layer.frame = _senderViewOriginalFrame;
         } completion:^(BOOL finished) {
             completion();
         }];
