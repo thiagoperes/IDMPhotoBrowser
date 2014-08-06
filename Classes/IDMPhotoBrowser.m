@@ -1221,6 +1221,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 }
 
+- (UIActivityViewController*)getActivityViewControllerWithActivityItems:(NSArray*)activityItems
+{
+    return self.presentedActivityViewController ? self.presentedActivityViewController : [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:self.presentedActivityViewControllerApplicationActivities];
+}
+
 - (void)actionButtonPressed:(id)sender {
     id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
     
@@ -1231,7 +1236,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             NSMutableArray *activityItems = [NSMutableArray arrayWithObject:[photo underlyingImage]];
             if (photo.caption) [activityItems addObject:photo.caption];
             
-            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+            self.activityViewController = [self getActivityViewControllerWithActivityItems:activityItems];
             
             __typeof__(self) __weak selfBlock = self;
             [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {

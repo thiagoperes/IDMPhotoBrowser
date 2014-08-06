@@ -57,6 +57,13 @@
 // animation time (default .28)
 @property (nonatomic) float animationDuration;
 
+// default is nil. contain UIActivity actions
+@property (nonatomic,strong)NSArray* presentedActivityViewControllerApplicationActivities;
+
+// default is nil.
+// if nil, [[UIActivityViewController alloc] init] will be used.
+@property (nonatomic,strong)UIActivityViewController* presentedActivityViewController;
+
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray;
 
