@@ -69,8 +69,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     //UIImage *_backgroundScreenshot;
     
     UIWindow *_applicationWindow;
-    UIViewController *_applicationTopViewController;
-    int _previousModalPresentationStyle;
+	
+    //UIViewController *_applicationTopViewController;
+    //int _previousModalPresentationStyle;
 }
 
 // Private Properties
@@ -183,14 +184,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         _applicationWindow = [[[UIApplication sharedApplication] delegate] window];
         
-        _applicationTopViewController = [self topviewController];
-        
-        _previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
-        
-        _applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
-        
-        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        
+		self.modalPresentationStyle = UIModalPresentationCustom;
+		
+		self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		
         // Listen for IDMPhoto notifications
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleIDMPhotoLoadingDidEndNotification:)
@@ -491,8 +488,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self dismissViewControllerAnimated:animated completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-        
-        _applicationTopViewController.modalPresentationStyle = _previousModalPresentationStyle;
     }];
 }
 
