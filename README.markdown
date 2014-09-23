@@ -163,13 +163,12 @@ Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 ### Including Source Directly Into Your Project
 
-Simply add the files inside `IDMPhotoBrowser/Classes` to your Xcode project, copying them to your project's directory if required. And also any library inside `IDMPhotoBrowser/ExternalLibraries` needed.
-
-### Opensource libraries used
+#### Opensource libraries used
 
 - [AFNetWorking](https://github.com/AFNetworking/AFNetworking)
 - [DACircularProgress](https://github.com/danielamitay/DACircularProgress)
 - [SVProgressHUD](https://github.com/samvermette/SVProgressHUD)
+- [pop](https://github.com/facebook/pop)
 
 ## Licence
 
