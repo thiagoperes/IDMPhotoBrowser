@@ -70,8 +70,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     UIWindow *_applicationWindow;
 	
-    //UIViewController *_applicationTopViewController;
-    //int _previousModalPresentationStyle;
+	// iOS 7
+    UIViewController *_applicationTopViewController;
+    int _previousModalPresentationStyle;
 }
 
 // Private Properties
@@ -183,8 +184,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             self.automaticallyAdjustsScrollViewInsets = NO;
         
         _applicationWindow = [[[UIApplication sharedApplication] delegate] window];
-        
-		self.modalPresentationStyle = UIModalPresentationCustom;
+		
+		if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
+		{
+			self.modalPresentationStyle = UIModalPresentationCustom;
+			self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		}
+		else
+		{
+			_applicationTopViewController = [self topviewController];
+			_previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
+			_applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+			self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		}
 		
 		self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 		
@@ -488,6 +500,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self dismissViewControllerAnimated:animated completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
+		
+		if (SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(@"7.0"))
+		{
+			_applicationTopViewController.modalPresentationStyle = _previousModalPresentationStyle;
+		}
     }];
 }
 
