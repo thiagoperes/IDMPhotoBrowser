@@ -520,6 +520,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (UIImage*)getImageFromView:(UIView *)view {
+    if ([view isKindOfClass:[UIImageView class]]) {
+        return ((UIImageView *)view).image;
+    }
+    
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
