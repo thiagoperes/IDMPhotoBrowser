@@ -187,7 +187,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         _previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
         
+	// iOS 8 transparency
+        _applicationTopViewController.providesPresentationContextTransitionStyle = YES;
+        _applicationTopViewController.definesPresentationContext = YES;
+        
         _applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+        
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
@@ -279,7 +285,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [self setNeedsStatusBarAppearanceUpdate];
     }
     
-    translatedPoint = CGPointMake(firstX, firstY+translatedPoint.y);
+    translatedPoint = CGPointMake(firstX+translatedPoint.x, firstY+translatedPoint.y);
     [scrollView setCenter:translatedPoint];
     
     float newY = scrollView.center.y - viewHalfHeight;
@@ -300,10 +306,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             
             CGFloat finalX = firstX, finalY;
             
-            CGFloat windowsHeigt = [_applicationWindow frame].size.height;
+            CGFloat windowsHeight = [_applicationWindow frame].size.height;
             
             if(scrollView.center.y > viewHalfHeight+30) // swipe down
-                finalY = windowsHeigt*2;
+                finalY = windowsHeight*2;
             else // swipe up
                 finalY = -viewHalfHeight;
             
@@ -433,7 +439,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_applicationWindow addSubview:fadeView];
     
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = (imageFromView) ? CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2)+scrollView.frame.origin.y, screenWidth, imageFromView.size.height / scaleFactor) : CGRectZero;
+    if (imageFromView) {
+        resizableImageView.frame = CGRectMake((screenWidth/2)-((imageFromView.size.width / scaleFactor)/2)+scrollView.frame.origin.x,
+                                              (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2)+scrollView.frame.origin.y,
+                                              imageFromView.size.width / scaleFactor,
+                                              imageFromView.size.height / scaleFactor);
+    } else {
+        resizableImageView.frame = CGRectZero;
+    }
     resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
     resizableImageView.clipsToBounds = YES;
@@ -507,6 +520,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (UIImage*)getImageFromView:(UIView *)view {
+    if ([view isKindOfClass:[UIImageView class]]) {
+        return ((UIImageView *)view).image;
+    }
+    
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -622,6 +639,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
+    
+    _actionButton.tintColor = [UIColor whiteColor];
     
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
