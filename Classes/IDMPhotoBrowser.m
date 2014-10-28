@@ -187,7 +187,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         _previousModalPresentationStyle = _applicationTopViewController.modalPresentationStyle;
         
+	// iOS 8 transparency
+        _applicationTopViewController.providesPresentationContextTransitionStyle = YES;
+        _applicationTopViewController.definesPresentationContext = YES;
+        
         _applicationTopViewController.modalPresentationStyle = UIModalPresentationCurrentContext;
+        
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         
