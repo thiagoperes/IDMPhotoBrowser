@@ -246,6 +246,11 @@
 	[_photoBrowser hideControlsAfterDelay];
 }
 
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+}
+
 #pragma mark - Tap Detection
 
 - (void)handleSingleTap:(CGPoint)touchPoint {
