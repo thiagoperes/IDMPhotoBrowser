@@ -50,6 +50,7 @@
 
 @property (nonatomic) BOOL forceHideStatusBar;
 @property (nonatomic) BOOL usePopAnimation;
+@property (nonatomic) BOOL disableVerticalSwipe;
 
 // defines zooming of the background (default 1.0)
 @property (nonatomic) float backgroundScaleFactor;
