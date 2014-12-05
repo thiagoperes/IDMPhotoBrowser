@@ -167,7 +167,6 @@ Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 - [AFNetWorking](https://github.com/AFNetworking/AFNetworking)
 - [DACircularProgress](https://github.com/danielamitay/DACircularProgress)
-- [SVProgressHUD](https://github.com/samvermette/SVProgressHUD)
 - [pop](https://github.com/facebook/pop)
 
 ## Licence
