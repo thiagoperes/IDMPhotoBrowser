@@ -128,6 +128,11 @@ If the presenting view controller doesn't have a status bar, in some cases you c
     browser.forceHideStatusBar = YES;
 ```
 
+It's possible to disable the vertical dismiss swipe gesture:
+``` objective-c
+    browser.disableVerticalSwipe = YES;
+```
+
 ### Photo Captions
 
 Photo captions can be displayed simply by setting the `caption` property on specific photos:
