@@ -25,7 +25,7 @@
 		727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */; };
 		727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */; };
 		BDDE863029564DCEAF3437FF /* libPods-PhotoBrowserDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F398EC6BD549F7A2FDC451 /* libPods-PhotoBrowserDemo.a */; };
-		D150526F16F7ADD5002BBD4F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */; };
+		D14C0AC31A262A8E008445D9 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D14C0AC21A262A8E008445D9 /* Media.xcassets */; };
 		D1574968178DB94900B0211A /* IDMCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157494F178DB94900B0211A /* IDMCaptionView.m */; };
 		D1574969178DB94900B0211A /* IDMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = D1574951178DB94900B0211A /* IDMPhoto.m */; };
 		D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */; };
@@ -80,7 +80,7 @@
 		727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IDMPBLocalizations.bundle; sourceTree = "<group>"; };
 		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
-		D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		D14C0AC21A262A8E008445D9 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = ../Media.xcassets; sourceTree = "<group>"; };
 		D157494E178DB94900B0211A /* IDMCaptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMCaptionView.h; sourceTree = "<group>"; };
 		D157494F178DB94900B0211A /* IDMCaptionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMCaptionView.m; sourceTree = "<group>"; };
 		D1574950178DB94900B0211A /* IDMPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMPhoto.h; sourceTree = "<group>"; };
@@ -192,10 +192,10 @@
 			isa = PBXGroup;
 			children = (
 				D19D825517E8D40700A5859E /* CustomImages */,
+				D14C0AC21A262A8E008445D9 /* Media.xcassets */,
 				727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */,
 				D157496F178DB95300B0211A /* README.markdown */,
 				D1574970178DB95300B0211A /* LICENSE.txt */,
-				D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */,
 				4C6F979914AF734900F8389A /* PhotoBrowserDemo-Info.plist */,
 				4C6F979D14AF734900F8389A /* main.m */,
 				4C6F979F14AF734900F8389A /* PhotoBrowserDemo-Prefix.pch */,
@@ -307,7 +307,7 @@
 		4C6F978414AF734800F8389A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = 4C6F978714AF734800F8389A /* Build configuration list for PBXProject "PhotoBrowserDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -341,7 +341,6 @@
 				4C6F97D814AF760500F8389A /* photo3m.jpg in Resources */,
 				4C6F97D914AF760500F8389A /* photo4l.jpg in Resources */,
 				4C6F97DA14AF760500F8389A /* photo4m.jpg in Resources */,
-				D150526F16F7ADD5002BBD4F /* Default-568h@2x.png in Resources */,
 				D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */,
 				D1574971178DB95300B0211A /* README.markdown in Resources */,
 				D1574972178DB95300B0211A /* LICENSE.txt in Resources */,
@@ -349,6 +348,7 @@
 				D19D826117E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */,
 				D19D826217E8D40700A5859E /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */,
 				D19D826317E8D40700A5859E /* IDMPhotoBrowser_customArrowLeftSelected@2x.png in Resources */,
+				D14C0AC31A262A8E008445D9 /* Media.xcassets in Resources */,
 				D19D826417E8D40700A5859E /* IDMPhotoBrowser_customArrowRight.png in Resources */,
 				D19D826517E8D40700A5859E /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */,
 				D19D826617E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected.png in Resources */,
@@ -424,10 +424,12 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -460,10 +462,12 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
