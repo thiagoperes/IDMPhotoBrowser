@@ -13,5 +13,5 @@ Pod::Spec.new do |s|
   s.requires_arc  =  true
   s.dependency       'AFNetworking', '~> 2.2.1'
   s.dependency       'DACircularProgress', '~> 2.2'
-  s.dependency       'SVProgressHUD', '~> 1.0'
+  s.dependency       'SVProgressHUD', '1.0'
 end
