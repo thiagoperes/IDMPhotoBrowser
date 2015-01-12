@@ -848,7 +848,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             if ([photo caption]) captionView = [[IDMCaptionView alloc] initWithPhoto:photo];
         }
     }
-    captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha
+
+    captionView.alpha = [self areControlsHidden] && !self.alwaysShowCaptions ? 0 : 1; // Initial alpha
     
     return captionView;
 }
@@ -1176,7 +1177,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [self.navigationController.navigationBar setAlpha:alpha];
         [_toolbar setAlpha:alpha];
         [_doneButton setAlpha:alpha];
-        for (UIView *v in captionViews) v.alpha = alpha;
+
+        CGFloat captionAlpha = hidden && !self.alwaysShowCaptions ? 0 : 1;
+        for (UIView *v in captionViews) v.alpha = captionAlpha;
     } completion:^(BOOL finished) {}];
     
 	// Control hiding timer
