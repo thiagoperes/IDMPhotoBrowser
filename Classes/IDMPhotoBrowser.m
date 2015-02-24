@@ -503,7 +503,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
 		
-		if (SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(@"7.0"))
+		if (SYSTEM_VERSION_LESS_THAN(@"8.0"))
 		{
 			_applicationTopViewController.modalPresentationStyle = _previousModalPresentationStyle;
 		}
