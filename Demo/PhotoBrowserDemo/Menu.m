@@ -262,6 +262,12 @@
     NSLog(@"Did show photoBrowser with photo index: %d, photo caption: %@", pageIndex, photo.caption);
 }
 
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)pageIndex
+{
+    id <IDMPhoto> photo = [photoBrowser photoAtIndex:pageIndex];
+    NSLog(@"Will dismiss photoBrowser with photo index: %d, photo caption: %@", pageIndex, photo.caption);
+}
+
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)pageIndex
 {
     id <IDMPhoto> photo = [photoBrowser photoAtIndex:pageIndex];
