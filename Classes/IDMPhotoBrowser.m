@@ -244,6 +244,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	return self;
 }
 
+- (id)initWithPhotosAndURLs:(NSArray *)photosAndURLs animatedFromView:(UIView*)view {
+    if ((self = [self init])) {
+        NSArray *photosArray = [IDMPhoto photosWithImagesAndURLs:photosAndURLs];
+        _photos = [[NSMutableArray alloc] initWithArray:photosArray];
+        _senderViewForAnimation = view;
+    }
+    return self;
+}
+
 - (void)dealloc {
     _pagingScrollView.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];

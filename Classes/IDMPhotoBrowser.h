@@ -71,6 +71,12 @@
 // Init with NSURL objects (animated)
 - (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view;
 
+// Init with Photos and NSURL objects
+- (id)initWithPhotosAndURLs:(NSArray *)photosAndURLs;
+
+// Init with Photos and NSURL objects (animated)
+- (id)initWithPhotosAndURLs:(NSArray *)photosAndURLs animatedFromView:(UIView*)view;
+
 // Reloads the photo browser and refetches data
 - (void)reloadData;
 
