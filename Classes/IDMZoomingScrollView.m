@@ -184,6 +184,10 @@
     // maximum zoom scale to 0.5.
 	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
 		maxScale = maxScale / [[UIScreen mainScreen] scale];
+		
+		if (maxScale < minScale) {
+			maxScale = minScale * 2;
+		}
 	}
     
 	// Set
