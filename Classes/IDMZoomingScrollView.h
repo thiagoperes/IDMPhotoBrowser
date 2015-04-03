@@ -11,7 +11,7 @@
 #import "IDMTapDetectingImageView.h"
 #import "IDMTapDetectingView.h"
 
-#import "DACircularProgressView.h"
+#import <DACircularProgress/DACircularProgressView.h>
 
 @class IDMPhotoBrowser, IDMPhoto, IDMCaptionView;
 

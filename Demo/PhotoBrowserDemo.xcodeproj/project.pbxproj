@@ -25,7 +25,7 @@
 		727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */; };
 		727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */; };
 		BDDE863029564DCEAF3437FF /* libPods-PhotoBrowserDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F398EC6BD549F7A2FDC451 /* libPods-PhotoBrowserDemo.a */; };
-		D150526F16F7ADD5002BBD4F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */; };
+		D114BB411A32269C00E677FE /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D114BB401A32269C00E677FE /* Launch Screen.xib */; };
 		D1574968178DB94900B0211A /* IDMCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157494F178DB94900B0211A /* IDMCaptionView.m */; };
 		D1574969178DB94900B0211A /* IDMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = D1574951178DB94900B0211A /* IDMPhoto.m */; };
 		D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D1574952178DB94900B0211A /* IDMPhotoBrowser.bundle */; };
@@ -35,6 +35,7 @@
 		D157496E178DB94900B0211A /* IDMZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157495B178DB94900B0211A /* IDMZoomingScrollView.m */; };
 		D1574971178DB95300B0211A /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = D157496F178DB95300B0211A /* README.markdown */; };
 		D1574972178DB95300B0211A /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = D1574970178DB95300B0211A /* LICENSE.txt */; };
+		D17F79ED1AB7C29600A65B37 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D17F79EC1AB7C29600A65B37 /* Images.xcassets */; };
 		D1890F7217C66CA70065C101 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1890F7117C66CA70065C101 /* ImageIO.framework */; };
 		D19D826017E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825617E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png */; };
 		D19D826117E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D19D825717E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png */; };
@@ -76,11 +77,12 @@
 		4C6F97D014AF760500F8389A /* photo3m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo3m.jpg; path = Photos/photo3m.jpg; sourceTree = "<group>"; };
 		4C6F97D114AF760500F8389A /* photo4l.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4l.jpg; path = Photos/photo4l.jpg; sourceTree = "<group>"; };
 		4C6F97D214AF760500F8389A /* photo4m.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = photo4m.jpg; path = Photos/photo4m.jpg; sourceTree = "<group>"; };
-		7223DFC84A3E4E949E51E3F0 /* Pods-PhotoBrowserDemo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.xcconfig"; path = "Pods/Pods-PhotoBrowserDemo.xcconfig"; sourceTree = "<group>"; };
 		727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IDMPBLocalizations.bundle; sourceTree = "<group>"; };
-		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
+		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
+		927DCB0B321DDC6CFC895FF5 /* Pods-PhotoBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		A539B17F628FB7F9581056C4 /* Pods-PhotoBrowserDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.release.xcconfig"; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
-		D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		D114BB401A32269C00E677FE /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		D157494E178DB94900B0211A /* IDMCaptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMCaptionView.h; sourceTree = "<group>"; };
 		D157494F178DB94900B0211A /* IDMCaptionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMCaptionView.m; sourceTree = "<group>"; };
 		D1574950178DB94900B0211A /* IDMPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDMPhoto.h; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 		D157495B178DB94900B0211A /* IDMZoomingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDMZoomingScrollView.m; sourceTree = "<group>"; };
 		D157496F178DB95300B0211A /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.markdown; path = ../../README.markdown; sourceTree = "<group>"; };
 		D1574970178DB95300B0211A /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../LICENSE.txt; sourceTree = "<group>"; };
+		D17F79EC1AB7C29600A65B37 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D1890F7117C66CA70065C101 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		D19D825617E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IDMPhotoBrowser_customArrowLeft.png; sourceTree = "<group>"; };
 		D19D825717E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IDMPhotoBrowser_customArrowLeft@2x.png"; sourceTree = "<group>"; };
@@ -142,14 +145,13 @@
 		4C6F978214AF734800F8389A = {
 			isa = PBXGroup;
 			children = (
-				727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */,
 				D1574931178DB94900B0211A /* Classes */,
 				4C6F979714AF734900F8389A /* PhotoBrowserDemo */,
 				4C6F97CA14AF75D300F8389A /* Photos */,
 				4C6F979814AF734900F8389A /* Supporting Files */,
 				4C6F979014AF734900F8389A /* Frameworks */,
 				4C6F978E14AF734900F8389A /* Products */,
-				7223DFC84A3E4E949E51E3F0 /* Pods-PhotoBrowserDemo.xcconfig */,
+				88D66E11DC21F421B69C2FEE /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -185,6 +187,7 @@
 			children = (
 				D150527116F7B044002BBD4F /* AppDelegate */,
 				D150527216F7B04B002BBD4F /* Menu */,
+				D17F79EC1AB7C29600A65B37 /* Images.xcassets */,
 			);
 			path = PhotoBrowserDemo;
 			sourceTree = "<group>";
@@ -193,12 +196,13 @@
 			isa = PBXGroup;
 			children = (
 				D19D825517E8D40700A5859E /* CustomImages */,
+				727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */,
 				D157496F178DB95300B0211A /* README.markdown */,
 				D1574970178DB95300B0211A /* LICENSE.txt */,
-				D150526E16F7ADD5002BBD4F /* Default-568h@2x.png */,
 				4C6F979914AF734900F8389A /* PhotoBrowserDemo-Info.plist */,
 				4C6F979D14AF734900F8389A /* main.m */,
 				4C6F979F14AF734900F8389A /* PhotoBrowserDemo-Prefix.pch */,
+				D114BB401A32269C00E677FE /* Launch Screen.xib */,
 			);
 			name = "Supporting Files";
 			path = PhotoBrowserDemo;
@@ -218,6 +222,15 @@
 			);
 			name = Photos;
 			path = PhotoBrowserDemo;
+			sourceTree = "<group>";
+		};
+		88D66E11DC21F421B69C2FEE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				927DCB0B321DDC6CFC895FF5 /* Pods-PhotoBrowserDemo.debug.xcconfig */,
+				A539B17F628FB7F9581056C4 /* Pods-PhotoBrowserDemo.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		D150527116F7B044002BBD4F /* AppDelegate */ = {
@@ -307,7 +320,7 @@
 		4C6F978414AF734800F8389A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = 4C6F978714AF734800F8389A /* Build configuration list for PBXProject "PhotoBrowserDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -334,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C6F97D314AF760500F8389A /* photo1l.jpg in Resources */,
+				D17F79ED1AB7C29600A65B37 /* Images.xcassets in Resources */,
 				4C6F97D414AF760500F8389A /* photo1m.jpg in Resources */,
 				4C6F97D514AF760500F8389A /* photo2l.jpg in Resources */,
 				4C6F97D614AF760500F8389A /* photo2m.jpg in Resources */,
@@ -341,13 +355,13 @@
 				4C6F97D814AF760500F8389A /* photo3m.jpg in Resources */,
 				4C6F97D914AF760500F8389A /* photo4l.jpg in Resources */,
 				4C6F97DA14AF760500F8389A /* photo4m.jpg in Resources */,
-				D150526F16F7ADD5002BBD4F /* Default-568h@2x.png in Resources */,
 				D157496A178DB94900B0211A /* IDMPhotoBrowser.bundle in Resources */,
 				D1574971178DB95300B0211A /* README.markdown in Resources */,
 				D1574972178DB95300B0211A /* LICENSE.txt in Resources */,
 				D19D826017E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft.png in Resources */,
 				D19D826117E8D40700A5859E /* IDMPhotoBrowser_customArrowLeft@2x.png in Resources */,
 				D19D826217E8D40700A5859E /* IDMPhotoBrowser_customArrowLeftSelected.png in Resources */,
+				D114BB411A32269C00E677FE /* Launch Screen.xib in Resources */,
 				D19D826317E8D40700A5859E /* IDMPhotoBrowser_customArrowLeftSelected@2x.png in Resources */,
 				D19D826417E8D40700A5859E /* IDMPhotoBrowser_customArrowRight.png in Resources */,
 				D19D826517E8D40700A5859E /* IDMPhotoBrowser_customArrowRight@2x.png in Resources */,
@@ -390,7 +404,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-PhotoBrowserDemo-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -424,10 +438,12 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -460,10 +476,12 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -483,8 +501,10 @@
 		};
 		4C6F97AF14AF734900F8389A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7223DFC84A3E4E949E51E3F0 /* Pods-PhotoBrowserDemo.xcconfig */;
+			baseConfigurationReference = 927DCB0B321DDC6CFC895FF5 /* Pods-PhotoBrowserDemo.debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Prefix.pch";
@@ -500,8 +520,10 @@
 		};
 		4C6F97B014AF734900F8389A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7223DFC84A3E4E949E51E3F0 /* Pods-PhotoBrowserDemo.xcconfig */;
+			baseConfigurationReference = A539B17F628FB7F9581056C4 /* Pods-PhotoBrowserDemo.release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PhotoBrowserDemo/PhotoBrowserDemo-Prefix.pch";

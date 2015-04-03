@@ -1,15 +1,12 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, "6.0"
+source 'https://github.com/CocoaPods/Specs.git'
 
 # ignoring warning from pods
 inhibit_all_warnings!
 
 target "PhotoBrowserDemo" do
 
-pod 'AFNetworking', '~> 2.2.3'
-pod 'DACircularProgress', '~> 2.2'
-pod 'SVProgressHUD', '~> 1.0'
-
-pod 'DCIntrospect-ARC'
+pod 'AFNetworking'
+pod 'DACircularProgress'
+pod 'pop'
 
 end
