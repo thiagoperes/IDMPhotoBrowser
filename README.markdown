@@ -112,11 +112,25 @@ browser.actionButtonTitles = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4
 #### Others
 
 Others customizations you can make are: use white background color, don't display the done button and change the done button background image:
-
 ``` objective-c    
 browser.useWhiteBackgroundColor = YES;
 browser.displayDoneButton = NO;
 browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+```
+
+You can use a smooth [pop](https://github.com/facebook/pop) animation when presenting and dismissing a photo:
+``` objective-c
+    browser.usePopAnimation = YES;
+```
+
+If the presenting view controller doesn't have a status bar, in some cases you can force it to be hidden:
+``` objective-c
+    browser.forceHideStatusBar = YES;
+```
+
+It's possible to disable the vertical dismiss swipe gesture:
+``` objective-c
+    browser.disableVerticalSwipe = YES;
 ```
 
 ### Photo Captions
@@ -154,13 +168,11 @@ Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 ### Including Source Directly Into Your Project
 
-Simply add the files inside `IDMPhotoBrowser/Classes` to your Xcode project, copying them to your project's directory if required. And also any library inside `IDMPhotoBrowser/ExternalLibraries` needed.
-
-### Opensource libraries used
+#### Opensource libraries used
 
 - [AFNetWorking](https://github.com/AFNetworking/AFNetworking)
 - [DACircularProgress](https://github.com/danielamitay/DACircularProgress)
-- [SVProgressHUD](https://github.com/samvermette/SVProgressHUD)
+- [pop](https://github.com/facebook/pop)
 
 ## Licence
 

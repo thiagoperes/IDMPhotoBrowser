@@ -136,7 +136,9 @@ caption = _caption;
             [self performSelectorInBackground:@selector(loadImageFromFileAsync) withObject:nil];
         } else if (_photoURL) {
             // Load async from web (using AFNetworking)
-            NSURLRequest *request = [NSURLRequest requestWithURL:_photoURL];
+            NSURLRequest *request = [[NSURLRequest alloc] initWithURL:_photoURL
+                                                          cachePolicy:NSURLRequestReturnCacheDataElseLoad
+                                                      timeoutInterval:0];
             
             AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
             op.responseSerializer = [AFImageResponseSerializer serializer];
