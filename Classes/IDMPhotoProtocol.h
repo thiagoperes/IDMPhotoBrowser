@@ -57,4 +57,10 @@
 // Return nil to display no caption
 - (NSString *)caption; 
 
+// Set a boolean indicating if the image has been liked/favorited/bookmarked
+- (void)setLiked:(BOOL)liked;
+
+// Return a boolean indicator if the image is liked/favorited/bookmarked
+- (BOOL)isLiked;
+
 @end

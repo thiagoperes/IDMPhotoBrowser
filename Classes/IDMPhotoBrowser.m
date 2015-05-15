@@ -38,7 +38,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
 	// Toolbar
 	UIToolbar *_toolbar;
-	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
+	UIBarButtonItem *_likeButton, *_previousButton, *_nextButton, *_actionButton;
     UIBarButtonItem *_counterButton;
     UILabel *_counterLabel;
     
@@ -162,6 +162,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _doneButtonImage = nil;
         
         _displayToolbar = YES;
+        _displayLikeButton = YES;
         _displayActionButton = YES;
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
@@ -171,6 +172,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 		_disableVerticalSwipe = NO;
 		
         _useWhiteBackgroundColor = NO;
+        _likeImage = _likedImage = nil;
         _leftArrowImage = _rightArrowImage = _leftArrowSelectedImage = _rightArrowSelectedImage = nil;
         
         _arrowButtonsChangePhotosAnimated = YES;
@@ -518,6 +520,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button setBackgroundImage:image forState:UIControlStateNormal];
     [button setBackgroundImage:selectedImage forState:UIControlStateDisabled];
+    [button setBackgroundImage:selectedImage forState:UIControlStateHighlighted];
+    [button setBackgroundImage:selectedImage forState:UIControlStateSelected];
     [button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
     [button setContentMode:UIViewContentModeCenter];
     [button setFrame:CGRectMake(0,0, image.size.width, image.size.height)];
@@ -593,9 +597,18 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _doneButton.layer.borderWidth = 1.0f;
     }
     else {
-        [_doneButton setBackgroundImage:_doneButtonImage forState:UIControlStateNormal];
+        [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
         _doneButton.contentMode = UIViewContentModeScaleAspectFit;
     }
+    
+    UIImage *likeButtonImage = (_likeImage) ? _likeImage : [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_heart_like.png"];
+    
+    UIImage *likedButtonImage = (_likedImage) ? _likedImage : [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_heart_liked.png"];
+    
+    // Like Button
+    _likeButton = [[UIBarButtonItem alloc] initWithCustomView:[self customToolbarButtonImage:likeButtonImage
+                                                                               imageSelected:likedButtonImage
+                                                                                      action:@selector(likeButtonPressed:)]];
     
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
     [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]          : _leftArrowImage;
@@ -789,8 +802,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                                                                                target:self action:nil];
     NSMutableArray *items = [NSMutableArray new];
     
-    if (_displayActionButton)
+    if (_displayLikeButton) {
+        [items addObject:_likeButton];
+    } else if(_displayActionButton) {
         [items addObject:fixedLeftSpace];
+    }        
+    
     [items addObject:flexSpace];
     
     if (numberOfPhotos > 1 && _displayArrowButton)
@@ -1126,6 +1143,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Toolbar
 
 - (void)updateToolbar {
+    id <IDMPhoto> currentPhoto = [self photoAtIndex:_currentPageIndex];
+    
+    // Like Status
+    [(UIButton *)_likeButton.customView setSelected:currentPhoto.isLiked];
+    
     // Counter
 	if ([self numberOfPhotos] > 1) {
 		_counterLabel.text = [NSString stringWithFormat:@"%lu %@ %lu", (unsigned long)(_currentPageIndex+1), IDMPhotoBrowserLocalizedStrings(@"of"), (unsigned long)[self numberOfPhotos]];
@@ -1237,6 +1259,17 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _senderViewForAnimation.hidden = NO;
         [self prepareForClosePhotoBrowser];
         [self dismissPhotoBrowserAnimated:YES];
+    }
+}
+
+- (void)likeButtonPressed:(id)sender {
+    id <IDMPhoto> currentPhoto = [self photoAtIndex:_currentPageIndex];
+    
+    [currentPhoto setLiked:!currentPhoto.isLiked];
+    [self updateToolbar];
+    
+    if ([_delegate respondsToSelector:@selector(photoBrowser:didLikePhotoAtIndex:)]) {
+        [_delegate photoBrowser:self didLikePhotoAtIndex:_currentPageIndex];
     }
 }
 
