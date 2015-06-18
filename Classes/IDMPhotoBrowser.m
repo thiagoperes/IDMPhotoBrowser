@@ -433,6 +433,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     float fadeAlpha = 1 - fabs(scrollView.frame.origin.y)/scrollView.frame.size.height;
     
     UIImage *imageFromView = [scrollView.photo underlyingImage];
+    if (!imageFromView && [scrollView.photo respondsToSelector:@selector(placeholderImage)]) {
+        imageFromView = [scrollView.photo placeholderImage];
+    }
+    
     //imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
     
     CGRect screenBound = [[UIScreen mainScreen] bounds];
@@ -866,6 +870,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 			return [photo underlyingImage];
 		} else {
             [photo loadUnderlyingImageAndNotify];
+            if ([photo respondsToSelector:@selector(placeholderImage)]) {
+                return [photo placeholderImage];
+            }
 		}
 	}
     
