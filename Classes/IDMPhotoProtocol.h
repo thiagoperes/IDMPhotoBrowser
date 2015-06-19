@@ -55,6 +55,10 @@
 
 // Return a caption string to be displayed over the image
 // Return nil to display no caption
-- (NSString *)caption; 
+- (NSString *)caption;
+
+// Return placeholder UIImage to be displayed while loading underlyingImage
+// Return nil if there is no placeholder
+- (UIImage *)placeholderImage;
 
 @end
