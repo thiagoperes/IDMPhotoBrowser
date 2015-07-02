@@ -585,13 +585,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_doneButton setFrame:[self frameForDoneButtonAtOrientation:currentOrientation]];
-    [_doneButton setAlpha:1.0f];
-    [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
     if(!_doneButtonImage) {
         [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
-        [_doneButton setTitle:IDMPhotoBrowserLocalizedStrings(@"Done") forState:UIControlStateNormal];
+        [_doneButton setTitle:_doneButtonTitle?:IDMPhotoBrowserLocalizedStrings(@"Done") forState:UIControlStateNormal];
         [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
         [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
         _doneButton.layer.cornerRadius = 3.0f;
@@ -602,6 +598,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setBackgroundImage:_doneButtonImage forState:UIControlStateNormal];
         _doneButton.contentMode = UIViewContentModeScaleAspectFit;
     }
+    [_doneButton setFrame:[self frameForDoneButtonAtOrientation:currentOrientation]];
+    [_doneButton setAlpha:1.0f];
+    [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
     [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]          : _leftArrowImage;
@@ -1082,12 +1081,21 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation {
+    static const CGFloat doneButtonMinWidth = 55.0;
+    static const CGFloat doneButtonMinHeight = 26;
+    static const CGFloat doneButtonHorizontalPadding = 20.0;
+    static const CGFloat doneButtonVerticalPadding = 30.0;
+    static const CGFloat doneButtonInnerTextHorizontalPadding = 15.0;
+    
+    CGSize buttonTitleSize = [[_doneButton titleForState:UIControlStateNormal] sizeWithAttributes:@{NSFontAttributeName: _doneButton.titleLabel.font}];
+    CGFloat buttonWidth = MAX(doneButtonMinWidth, buttonTitleSize.width+2*doneButtonInnerTextHorizontalPadding);
+    
     CGRect screenBound = self.view.bounds;
     CGFloat screenWidth = screenBound.size.width;
     
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
     
-    return CGRectMake(screenWidth - 75, 30, 55, 26);
+    return CGRectMake(screenWidth-buttonWidth-doneButtonHorizontalPadding, doneButtonVerticalPadding, buttonWidth, doneButtonMinHeight);
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
