@@ -14,7 +14,7 @@
 
 #ifndef IDMPhotoBrowserLocalizedStrings
 #define IDMPhotoBrowserLocalizedStrings(key) \
-NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
+NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle bundleForClass: self.class] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
 #endif
 
 // Private
