@@ -166,18 +166,18 @@
 		4C6F979014AF734900F8389A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D1FA3A901805C340000FFE18 /* Security.framework */,
+				48F398EC6BD549F7A2FDC451 /* libPods-PhotoBrowserDemo.a */,
+				D1A193561758F37B00CE615F /* libz.1.2.5.dylib */,
+				D1A193571758F37B00CE615F /* libz.dylib */,
 				4C6F979514AF734900F8389A /* CoreGraphics.framework */,
 				4C6F979314AF734900F8389A /* Foundation.framework */,
 				D1890F7117C66CA70065C101 /* ImageIO.framework */,
-				D1A193561758F37B00CE615F /* libz.1.2.5.dylib */,
-				D1A193571758F37B00CE615F /* libz.dylib */,
 				4C6F97C814AF750400F8389A /* MessageUI.framework */,
 				D1A1935C1758F42A00CE615F /* MobileCoreServices.framework */,
 				D1B43D541721875F00D8B807 /* QuartzCore.framework */,
+				D1FA3A901805C340000FFE18 /* Security.framework */,
 				D1A1935A1758F42300CE615F /* SystemConfiguration.framework */,
 				4C6F979114AF734900F8389A /* UIKit.framework */,
-				48F398EC6BD549F7A2FDC451 /* libPods-PhotoBrowserDemo.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

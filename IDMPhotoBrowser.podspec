@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.version       =  "1.7"
   s.homepage      =  "https://github.com/ideaismobile/IDMPhotoBrowser"
   s.license       =  { :type => 'MIT', :file => 'LICENSE.txt' }
-  s.author        =  { "Ideais Mobile" => "mobile@ideais.com.br" }
+  s.author        =  { "Eduardo Callado" => "eduardo_tasker@hotmail.com" }
   s.source        =  { :git => "https://github.com/ideaismobile/IDMPhotoBrowser.git", :tag => "1.7" }
   s.platform      =  :ios, '7.0'
   s.source_files  =  'Classes/*.{h,m}'
