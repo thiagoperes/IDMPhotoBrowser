@@ -142,6 +142,7 @@ caption = _caption;
             
             AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
             op.responseSerializer = [AFImageResponseSerializer serializer];
+            op.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"image/jpg", @"image/jpeg", nil];
 
             [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
                 UIImage *image = responseObject;
