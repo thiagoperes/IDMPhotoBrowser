@@ -28,7 +28,7 @@
 @interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate> 
 
 // Properties
-@property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
+@property (nonatomic, weak) id <IDMPhotoBrowserDelegate> delegate;
 
 // Toolbar customization
 @property (nonatomic) BOOL displayToolbar;
