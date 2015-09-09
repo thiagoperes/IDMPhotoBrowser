@@ -1268,7 +1268,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 				[self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
 					[selfBlock hideControlsAfterDelay];
                     selfBlock.activityViewController = nil;
-                    [_delegate photoBrowser:self activityViewControllerActivitySelected:activityType andPhoto:((CLIDMPhoto *)_photos[_currentPageIndex])];
+                    [_delegate photoBrowser:self activityViewControllerActivitySelected:activityType andPhoto:_photos[_currentPageIndex]];
 				}];
 			}
 			else
@@ -1276,7 +1276,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 				[self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
 					[selfBlock hideControlsAfterDelay];
 					selfBlock.activityViewController = nil;
-                    [_delegate photoBrowser:self activityViewControllerActivitySelected:activityType andPhoto:((CLIDMPhoto *)_photos[_currentPageIndex])];
+                    [_delegate photoBrowser:self activityViewControllerActivitySelected:activityType andPhoto:_photos[_currentPageIndex]];
 				}];
 			}
 			
