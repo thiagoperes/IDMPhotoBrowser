@@ -12,6 +12,7 @@
 #import "IDMPhoto.h"
 #import "IDMPhotoProtocol.h"
 #import "IDMCaptionView.h"
+#import "CLIDMPhoto.h"
 
 // Delgate
 @class IDMPhotoBrowser;
@@ -22,7 +23,7 @@
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
-- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser activityViewControllerActivitySelected:(NSString *)activityType;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser activityViewControllerActivitySelected:(NSString *)activityType andPhoto:(CLIDMPhoto *)photo;
 @end
 
 // IDMPhotoBrowser
