@@ -1267,7 +1267,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 			{
 				[self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
 					[selfBlock hideControlsAfterDelay];
-					selfBlock.activityViewController = nil;
+                    selfBlock.activityViewController = nil;
+                    [_delegate photoBrowser:self activityViewControllerActivitySelected:activityType];
 				}];
 			}
 			else
@@ -1275,6 +1276,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 				[self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
 					[selfBlock hideControlsAfterDelay];
 					selfBlock.activityViewController = nil;
+                    [_delegate photoBrowser:self activityViewControllerActivitySelected:activityType];
 				}];
 			}
 			
