@@ -5,10 +5,15 @@
 //  Created by Michael Waterfall on 14/10/2010.
 //  Copyright 2010 d3i. All rights reserved.
 //
+//  Modified for CaptureLife by Michal Stawarz on 20/11/2015
 
 #import <QuartzCore/QuartzCore.h>
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
+
+#import "SDWebImageDownloader.h"
+#import "SDWebImageManager.h"
+#import <OLKitePrintSDK.h>
 
 #import "pop/POP.h"
 
@@ -606,7 +611,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Print Button
     _printButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_printButton setFrame:[self frameForDoneButtonAtOrientation:currentOrientation]];
+    [_printButton setFrame:[self frameForPrintButtonAtOrientation:currentOrientation]];
     [_printButton setAlpha:1.0f];
     [_printButton addTarget:self action:@selector(printButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -618,11 +623,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _printButton.layer.cornerRadius = 3.0f;
     _printButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
     _printButton.layer.borderWidth = 1.0f;
-    //    }
-    //    else {
-    //        [_doneButton setBackgroundImage:_doneButtonImage forState:UIControlStateNormal];
-    //        _doneButton.contentMode = UIViewContentModeScaleAspectFit;
-    //    }
+    
     
     
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
@@ -679,6 +680,21 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // Super
     [super viewDidLoad];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    // !!!
+    // SUPER IMPORTANT
+    // !!!
+    
+    SDWebImageDownloader *manager = [SDWebImageManager sharedManager].imageDownloader;
+    [manager setValue:[NSString stringWithFormat:@"Token %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"user-defaults-token"]] forHTTPHeaderField:@"Authorization"];
+    
+    // !!!
+    // SUPER IMPORTANT
+    // !!!
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -1120,7 +1136,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
     
-    return CGRectMake(75, 30, 55, 26);
+    return CGRectMake(25, 30, 55, 26);
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
@@ -1284,7 +1300,27 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)printButtonPressed:(id)sender {
-    NSLog(@"printPressed:");
+#ifdef DEBUG
+    [OLKitePrintSDK setAPIKey:[[NSUserDefaults standardUserDefaults] stringForKey:@"kite-api-sandbox"] withEnvironment:kOLKitePrintSDKEnvironmentSandbox];
+    
+#else
+    [OLKitePrintSDK setAPIKey:[[NSUserDefaults standardUserDefaults] stringForKey:@"kite-api-live"] withEnvironment:kOLKitePrintSDKEnvironmentLive];
+    
+#endif
+    
+    SDWebImageDownloader *manager = [SDWebImageManager sharedManager].imageDownloader;
+    [manager setValue:@"" forHTTPHeaderField:@"Authorization"];
+    
+    id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
+    OLKiteViewController *vc;
+    
+    if (((IDMPhoto *)photo).photoURL) {
+        vc = [[OLKiteViewController alloc] initWithAssets:@[[OLAsset assetWithURL:((IDMPhoto *)photo).photoURL]]];
+    } else {
+        vc = [[OLKiteViewController alloc] initWithAssets:@[[OLAsset assetWithImageAsPNG:[photo underlyingImage]]]];
+    }
+    
+    [self presentViewController:vc animated:YES completion:NULL];
 }
 
 - (void)actionButtonPressed:(id)sender {
