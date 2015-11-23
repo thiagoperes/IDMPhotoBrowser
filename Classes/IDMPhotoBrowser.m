@@ -7,6 +7,7 @@
 //
 //  Modified for CaptureLife by Michal Stawarz on 20/11/2015
 
+
 #import <QuartzCore/QuartzCore.h>
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
@@ -41,6 +42,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Buttons
     UIButton *_doneButton;
     UIButton *_printButton;
+    BOOL goingToPrint;
     
     // Toolbar
     UIToolbar *_toolbar;
@@ -79,6 +81,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // iOS 7
     UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
+    
 }
 
 // Private Properties
@@ -133,7 +136,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @end
 
 // IDMPhotoBrowser
-@implementation IDMPhotoBrowser
+@implementation IDMPhotoBrowser {
+    BOOL photoDisplayed;
+}
 
 // Properties
 @synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
@@ -146,6 +151,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
+
+
+int kPrintButtonUnavailableAlphaVal = 0.7;
 
 #pragma mark - NSObject
 
@@ -163,6 +171,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         _initalPageIndex = 0;
         _autoHide = YES;
+        photoDisplayed = NO;
         
         _displayDoneButton = YES;
         _doneButtonImage = nil;
@@ -187,6 +196,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _scaleImage = nil;
         
         _isdraggingPhoto = NO;
+        goingToPrint = NO;
         
         if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)])
             self.automaticallyAdjustsScrollViewInsets = NO;
@@ -687,10 +697,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // !!!
     // SUPER IMPORTANT
     // !!!
-    
-    SDWebImageDownloader *manager = [SDWebImageManager sharedManager].imageDownloader;
-    [manager setValue:[NSString stringWithFormat:@"Token %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"user-defaults-token"]] forHTTPHeaderField:@"Authorization"];
-    
+    if (!goingToPrint) {
+        SDWebImageDownloader *manager = [SDWebImageManager sharedManager].imageDownloader;
+        [manager setValue:[NSString stringWithFormat:@"Token %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"user-defaults-token"]] forHTTPHeaderField:@"Authorization"];
+    }
     // !!!
     // SUPER IMPORTANT
     // !!!
@@ -698,6 +708,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    // Make sure the authorisation token is there
+    SDWebImageDownloader *manager = [SDWebImageManager sharedManager].imageDownloader;
+    [manager setValue:[NSString stringWithFormat:@"Token %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"user-defaults-token"]] forHTTPHeaderField:@"Authorization"];
+    goingToPrint = NO;
+    
     // Update
     [self reloadData];
     
@@ -998,6 +1013,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             // Add new page
             IDMZoomingScrollView *page;
             page = [[IDMZoomingScrollView alloc] initWithPhotoBrowser:self];
+            page.photoLoadingDelegate = self;
             page.backgroundColor = [UIColor clearColor];
             page.opaque = YES;
             
@@ -1041,14 +1057,37 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return thePage;
 }
 
+- (void)pictureDidLoad:(IDMPhoto *)photo {
+    //    NSLog(@"Picture did appear %@", photo);
+    
+    [UIView animateWithDuration:0.66 animations:^{
+        [_printButton setAlpha:_doneButton.alpha];
+    } completion:^(BOOL finished) {
+        [_printButton setUserInteractionEnabled:YES];
+        photoDisplayed = YES;
+    }];
+    
+}
+
 - (void)configurePage:(IDMZoomingScrollView *)page forIndex:(NSUInteger)index {
     page.frame = [self frameForPageAtIndex:index];
     page.tag = PAGE_INDEX_TAG_OFFSET + index;
     page.photo = [self photoAtIndex:index];
     
+    //    NSLog(@"configurePage");
+    if (!page.photo.underlyingImage) {
+        photoDisplayed = NO;
+        [_printButton setUserInteractionEnabled:NO];
+        [UIView animateWithDuration:0.25 animations:^{
+            [_printButton setAlpha:kPrintButtonUnavailableAlphaVal];
+        }];
+    }
+    
+    
     __block __weak IDMPhoto *photo = (IDMPhoto*)page.photo;
     __weak IDMZoomingScrollView* weakPage = page;
     photo.progressUpdateBlock = ^(CGFloat progress){
+        NSLog(@"%f", progress);
         [weakPage setProgress:progress forPhoto:photo];
     };
 }
@@ -1070,6 +1109,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         // photo loaded so load ajacent now
         [self loadAdjacentPhotosIfNecessary:currentPhoto];
     }
+    
     if ([_delegate respondsToSelector:@selector(photoBrowser:didShowPhotoAtIndex:)]) {
         [_delegate photoBrowser:self didShowPhotoAtIndex:index];
     }
@@ -1179,6 +1219,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     // Update toolbar when page changes
     if(! _arrowButtonsChangePhotosAnimated) [self updateToolbar];
+    
 }
 
 #pragma mark - Toolbar
@@ -1236,10 +1277,20 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [UIView animateWithDuration:(animated ? 0.1 : 0) animations:^(void) {
         CGFloat alpha = hidden ? 0 : 1;
         [self.navigationController.navigationBar setAlpha:alpha];
+        
+        for (UIView *v in captionViews) v.alpha = alpha;
         [_toolbar setAlpha:alpha];
         [_doneButton setAlpha:alpha];
-        [_printButton setAlpha:alpha];
-        for (UIView *v in captionViews) v.alpha = alpha;
+        if (alpha != 0) {
+            if (photoDisplayed) {
+                [_printButton setAlpha:alpha];
+            } else {
+                [_printButton setAlpha:kPrintButtonUnavailableAlphaVal];
+            }
+        } else {
+            [_printButton setAlpha:alpha];
+        }
+        
     } completion:^(BOOL finished) {}];
     
     // Control hiding timer
@@ -1300,27 +1351,26 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)printButtonPressed:(id)sender {
-#ifdef DEBUG
-    [OLKitePrintSDK setAPIKey:[[NSUserDefaults standardUserDefaults] stringForKey:@"kite-api-sandbox"] withEnvironment:kOLKitePrintSDKEnvironmentSandbox];
-    
-#else
-    [OLKitePrintSDK setAPIKey:[[NSUserDefaults standardUserDefaults] stringForKey:@"kite-api-live"] withEnvironment:kOLKitePrintSDKEnvironmentLive];
-    
-#endif
     
     SDWebImageDownloader *manager = [SDWebImageManager sharedManager].imageDownloader;
     [manager setValue:@"" forHTTPHeaderField:@"Authorization"];
+    goingToPrint = YES;
+    
+#ifdef DEBUG
+    [OLKitePrintSDK setAPIKey:[[NSUserDefaults standardUserDefaults] stringForKey:@"kite-api-sandbox"] withEnvironment:kOLKitePrintSDKEnvironmentSandbox];
+#else
+    [OLKitePrintSDK setAPIKey:[[NSUserDefaults standardUserDefaults] stringForKey:@"kite-api-live"] withEnvironment:kOLKitePrintSDKEnvironmentLive];
+#endif
     
     id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
     OLKiteViewController *vc;
+    vc.userEmail = @"";
+    vc.userPhone = @"";
     
-    if (((IDMPhoto *)photo).photoURL) {
-        vc = [[OLKiteViewController alloc] initWithAssets:@[[OLAsset assetWithURL:((IDMPhoto *)photo).photoURL]]];
-    } else {
+    if ([photo underlyingImage]) {
         vc = [[OLKiteViewController alloc] initWithAssets:@[[OLAsset assetWithImageAsPNG:[photo underlyingImage]]]];
+        [self presentViewController:vc animated:YES completion:NULL];
     }
-    
-    [self presentViewController:vc animated:YES completion:NULL];
 }
 
 - (void)actionButtonPressed:(id)sender {

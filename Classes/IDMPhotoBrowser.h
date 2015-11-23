@@ -5,6 +5,7 @@
 //  Created by Michael Waterfall on 14/10/2010.
 //  Copyright 2010 d3i. All rights reserved.
 //
+//  Modified by Michael Stawarz on 23/11/2015
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
@@ -12,8 +13,9 @@
 #import "IDMPhoto.h"
 #import "IDMPhotoProtocol.h"
 #import "IDMCaptionView.h"
+#import "IDMZoomingScrollView.h"
 
-// Delgate
+// Delegate
 @class IDMPhotoBrowser;
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
@@ -26,7 +28,7 @@
 @end
 
 // IDMPhotoBrowser
-@interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate> 
+@interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate, IDMZoomingScrollViewDelegate>
 
 // Properties
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
