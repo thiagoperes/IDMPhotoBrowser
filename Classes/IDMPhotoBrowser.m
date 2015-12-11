@@ -1278,7 +1278,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 				}];
 			}
 			
-            [self presentViewController:self.activityViewController animated:YES completion:nil];
+			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+				[self presentViewController:self.activityViewController animated:YES completion:nil];
+			}
+			else { // iPad
+				UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:self.activityViewController];
+				[popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/4, 0, 0)
+										 inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny
+									   animated:YES];
+			}
         }
         else
         {
@@ -1292,10 +1300,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:IDMPhotoBrowserLocalizedStrings(@"Cancel")];
             self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
             
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                [_actionsSheet showFromBarButtonItem:sender animated:YES];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+				[_actionsSheet showInView:self.view];
             } else {
-                [_actionsSheet showInView:self.view];
+                [_actionsSheet showFromBarButtonItem:sender animated:YES];
             }
         }
         

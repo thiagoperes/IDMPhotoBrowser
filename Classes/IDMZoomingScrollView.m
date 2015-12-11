@@ -164,7 +164,10 @@
 	if (_photoImageView.image == nil) return;
     
 	// Sizes
-    CGSize boundsSize = self.bounds.size;
+	CGSize boundsSize = self.bounds.size;
+	boundsSize.width -= 0.1;
+	boundsSize.height -= 0.1;
+	
     CGSize imageSize = _photoImageView.frame.size;
     
     // Calculate Min

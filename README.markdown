@@ -120,17 +120,17 @@ browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneBu
 
 You can use a smooth [pop](https://github.com/facebook/pop) animation when presenting and dismissing a photo:
 ``` objective-c
-    browser.usePopAnimation = YES;
+browser.usePopAnimation = YES;
 ```
 
 If the presenting view controller doesn't have a status bar, in some cases you can force it to be hidden:
 ``` objective-c
-    browser.forceHideStatusBar = YES;
+browser.forceHideStatusBar = YES;
 ```
 
 It's possible to disable the vertical dismiss swipe gesture:
 ``` objective-c
-    browser.disableVerticalSwipe = YES;
+browser.disableVerticalSwipe = YES;
 ```
 
 ### Photo Captions
