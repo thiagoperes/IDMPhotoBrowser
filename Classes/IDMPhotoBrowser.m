@@ -120,6 +120,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 // Data
 - (NSUInteger)numberOfPhotos;
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
+- (void)deletePhotoAtIndex:(NSUInteger)index;
 - (UIImage *)imageForPhoto:(id<IDMPhoto>)photo;
 - (void)loadAdjacentPhotosIfNecessary:(id<IDMPhoto>)photo;
 - (void)releaseAllUnderlyingPhotos;
@@ -851,6 +852,22 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index {
     return _photos[index];
+}
+
+- (void)deletePhotoAtIndex:(NSUInteger)index {
+    IDMZoomingScrollView *page = [self pageDisplayedAtIndex:index];
+    [page.captionView removeFromSuperview];
+    [page removeFromSuperview];
+    
+    [_photos removeObjectAtIndex:index];
+    
+    if (!_photos.count) {
+        [self doneButtonPressed:_doneButton];
+    }
+    else {
+        _currentPageIndex != 0 ? _currentPageIndex-- : _currentPageIndex;
+        [self reloadData];
+    }
 }
 
 - (IDMCaptionView *)captionViewForPhotoAtIndex:(NSUInteger)index {

@@ -80,4 +80,7 @@
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
 
+// Delete the photo at index
+- (void)deletePhotoAtIndex:(NSUInteger)index;
+
 @end
