@@ -1,5 +1,5 @@
 //
-//  IDMPhotoBrowser.m
+//  IDMPhotoBrowser.h
 //  IDMPhotoBrowser
 //
 //  Created by Michael Waterfall on 14/10/2010.
@@ -126,7 +126,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @end
 
 // IDMPhotoBrowser
-@implementation IDMPhotoBrowser
+@interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate>
 
 // Properties
 @synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
@@ -701,78 +701,28 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 #pragma mark - Status Bar
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return _useWhiteBackgroundColor ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
-}
+// Toolbar customization
+@property (nonatomic) BOOL displayToolbar;
+@property (nonatomic) BOOL displayCounterLabel;
+@property (nonatomic) BOOL displayArrowButton;
+@property (nonatomic) BOOL displayActionButton;
+@property (nonatomic, strong) NSArray *actionButtonTitles;
+@property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
+@property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 
-- (BOOL)prefersStatusBarHidden {
-    if(_forceHideStatusBar) {
-        return YES;
-    }
-    
-    if(_isdraggingPhoto) {
-        if(_statusBarOriginallyHidden) {
-            return YES;
-        }
-        else {
-            return NO;
-        }
-    }
-    else {
-        return [self areControlsHidden];
-    }
-}
+// View customization
+@property (nonatomic) BOOL displayDoneButton;
+@property (nonatomic) BOOL useWhiteBackgroundColor;
+@property (nonatomic, weak) UIImage *doneButtonImage;
+@property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-	return UIStatusBarAnimationFade;
-}
+@property (nonatomic, weak) UIImage *scaleImage;
 
-#pragma mark - Layout
+@property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
 
-- (void)viewWillLayoutSubviews {
-	// Flag
-	_performingLayout = YES;
-    
-    UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    
-    // Toolbar
-    _toolbar.frame = [self frameForToolbarAtOrientation:currentOrientation];
-    
-    // Done button
-    _doneButton.frame = [self frameForDoneButtonAtOrientation:currentOrientation];
-    
-    
-    // Remember index
-	NSUInteger indexPriorToLayout = _currentPageIndex;
-	
-	// Get paging scroll view frame to determine if anything needs changing
-	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
-    
-	// Frame needs changing
-	_pagingScrollView.frame = pagingScrollViewFrame;
-	
-	// Recalculate contentSize based on current orientation
-	_pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
-	
-	// Adjust frames and configuration of each visible page
-	for (IDMZoomingScrollView *page in _visiblePages) {
-        NSUInteger index = PAGE_INDEX(page);
-		page.frame = [self frameForPageAtIndex:index];
-        page.captionView.frame = [self frameForCaptionView:page.captionView atIndex:index];
-		[page setMaxMinZoomScalesForCurrentBounds];
-	}
-	
-	// Adjust contentOffset to preserve page location based on values collected prior to location
-	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:indexPriorToLayout];
-	[self didStartViewingPageAtIndex:_currentPageIndex]; // initial
-    
-	// Reset
-	_currentPageIndex = indexPriorToLayout;
-	_performingLayout = NO;
-    
-    // Super
-    [super viewWillLayoutSubviews];
-}
+@property (nonatomic) BOOL forceHideStatusBar;
+@property (nonatomic) BOOL usePopAnimation;
+@property (nonatomic) BOOL disableVerticalSwipe;
 
 - (void)performLayout {
     // Setup
@@ -836,73 +786,26 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 		[self.view addGestureRecognizer:_panGesture];
 }
 
-#pragma mark - Data
+// animation time (default .28)
+@property (nonatomic) float animationDuration;
 
-- (void)reloadData {
-    // Get data
-    [self releaseAllUnderlyingPhotos];
-    
-    // Update
-    [self performLayout];
-    
-    // Layout
-    [self.view setNeedsLayout];
-}
+// Init
+- (id)initWithPhotos:(NSArray *)photosArray;
 
-- (NSUInteger)numberOfPhotos {
-    return _photos.count;
-}
+// Init (animated)
+- (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view;
 
-- (id<IDMPhoto>)photoAtIndex:(NSUInteger)index {
-    return _photos[index];
-}
+// Init with NSURL objects
+- (id)initWithPhotoURLs:(NSArray *)photoURLsArray;
 
-- (void)deletePhotoAtIndex:(NSUInteger)index {
-    IDMZoomingScrollView *page = [self pageDisplayedAtIndex:index];
-    [page.captionView removeFromSuperview];
-    [page removeFromSuperview];
-    
-    [_photos removeObjectAtIndex:index];
-    
-    if (!_photos.count) {
-        [self doneButtonPressed:_doneButton];
-    }
-    else {
-        _currentPageIndex != 0 ? _currentPageIndex-- : _currentPageIndex;
-        [self reloadData];
-    }
-}
+// Init with NSURL objects (animated)
+- (id)initWithPhotoURLs:(NSArray *)photoURLsArray animatedFromView:(UIView*)view;
 
-- (IDMCaptionView *)captionViewForPhotoAtIndex:(NSUInteger)index {
-    IDMCaptionView *captionView = nil;
-    if ([_delegate respondsToSelector:@selector(photoBrowser:captionViewForPhotoAtIndex:)]) {
-        captionView = [_delegate photoBrowser:self captionViewForPhotoAtIndex:index];
-    } else {
-        id <IDMPhoto> photo = [self photoAtIndex:index];
-        if ([photo respondsToSelector:@selector(caption)]) {
-            if ([photo caption]) captionView = [[IDMCaptionView alloc] initWithPhoto:photo];
-        }
-    }
-    captionView.alpha = [self areControlsHidden] ? 0 : 1; // Initial alpha
-    
-    return captionView;
-}
+// Reloads the photo browser and refetches data
+- (void)reloadData;
 
-- (UIImage *)imageForPhoto:(id<IDMPhoto>)photo {
-	if (photo) {
-		// Get image or obtain in background
-		if ([photo underlyingImage]) {
-			return [photo underlyingImage];
-		} else {
-            [photo loadUnderlyingImageAndNotify];
-            if ([photo respondsToSelector:@selector(placeholderImage)]) {
-                return [photo placeholderImage];
-            }
-		}
-	}
-    
-	return nil;
-}
+// Set page that photo browser starts on
+- (void)setInitialPageIndex:(NSUInteger)index;
 
 - (void)loadAdjacentPhotosIfNecessary:(id<IDMPhoto>)photo {
     IDMZoomingScrollView *page = [self pageDisplayingPhoto:photo];
@@ -1333,20 +1236,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 #pragma mark - pop Animation
 
-- (void)animateView:(UIView *)view toFrame:(CGRect)frame completion:(void (^)(void))completion
-{
-	POPSpringAnimation *animation = [POPSpringAnimation animationWithPropertyNamed:kPOPViewFrame];
-	[animation setSpringBounciness:6];
-	[animation setDynamicsMass:1];
-    [animation setToValue:[NSValue valueWithCGRect:frame]];
-	[view pop_addAnimation:animation forKey:nil];
-    
-    if (completion)
-	{
-		[animation setCompletionBlock:^(POPAnimation *animation, BOOL finished) {
-			completion();
-		}];
-	}
-}
+// Delete the photo at index
+- (void)deletePhotoAtIndex:(NSUInteger)index;
 
 @end
