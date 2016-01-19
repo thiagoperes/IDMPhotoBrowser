@@ -38,13 +38,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
 	// Toolbar
 	UIToolbar *_toolbar;
-	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
+	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton, *_deleteButton;
     UIBarButtonItem *_counterButton;
     UILabel *_counterLabel;
     
     // Actions
     UIActionSheet *_actionsSheet;
-    UIActivityViewController *activityViewController;
     
     // Control
     NSTimer *_controlVisibilityTimer;
@@ -77,7 +76,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 // Private Properties
 @property (nonatomic, strong) UIActionSheet *actionsSheet;
-@property (nonatomic, strong) UIActivityViewController *activityViewController;
 
 // Private Methods
 
@@ -138,7 +136,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize forceHideStatusBar = _forceHideStatusBar;
 @synthesize usePopAnimation = _usePopAnimation;
 @synthesize disableVerticalSwipe = _disableVerticalSwipe;
-@synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
+@synthesize actionsSheet = _actionsSheet;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
 
@@ -652,7 +650,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
-    
+    // Delete Button
+    _deleteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+                                                                  target:self
+                                                                  action:@selector(deleteButtonPressed:)];
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
     [_panGesture setMinimumNumberOfTouches:1];
@@ -818,8 +819,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [items addObject:_nextButton];
     [items addObject:flexSpace];
     
-    if(_displayActionButton)
+    if(_displayActionButton) {
         [items addObject:_actionButton];
+        [items insertObject:_deleteButton atIndex:0];
+    }
     
     [_toolbar setItems:items];
 	[self updateToolbar];
@@ -1277,38 +1280,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
         if(!_actionButtonTitles)
         {
-            // Activity view
-            NSMutableArray *activityItems = [NSMutableArray arrayWithObject:[photo underlyingImage]];
-            if (photo.caption) [activityItems addObject:photo.caption];
-            
-            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-            
-            __typeof__(self) __weak selfBlock = self;
-			
-			if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
-			{
-				[self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-					[selfBlock hideControlsAfterDelay];
-					selfBlock.activityViewController = nil;
-				}];
-			}
-			else
-			{
-				[self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
-					[selfBlock hideControlsAfterDelay];
-					selfBlock.activityViewController = nil;
-				}];
-			}
-			
-			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-				[self presentViewController:self.activityViewController animated:YES completion:nil];
-			}
-			else { // iPad
-				UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:self.activityViewController];
-				[popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/4, 0, 0)
-										 inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny
-									   animated:YES];
-			}
+            if ([self.delegate respondsToSelector:@selector(photoBrowser:actionButtonDidTappedWithPhotoIndex:)]) {
+                [self.delegate photoBrowser:self actionButtonDidTappedWithPhotoIndex:_currentPageIndex];
+            }
         }
         else
         {
@@ -1331,6 +1305,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         // Keep controls hidden
         [self setControlsHidden:NO animated:YES permanent:YES];
+    }
+}
+
+- (void)deleteButtonPressed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(photoBrowser:deleteButtonDidTappedWithPhotoIndex:)]) {
+        [self.delegate photoBrowser:self deleteButtonDidTappedWithPhotoIndex:_currentPageIndex];
     }
 }
 
