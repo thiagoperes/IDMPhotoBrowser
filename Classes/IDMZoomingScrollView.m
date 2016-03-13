@@ -298,8 +298,32 @@
 - (void)view:(UIView *)view singleTapDetected:(UITouch *)touch {
     [self handleSingleTap:[touch locationInView:view]];
 }
+
 - (void)view:(UIView *)view doubleTapDetected:(UITouch *)touch {
-    [self handleDoubleTap:[touch locationInView:view]];
+    CGPoint needPoint = [self getViewFramePercent:view :touch];
+    [self handleDoubleTap:needPoint];
+}
+
+- (CGPoint)getViewFramePercent:(UIView *)view : (UITouch *)touch {
+    CGFloat oneWidthViewPercent = view.bounds.size.width / 100;
+    CGPoint viewTouchPoint = [touch locationInView:view];
+    CGFloat viewWidthTouch = viewTouchPoint.x;
+    CGFloat viewPercentTouch = viewWidthTouch / oneWidthViewPercent;
+    
+    CGFloat photoWidth = _photoImageView.bounds.size.width;
+    CGFloat onePhotoPercent = photoWidth / 100;
+    CGFloat needPoint = viewPercentTouch * onePhotoPercent;
+    
+    
+    if (viewTouchPoint.y < view.bounds.size.height / 2) {
+        CGFloat Y = 0;
+        CGPoint returnedValue = CGPointMake(needPoint, Y);
+        return returnedValue;
+    } else {
+        CGFloat Y = _photoImageView.bounds.size.height;
+        CGPoint returnedValue = CGPointMake(needPoint, Y);
+        return returnedValue;
+    }
 }
 
 @end
