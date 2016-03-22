@@ -358,6 +358,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Animation
 
 - (void)performPresentAnimation {
+    self.view.backgroundColor = [UIColor clearColor];
     self.view.alpha = 0.0f;
     _pagingScrollView.alpha = 0.0f;
 
@@ -378,6 +379,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _senderViewForAnimation.hidden = YES;
 
     void (^completion)() = ^() {
+        self.view.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
         self.view.alpha = 1.0f;
         _pagingScrollView.alpha = 1.0f;
         resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
