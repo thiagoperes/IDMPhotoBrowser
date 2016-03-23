@@ -1239,7 +1239,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
+    if (_senderViewForAnimation) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
