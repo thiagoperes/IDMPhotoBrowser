@@ -9,8 +9,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
-
 #import "pop/POP.h"
+
+enum {
+    kFadeViewTag = 4001
+};
 
 #ifndef IDMPhotoBrowserLocalizedStrings
 #define IDMPhotoBrowserLocalizedStrings(key) \
@@ -65,6 +68,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     //UIImage *_backgroundScreenshot;
 
     UIWindow *_applicationWindow;
+    
+    UIImageView *_resizableImageView;
 
 	// iOS 7
     UIViewController *_applicationTopViewController;
@@ -301,7 +306,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
         {
-            if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
+            [_resizableImageView removeFromSuperview];
+            if (_senderViewForAnimation) {
                 [self performCloseAnimationWithScrollView:scrollView];
                 return;
             }
@@ -354,7 +360,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Animation
 
 - (void)performPresentAnimation {
-    self.view.backgroundColor = [UIColor clearColor];
     self.view.alpha = 0.0f;
     _pagingScrollView.alpha = 0.0f;
 
@@ -364,22 +369,28 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     UIView *fadeView = [[UIView alloc] initWithFrame:_applicationWindow.bounds];
     fadeView.backgroundColor = [UIColor clearColor];
+    fadeView.tag = kFadeViewTag;
     [_applicationWindow addSubview:fadeView];
 
-    UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
-    resizableImageView.frame = _senderViewOriginalFrame;
-    resizableImageView.clipsToBounds = YES;
-    resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
-    resizableImageView.backgroundColor = [UIColor clearColor];
-    [_applicationWindow addSubview:resizableImageView];
+    _resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
+    _resizableImageView.frame = _senderViewOriginalFrame;
+    _resizableImageView.clipsToBounds = YES;
+    _resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
+    _resizableImageView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_resizableImageView];
+    [self.view sendSubviewToBack:_resizableImageView];
 
     void (^completion)() = ^() {
         self.view.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
         self.view.alpha = 1.0f;
         _pagingScrollView.alpha = 1.0f;
-        resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
+        _resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
         [fadeView removeFromSuperview];
-        [resizableImageView removeFromSuperview];
+
+        if ([[self photoAtIndex:_currentPageIndex] underlyingImage]) {
+            [_resizableImageView removeFromSuperview];
+        }
+        //Else, wait after image has been downloaded
     };
 
     [UIView animateWithDuration:_animationDuration animations:^{
@@ -390,14 +401,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     if(_usePopAnimation)
     {
-        [self animateView:resizableImageView
+        [self animateView:_resizableImageView
                   toFrame:finalImageViewFrame
                completion:completion];
     }
     else
     {
         [UIView animateWithDuration:_animationDuration animations:^{
-            resizableImageView.layer.frame = finalImageViewFrame;
+            _resizableImageView.layer.frame = finalImageViewFrame;
         } completion:^(BOOL finished) {
             completion();
         }];
@@ -912,6 +923,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     id <IDMPhoto> photo = [notification object];
     IDMZoomingScrollView *page = [self pageDisplayingPhoto:photo];
     if (page) {
+        if (![_applicationWindow viewWithTag:kFadeViewTag]) {
+            [_resizableImageView removeFromSuperview];
+        }
         if ([photo underlyingImage]) {
             // Successful load
             [page displayImage];
@@ -1117,6 +1131,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     NSUInteger previousCurrentPage = _currentPageIndex;
     _currentPageIndex = index;
     if (_currentPageIndex != previousCurrentPage) {
+        [_resizableImageView removeFromSuperview];
+        
         [self didStartViewingPageAtIndex:index];
 
         if(_arrowButtonsChangePhotosAnimated) [self updateToolbar];
@@ -1239,7 +1255,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
+    [_resizableImageView removeFromSuperview];
+    if (_senderViewForAnimation) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
