@@ -56,6 +56,10 @@
 // defines zooming of the background (default 1.0)
 @property (nonatomic) float backgroundScaleFactor;
 
+// Present
+@property (nonatomic, strong) UIView *senderViewForAnimation;
+@property (nonatomic) NSInteger initalPageIndex;
+
 // animation time (default .28)
 @property (nonatomic) float animationDuration;
 

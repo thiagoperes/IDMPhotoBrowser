@@ -53,15 +53,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     //UIStatusBarStyle _previousStatusBarStyle;
 	BOOL _statusBarOriginallyHidden;
 
-    // Present
-    UIView *_senderViewForAnimation;
-
     // Misc
     BOOL _performingLayout;
 	BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
-    NSInteger _initalPageIndex;
 
     BOOL _isdraggingPhoto;
 
@@ -140,6 +136,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
+@synthesize senderViewForAnimation = _senderViewForAnimation;
+@synthesize initalPageIndex = _initalPageIndex;
 
 #pragma mark - NSObject
 
@@ -285,8 +283,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         firstX = [scrollView center].x;
         firstY = [scrollView center].y;
 
-        _senderViewForAnimation.hidden = (_currentPageIndex == _initalPageIndex);
-
         _isdraggingPhoto = YES;
         [self setNeedsStatusBarAppearanceUpdate];
     }
@@ -376,7 +372,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
     [_applicationWindow addSubview:resizableImageView];
-    _senderViewForAnimation.hidden = YES;
 
     void (^completion)() = ^() {
         self.view.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
@@ -433,7 +428,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     self.view.hidden = YES;
 
     void (^completion)() = ^() {
-        _senderViewForAnimation.hidden = NO;
         _senderViewForAnimation = nil;
         _scaleImage = nil;
 
@@ -1250,7 +1244,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [self performCloseAnimationWithScrollView:scrollView];
     }
     else {
-        _senderViewForAnimation.hidden = NO;
         [self prepareForClosePhotoBrowser];
         [self dismissPhotoBrowserAnimated:YES];
     }
