@@ -53,7 +53,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     NSTimer *_controlVisibilityTimer;
 
     // Appearance
-    //UIStatusBarStyle _previousStatusBarStyle;
+    UIStatusBarStyle _previousStatusBarStyle;
 	BOOL _statusBarOriginallyHidden;
 
     // Misc
@@ -301,6 +301,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     self.view.opaque = YES;
 
     self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
+    
+    if (_initalPageIndex == _currentPageIndex) {
+        _senderViewForAnimation.hidden = YES;
+    }
 
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
@@ -335,6 +339,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }
         else // Continue Showing View
         {
+            if (_initalPageIndex == _currentPageIndex) {
+                _senderViewForAnimation.hidden = YES;
+            }
             _isdraggingPhoto = NO;
             [self setNeedsStatusBarAppearanceUpdate];
 
@@ -360,8 +367,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Animation
 
 - (void)performPresentAnimation {
+    self.view.backgroundColor = [UIColor clearColor];
     self.view.alpha = 0.0f;
     _pagingScrollView.alpha = 0.0f;
+
+    _senderViewForAnimation.hidden = YES;
 
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
 
@@ -377,20 +387,21 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _resizableImageView.clipsToBounds = YES;
     _resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     _resizableImageView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_resizableImageView];
-    [self.view sendSubviewToBack:_resizableImageView];
+    [_applicationWindow addSubview:_resizableImageView];
 
     void (^completion)() = ^() {
         self.view.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
         self.view.alpha = 1.0f;
+        _senderViewForAnimation.hidden = NO;
         _pagingScrollView.alpha = 1.0f;
         _resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
         [fadeView removeFromSuperview];
+        [_resizableImageView removeFromSuperview];
 
-        if ([[self photoAtIndex:_currentPageIndex] underlyingImage]) {
-            [_resizableImageView removeFromSuperview];
+        if (![[self photoAtIndex:_currentPageIndex] underlyingImage]) {
+            [self.view addSubview:_resizableImageView];
+            [self.view sendSubviewToBack:_resizableImageView];
         }
-        //Else, wait after image has been downloaded
     };
 
     [UIView animateWithDuration:_animationDuration animations:^{
@@ -437,10 +448,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.clipsToBounds = YES;
     [_applicationWindow addSubview:resizableImageView];
     self.view.hidden = YES;
+    _senderViewForAnimation.hidden = YES;
 
     void (^completion)() = ^() {
-        _senderViewForAnimation = nil;
         _scaleImage = nil;
+        _senderViewForAnimation.hidden = NO;
 
         [fadeView removeFromSuperview];
         [resizableImageView removeFromSuperview];
@@ -508,8 +520,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)prepareForClosePhotoBrowser {
     // Gesture
     [_applicationWindow removeGestureRecognizer:_panGesture];
+    
+    [_resizableImageView removeFromSuperview];
 
     _autoHide = NO;
+
+    [[UIApplication sharedApplication] setStatusBarHidden:_statusBarOriginallyHidden withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:YES];
 
     // Controls
     [NSObject cancelPreviousPerformRequestsWithTarget:self]; // Cancel any pending toggles from taps
@@ -680,6 +697,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Status Bar
     _statusBarOriginallyHidden = [UIApplication sharedApplication].statusBarHidden;
+    _previousStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle] animated:YES];
 
     // Update UI
 	[self hideControlsAfterDelay];
@@ -1212,6 +1232,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// Control hiding timer
 	// Will cancel existing timer but only begin hiding if they are visible
 	if (!permanent) [self hideControlsAfterDelay];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:UIStatusBarAnimationFade];
 
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -1255,7 +1277,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    [_resizableImageView removeFromSuperview];
     if (_senderViewForAnimation && (_currentPageIndex == _initalPageIndex)) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
