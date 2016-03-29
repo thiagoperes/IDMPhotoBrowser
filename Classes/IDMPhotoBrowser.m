@@ -307,7 +307,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
         {
             [_resizableImageView removeFromSuperview];
-            if (_senderViewForAnimation) {
+            if (_senderViewForAnimation && (_currentPageIndex == _initalPageIndex)) {
                 [self performCloseAnimationWithScrollView:scrollView];
                 return;
             }
@@ -1256,7 +1256,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)doneButtonPressed:(id)sender {
     [_resizableImageView removeFromSuperview];
-    if (_senderViewForAnimation) {
+    if (_senderViewForAnimation && (_currentPageIndex == _initalPageIndex)) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
