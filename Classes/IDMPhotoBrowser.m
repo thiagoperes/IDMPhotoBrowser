@@ -41,8 +41,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 	// Toolbar
 	UIToolbar *_toolbar;
-	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
+	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;;
     UIBarButtonItem *_counterButton;
+
     UILabel *_counterLabel;
 
     // Actions
@@ -672,9 +673,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _counterButton = [[UIBarButtonItem alloc] initWithCustomView:_counterLabel];
 
     // Action Button
-    _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                  target:self
-                                                                  action:@selector(actionButtonPressed:)];
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    [button setImage:[[UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/icon_post_slideshow_photo_action"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    button.tintColor = [UIColor whiteColor];
+    [button addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    _actionButton = [[UIBarButtonItem alloc] initWithCustomView:button];
 
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
