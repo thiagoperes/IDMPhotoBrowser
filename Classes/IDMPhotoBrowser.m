@@ -600,7 +600,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	[self.view addSubview:_pagingScrollView];
 
     // Transition animation
-    [self performPresentAnimation];
+    if (_senderViewForAnimation) {
+        [self performPresentAnimation];
+    }
 
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
 
