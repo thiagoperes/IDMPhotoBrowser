@@ -81,6 +81,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @property (nonatomic, strong) UIActionSheet *actionsSheet;
 @property (nonatomic, strong) UIActivityViewController *activityViewController;
 
+@property (nonatomic) NSInteger initialPageIndex;
+
 // Private Methods
 
 // Layout
@@ -143,7 +145,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
 @synthesize senderViewForAnimation = _senderViewForAnimation;
-@synthesize initalPageIndex = _initalPageIndex;
 
 #pragma mark - NSObject
 
@@ -159,7 +160,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _recycledPages = [NSMutableSet new];
         _photos = [NSMutableArray new];
 
-        _initalPageIndex = 0;
+        _initialPageIndex = 0;
         _autoHide = YES;
 
         _displayDoneButton = YES;
@@ -303,7 +304,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     self.view.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
     
-    if (_initalPageIndex == _currentPageIndex) {
+    if (_initialPageIndex == _currentPageIndex) {
         _senderViewForAnimation.hidden = YES;
     }
 
@@ -312,7 +313,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if(scrollView.center.y > viewHalfHeight+40 || scrollView.center.y < viewHalfHeight-40) // Automatic Dismiss View
         {
             [_resizableImageView removeFromSuperview];
-            if (_senderViewForAnimation && (_currentPageIndex == _initalPageIndex)) {
+            if (_senderViewForAnimation && (_currentPageIndex == _initialPageIndex)) {
                 [self performCloseAnimationWithScrollView:scrollView];
                 return;
             }
@@ -340,7 +341,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }
         else // Continue Showing View
         {
-            if (_initalPageIndex == _currentPageIndex) {
+            if (_initialPageIndex == _currentPageIndex) {
                 _senderViewForAnimation.hidden = YES;
             }
             _isdraggingPhoto = NO;
@@ -372,9 +373,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     self.view.alpha = 0.0f;
     _pagingScrollView.alpha = 0.0f;
 
-    _senderViewForAnimation.hidden = YES;
-
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
+    
+    _senderViewForAnimation.hidden = YES;
 
     _senderViewOriginalFrame = [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil];
 
@@ -430,7 +431,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView {
     float fadeAlpha = 1 - fabs(scrollView.frame.origin.y)/scrollView.frame.size.height;
 
-    UIImage *imageFromView = [scrollView.photo underlyingImage];
+    UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
     if (!imageFromView && [scrollView.photo respondsToSelector:@selector(placeholderImage)]) {
         imageFromView = [scrollView.photo placeholderImage];
     }
@@ -447,6 +448,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
     resizableImageView.clipsToBounds = YES;
+
     [_applicationWindow addSubview:resizableImageView];
     self.view.hidden = YES;
     _senderViewForAnimation.hidden = YES;
@@ -491,7 +493,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         return CGRectZero;
     }
 
-    CGSize imageSize = image.size;
+    CGSize imageSize = self.senderViewOriginalSize;
 
     CGFloat maxWidth = CGRectGetWidth(_applicationWindow.bounds);
     CGFloat maxHeight = CGRectGetHeight(_applicationWindow.bounds);
@@ -499,19 +501,35 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGRect animationFrame = CGRectZero;
 
     CGFloat aspect = imageSize.width / imageSize.height;
+    CGFloat originalImageAspect = image.size.width/image.size.height;
+
+    CGSize targetSize = CGSizeZero;
     if (maxWidth / aspect <= maxHeight) {
         animationFrame.size = CGSizeMake(maxWidth, maxWidth / aspect);
     }
     else {
         animationFrame.size = CGSizeMake(maxHeight * aspect, maxHeight);
     }
-
+    
+    if (originalImageAspect < animationFrame.size.width/animationFrame.size.height) {
+        targetSize = CGSizeMake(animationFrame.size.height*originalImageAspect, animationFrame.size.height);
+    }
+    else {
+        targetSize = CGSizeMake(animationFrame.size.width, animationFrame.size.width/originalImageAspect);
+    }
+    
     animationFrame.origin.x = roundf((maxWidth - animationFrame.size.width) / 2.0f);
     animationFrame.origin.y = roundf((maxHeight - animationFrame.size.height) / 2.0f);
+    CGFloat scaleRatio = animationFrame.size.height/imageSize.height;
+    
+    animationFrame.size = targetSize;
 
     if (!presenting) {
         animationFrame.origin.y += scrollView.frame.origin.y;
     }
+
+    animationFrame = CGRectMake(animationFrame.origin.x + _senderViewImageXOffset * scaleRatio, animationFrame.origin.y + _senderViewImageYOffset * scaleRatio, animationFrame.size.width, animationFrame.size.height);
+    
 
     return animationFrame;
 }
@@ -1272,7 +1290,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)setInitialPageIndex:(NSUInteger)index {
     // Validate
     if (index >= [self numberOfPhotos]) index = [self numberOfPhotos]-1;
-    _initalPageIndex = index;
+    _initialPageIndex = index;
     _currentPageIndex = index;
 	if ([self isViewLoaded]) {
         [self jumpToPageAtIndex:index];
@@ -1283,13 +1301,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
-    if (_senderViewForAnimation && (_currentPageIndex == _initalPageIndex)) {
+    if (_senderViewForAnimation && (_currentPageIndex == _initialPageIndex)) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
     else {
         [self prepareForClosePhotoBrowser];
-        [self dismissPhotoBrowserAnimated:NO];
+        [self dismissPhotoBrowserAnimated:YES];
     }
 }
 

@@ -58,7 +58,10 @@
 
 // Present
 @property (nonatomic, strong) UIView *senderViewForAnimation;
-@property (nonatomic) NSInteger initalPageIndex;
+
+@property (nonatomic) CGFloat senderViewImageXOffset;
+@property (nonatomic) CGFloat senderViewImageYOffset;
+@property (nonatomic) CGSize senderViewOriginalSize;
 
 // animation time (default .28)
 @property (nonatomic) float animationDuration;
