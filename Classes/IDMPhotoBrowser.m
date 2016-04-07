@@ -618,7 +618,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	[self.view addSubview:_pagingScrollView];
 
     // Transition animation
-    if (_senderViewForAnimation) {
+    if ([self shouldShowAnimation]) {
         [self performPresentAnimation];
     }
 
@@ -1300,8 +1300,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 #pragma mark - Buttons
 
+- (BOOL)shouldShowAnimation {
+    return _senderViewForAnimation && [(UIImageView*)_senderViewForAnimation image] && !CGSizeEqualToSize(self.senderViewOriginalSize, CGSizeZero);
+}
+
 - (void)doneButtonPressed:(id)sender {
-    if (_senderViewForAnimation && (_currentPageIndex == _initialPageIndex)) {
+    if ([self shouldShowAnimation] && (_currentPageIndex == _initialPageIndex)) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
     }
