@@ -118,6 +118,11 @@ browser.displayDoneButton = NO;
 browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
 ```
 
+If you want to keep the interface shown when the user is scrolling :
+``` objective-c
+browser.autoHideInterface = NO;
+```
+
 You can use a smooth [pop](https://github.com/facebook/pop) animation when presenting and dismissing a photo:
 ``` objective-c
 browser.usePopAnimation = YES;
