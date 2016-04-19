@@ -10,7 +10,6 @@
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
 
-#import "pop/POP.h"
 
 #ifndef IDMPhotoBrowserLocalizedStrings
 #define IDMPhotoBrowserLocalizedStrings(key) \
@@ -134,7 +133,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
 @synthesize forceHideStatusBar = _forceHideStatusBar;
-@synthesize usePopAnimation = _usePopAnimation;
 @synthesize disableVerticalSwipe = _disableVerticalSwipe;
 @synthesize actionsSheet = _actionsSheet;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
@@ -166,7 +164,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayCounterLabel = NO;
         
         _forceHideStatusBar = NO;
-        _usePopAnimation = NO;
         _disableVerticalSwipe = NO;
         
         _useWhiteBackgroundColor = NO;
@@ -390,20 +387,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     CGRect finalImageViewFrame = [self animationFrameForImage:imageFromView presenting:YES scrollView:nil];
     
-    if(_usePopAnimation)
-    {
-        [self animateView:resizableImageView
-                  toFrame:finalImageViewFrame
-               completion:completion];
-    }
-    else
-    {
-        [UIView animateWithDuration:_animationDuration animations:^{
-            resizableImageView.layer.frame = finalImageViewFrame;
-        } completion:^(BOOL finished) {
-            completion();
-        }];
-    }
+    [UIView animateWithDuration:_animationDuration animations:^{
+      resizableImageView.layer.frame = finalImageViewFrame;
+    } completion:^(BOOL finished) {
+      completion();
+    }];
 }
 
 - (void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView {
@@ -448,20 +436,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     
     CGRect senderViewOriginalFrame = _senderViewForAnimation.superview ? [_senderViewForAnimation.superview convertRect:_senderViewForAnimation.frame toView:nil] : _senderViewOriginalFrame;
     
-    if(_usePopAnimation)
-    {
-        [self animateView:resizableImageView
-                  toFrame:senderViewOriginalFrame
-               completion:completion];
-    }
-    else
-    {
-        [UIView animateWithDuration:_animationDuration animations:^{
-            resizableImageView.layer.frame = senderViewOriginalFrame;
-        } completion:^(BOOL finished) {
-            completion();
-        }];
-    }
+    [UIView animateWithDuration:_animationDuration animations:^{
+      resizableImageView.layer.frame = senderViewOriginalFrame;
+    } completion:^(BOOL finished) {
+      completion();
+    }];
 }
 
 - (CGRect)animationFrameForImage:(UIImage *)image presenting:(BOOL)presenting scrollView:(UIScrollView *)scrollView
@@ -1329,24 +1308,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     
     [self hideControlsAfterDelay]; // Continue as normal...
-}
-
-#pragma mark - pop Animation
-
-- (void)animateView:(UIView *)view toFrame:(CGRect)frame completion:(void (^)(void))completion
-{
-    POPSpringAnimation *animation = [POPSpringAnimation animationWithPropertyNamed:kPOPViewFrame];
-    [animation setSpringBounciness:6];
-    [animation setDynamicsMass:1];
-    [animation setToValue:[NSValue valueWithCGRect:frame]];
-    [view pop_addAnimation:animation forKey:nil];
-    
-    if (completion)
-    {
-        [animation setCompletionBlock:^(POPAnimation *animation, BOOL finished) {
-            completion();
-        }];
-    }
 }
 
 @end
