@@ -6,7 +6,7 @@ We've added both user experience and technical features inspired by Facebook's a
 
 ## New features:
 - Uses ARC
-- Uses AFNetworking for image loading
+- Uses SDWebImage for image loading
 - Image progress shown
 - Minimalistic Facebook-like interface, swipe up/down to dismiss
 - Ability to add custom actions on the action sheet
