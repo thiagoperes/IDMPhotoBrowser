@@ -175,7 +175,7 @@ Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 #### Opensource libraries used
 
-- [AFNetWorking](https://github.com/AFNetworking/AFNetworking)
+- [SDWebImage](https://github.com/rs/SDWebImage)
 - [DACircularProgress](https://github.com/danielamitay/DACircularProgress)
 - [pop](https://github.com/facebook/pop)
 
