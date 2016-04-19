@@ -13,5 +13,4 @@ Pod::Spec.new do |s|
   s.requires_arc  =  true
   s.dependency       'SDWebImage'
   s.dependency       'DACircularProgress'
-  s.dependency       'pop'
   end
