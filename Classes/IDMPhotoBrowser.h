@@ -17,6 +17,8 @@
 @class IDMPhotoBrowser;
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
+- (void)willAppearPhotoBrowser:(IDMPhotoBrowser *)photoBrowser;
+- (void)willDisappearPhotoBrowser:(IDMPhotoBrowser *)photoBrowser;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didShowPhotoAtIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
@@ -25,7 +27,7 @@
 @end
 
 // IDMPhotoBrowser
-@interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate> 
+@interface IDMPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate>
 
 // Properties
 @property (nonatomic, strong) id <IDMPhotoBrowserDelegate> delegate;
