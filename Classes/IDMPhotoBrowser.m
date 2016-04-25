@@ -158,7 +158,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _initalPageIndex = 0;
         _autoHide = YES;
         _autoHideInterface = YES;
-        
+
         _displayDoneButton = YES;
         _doneButtonImage = nil;
 
@@ -409,6 +409,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)performCloseAnimationWithScrollView:(IDMZoomingScrollView*)scrollView {
+
+    if ([_delegate respondsToSelector:@selector(willDisappearPhotoBrowser:)]) {
+        [_delegate willDisappearPhotoBrowser:self];
+    }
+
     float fadeAlpha = 1 - fabs(scrollView.frame.origin.y)/scrollView.frame.size.height;
 
     UIImage *imageFromView = [scrollView.photo underlyingImage];
@@ -668,6 +673,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)viewWillAppear:(BOOL)animated {
     // Update
     [self reloadData];
+
+
+    if ([_delegate respondsToSelector:@selector(willAppearPhotoBrowser:)]) {
+        [_delegate willAppearPhotoBrowser:self];
+    }
 
     // Super
 	[super viewWillAppear:animated];
@@ -1217,11 +1227,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 // Enable/disable control visiblity timer
 - (void)hideControlsAfterDelay {
-	
+
     if (![self autoHideInterface]) {
         return;
     }
-	
+
 	if (![self areControlsHidden]) {
         [self cancelControlHiding];
 		_controlVisibilityTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO];
@@ -1249,6 +1259,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Buttons
 
 - (void)doneButtonPressed:(id)sender {
+
+    if ([_delegate respondsToSelector:@selector(willDisappearPhotoBrowser:)]) {
+        [_delegate willDisappearPhotoBrowser:self];
+    }
+
     if (_senderViewForAnimation && _currentPageIndex == _initalPageIndex) {
         IDMZoomingScrollView *scrollView = [self pageDisplayedAtIndex:_currentPageIndex];
         [self performCloseAnimationWithScrollView:scrollView];
