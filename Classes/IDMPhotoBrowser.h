@@ -45,6 +45,8 @@
 @property (nonatomic) BOOL displayDoneButton;
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneButtonImage;
+@property (nonatomic, weak) UIColor *doneButtonBorderColor;
+@property (nonatomic, weak) UIColor *doneButtonTitleColor;
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 
 @property (nonatomic, weak) UIImage *scaleImage;

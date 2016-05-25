@@ -577,13 +577,24 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
   [_doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
   
   if(!_doneButtonImage) {
-    [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
+    if (self.doneButtonTitleColor) {
+      [_doneButton setTitleColor:self.doneButtonTitleColor forState:UIControlStateNormal];
+      [_doneButton setTitleColor:[self.doneButtonTitleColor colorWithAlphaComponent:.8] forState:UIControlStateHighlighted];
+    }
+    else {
+      [_doneButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
+    }
     [_doneButton setTitle:IDMPhotoBrowserLocalizedStrings(@"Done") forState:UIControlStateNormal];
     [_doneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-    [_doneButton setBackgroundColor:[UIColor colorWithWhite:0.1 alpha:0.5]];
     _doneButton.layer.cornerRadius = 3.0f;
-    _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
     _doneButton.layer.borderWidth = 1.0f;
+    
+    if (_doneButtonBorderColor) {
+      _doneButton.layer.borderColor = [self.doneButtonBorderColor CGColor];
+    }
+    else {
+      _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
+    }
   }
   else {
     [_doneButton setBackgroundImage:_doneButtonImage forState:UIControlStateNormal];
