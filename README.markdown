@@ -115,7 +115,7 @@ Others customizations you can make are: use white background color, don't displa
 ``` objective-c    
 browser.useWhiteBackgroundColor = YES;
 browser.displayDoneButton = NO;
-browser.doneBackgroundImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
+browser.doneButtonImage = [UIImage imageNamed:@"IDMPhotoBrowser_customDoneButton.png"];
 ```
 
 If you want to keep the interface shown when the user is scrolling :
