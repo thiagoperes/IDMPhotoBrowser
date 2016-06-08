@@ -8,6 +8,7 @@
 
 #import "IDMPhoto.h"
 #import "IDMPhotoBrowser.h"
+#import <PINRemoteImage/PINRemoteImage.h>
 
 // Private
 @interface IDMPhoto () {
@@ -135,20 +136,19 @@ caption = _caption;
             // Load async from file
             [self performSelectorInBackground:@selector(loadImageFromFileAsync) withObject:nil];
         } else if (_photoURL) {
-            // Load async from web (using SDWebImageManager)
-            SDWebImageManager *manager = [SDWebImageManager sharedManager];
-            [manager downloadImageWithURL:_photoURL options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-                CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
+            // Load async from web (using PINRemoteImageManager)
+            PINRemoteImageManager *manager = [PINRemoteImageManager sharedImageManager];
+            [manager downloadImageWithURL:_photoURL options:PINRemoteImageManagerDownloadOptionsNone progressDownload:^(int64_t completedBytes, int64_t totalBytes) {
+                CGFloat progress = ((CGFloat)completedBytes)/((CGFloat)totalBytes);
                 if (self.progressUpdateBlock) {
                     self.progressUpdateBlock(progress);
                 }
-            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                if (image) {
-                    self.underlyingImage = image;
+            } completion:^(PINRemoteImageManagerResult * _Nonnull result) {
+                if (result.image) {
+                    self.underlyingImage = result.image;
                     [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
                 }
             }];
-
         } else {
             // Failed - no source
             self.underlyingImage = nil;
