@@ -611,7 +611,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
-        _doneButton.contentMode = UIViewContentModeScaleAspectFit;
+        _doneButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
 
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
