@@ -533,12 +533,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (UIButton*)customToolbarButtonImage:(UIImage*)image imageSelected:(UIImage*)selectedImage action:(SEL)action {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setBackgroundImage:image forState:UIControlStateNormal];
-    [button setBackgroundImage:selectedImage forState:UIControlStateDisabled];
+    [button setImage:image forState:UIControlStateNormal];
+    [button setImage:selectedImage forState:UIControlStateDisabled];
     [button addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
     [button setContentMode:UIViewContentModeCenter];
-    [button setFrame:CGRectMake(0,0, image.size.width, image.size.height)];
+    [button setFrame:[self getToolbarButtonFrame:image]];
     return button;
+}
+
+- (CGRect)getToolbarButtonFrame:(UIImage *)image{
+    float const defaultButtonSize = 44.0f;
+    CGFloat buttonWidth = (image.size.width > defaultButtonSize) ? image.size.width : defaultButtonSize;
+    CGFloat buttonHeight = (image.size.height > defaultButtonSize) ? image.size.width : defaultButtonSize;
+    return CGRectMake(0,0, buttonWidth, buttonHeight);
 }
 
 - (UIImage*)getImageFromView:(UIView *)view {
