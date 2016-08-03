@@ -1,0 +1,44 @@
+/* No comment provided by engineer. */
+"Cancel" = "Annuleer";
+
+/* Informing the user an item has finished copying */
+"Copied" = "Gekopieerd";
+
+/* No comment provided by engineer. */
+"Copy" = "Kopieer";
+
+/* Displayed with ellipsis as 'Copying...' when an item is in the process of being copied */
+"Copying" = "Kopieer";
+
+/* No comment provided by engineer. */
+"Dismiss" = "Annuleer";
+
+/* No comment provided by engineer. */
+"Done" = "Klaae";
+
+/* No comment provided by engineer. */
+"Email" = "E-mail";
+
+/* No comment provided by engineer. */
+"Email failed to send. Please try again." = "Het versturen van de e-mail is mislukt. Probeer opnieuw.";
+
+/* Informing the user a process has failed */
+"Failed" = "Mislukt";
+
+/* Used in the context: 'Showing 1 of 3 items' */
+"of" = "of";
+
+/* No comment provided by engineer. */
+"Photo" = "Foto";
+
+/* Displayed with ellipsis as 'Preparing...' when an item is in the process of being prepared */
+"Preparing" = "Voorbereiden";
+
+/* No comment provided by engineer. */
+"Save" = "Opslaan";
+
+/* Informing the user an item has been saved */
+"Saved" = "Opgeslagen";
+
+/* Displayed with ellipsis as 'Saving...' when an item is in the process of being saved */
+"Saving" = "Opslaan";
