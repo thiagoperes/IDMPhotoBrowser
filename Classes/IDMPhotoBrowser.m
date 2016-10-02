@@ -140,6 +140,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
 @synthesize delegate = _delegate;
+@synthesize actionButtonColor = _actionButtonColor;
 
 #pragma mark - NSObject
 
@@ -619,7 +620,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
-        _doneButton.contentMode = UIViewContentModeScaleAspectFit;
+        _doneButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     }
 
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
@@ -666,6 +667,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                                                                   target:self
                                                                   action:@selector(actionButtonPressed:)];
 
+    if (_actionButtonColor) {
+        _actionButton.tintColor = _actionButtonColor;
+    }
     // Gesture
     _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
     [_panGesture setMinimumNumberOfTouches:1];

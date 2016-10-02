@@ -181,18 +181,20 @@
 		//minScale = 1.0;
 	}
     
-	// Calculate Max
-	CGFloat maxScale = 4.0; // Allow double scale
-    // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
-    // maximum zoom scale to 0.5.
-	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
-		maxScale = maxScale / [[UIScreen mainScreen] scale];
-		
-		if (maxScale < minScale) {
-			maxScale = minScale * 2;
-		}
-	}
+//	// Calculate Max
+//	CGFloat maxScale = 4.0; // Allow double scale
+//    // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
+//    // maximum zoom scale to 0.5.
+//	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+//		maxScale = maxScale / [[UIScreen mainScreen] scale];
+//		
+//		if (maxScale < minScale) {
+//			maxScale = minScale * 2;
+//		}
+//	}
+//
     
+    CGFloat maxScale = minScale * 2.3;
 	// Set
 	self.maximumZoomScale = maxScale;
 	self.minimumZoomScale = minScale;
@@ -258,6 +260,11 @@
     [self layoutIfNeeded];
 }
 
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    NSLog(@"****");
+    NSLog(@"currentZoomScale: %f", scale);
+    NSLog(@"****");
+}
 #pragma mark - Tap Detection
 
 - (void)handleSingleTap:(CGPoint)touchPoint {
