@@ -182,7 +182,7 @@
 	}
     
 	// Calculate Max
-	CGFloat maxScale = 4.0; // Allow double scale
+	CGFloat maxScale = 2.0; // Allow double scale
     // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
     // maximum zoom scale to 0.5.
 	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
