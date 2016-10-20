@@ -8,7 +8,7 @@
 
 #import "IDMPhoto.h"
 #import "IDMPhotoBrowser.h"
-
+#import <SDWebImage/SDWebImageManager.h>
 // Private
 @interface IDMPhoto () {
     // Image Sources
