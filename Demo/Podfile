@@ -8,5 +8,6 @@ target "PhotoBrowserDemo" do
 pod 'SDWebImage'
 pod 'DACircularProgress'
 pod 'pop'
+pod 'YLGIFImage'
 
 end
