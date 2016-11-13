@@ -1291,13 +1291,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         {
             // Activity view
             UIImage *image = (UIImage*)[photo underlyingImage];
-            
-            //fix for share type not correct
-            NSData *imageData = UIImagePNGRepresentation(image);
-            UIImage *shareImage = [UIImage imageWithData: imageData];
-            
-            NSMutableArray *activityItems = [NSMutableArray arrayWithObject:shareImage];
-            if (photo.caption) [activityItems addObject:photo.caption];
+            NSArray *activityItems = [NSArray arrayWithObject:image];
 
             self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
 
