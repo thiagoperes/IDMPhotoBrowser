@@ -25,6 +25,7 @@
 		5736E0DD544CC84515494E76 /* libPods-PhotoBrowserDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64F5714840012BFE47F8331B /* libPods-PhotoBrowserDemo.a */; };
 		727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */; };
 		727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */; };
+		BB7D79E91DCD8B760074ED33 /* a.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB7D79E81DCD8B760074ED33 /* a.gif */; };
 		D114BB411A32269C00E677FE /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D114BB401A32269C00E677FE /* Launch Screen.xib */; };
 		D1574968178DB94900B0211A /* IDMCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157494F178DB94900B0211A /* IDMCaptionView.m */; };
 		D1574969178DB94900B0211A /* IDMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = D1574951178DB94900B0211A /* IDMPhoto.m */; };
@@ -79,6 +80,7 @@
 		64F5714840012BFE47F8331B /* libPods-PhotoBrowserDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PhotoBrowserDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IDMPBLocalizations.bundle; sourceTree = "<group>"; };
 		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
+		BB7D79E81DCD8B760074ED33 /* a.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = a.gif; path = Photos/a.gif; sourceTree = "<group>"; };
 		D00FA320EEACA8C835D9D626 /* Pods-PhotoBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
 		D114BB401A32269C00E677FE /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 		4C6F97CA14AF75D300F8389A /* Photos */ = {
 			isa = PBXGroup;
 			children = (
+				BB7D79E81DCD8B760074ED33 /* a.gif */,
 				4C6F97CB14AF760500F8389A /* photo1l.jpg */,
 				4C6F97CC14AF760500F8389A /* photo1m.jpg */,
 				4C6F97CD14AF760500F8389A /* photo2l.jpg */,
@@ -305,6 +308,7 @@
 				4C6F978B14AF734800F8389A /* Resources */,
 				64D1E44DFBE2976FB9C75718 /* [CP] Embed Pods Frameworks */,
 				F88445D630091F1AA9A2F89A /* [CP] Copy Pods Resources */,
+				21ABD9274EA68622571550CF /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -371,6 +375,7 @@
 				D19D826717E8D40700A5859E /* IDMPhotoBrowser_customArrowRightSelected@2x.png in Resources */,
 				727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */,
 				D19D826817E8D40700A5859E /* IDMPhotoBrowser_customDoneButton.png in Resources */,
+				BB7D79E91DCD8B760074ED33 /* a.gif in Resources */,
 				D19D826917E8D40700A5859E /* IDMPhotoBrowser_customDoneButton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,6 +383,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		21ABD9274EA68622571550CF /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		64D1E44DFBE2976FB9C75718 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

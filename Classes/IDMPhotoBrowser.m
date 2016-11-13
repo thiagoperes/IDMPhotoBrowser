@@ -1290,8 +1290,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if(!_actionButtonTitles)
         {
             // Activity view
-            NSMutableArray *activityItems = [NSMutableArray arrayWithObject:[photo underlyingImage]];
-            if (photo.caption) [activityItems addObject:photo.caption];
+            UIImage *image = (UIImage*)[photo underlyingImage];
+            NSArray *activityItems = [NSArray arrayWithObject:image];
 
             self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
 

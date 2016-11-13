@@ -201,7 +201,7 @@
             photo.caption = @"Grotto of the Madonna";
 			[photos addObject:photo];
            
-            photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"photo2l" ofType:@"jpg"]];
+            photo = [IDMPhoto photoWithFilePath:[[NSBundle mainBundle] pathForResource:@"a" ofType:@"gif"]];
             photo.caption = @"The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
 			[photos addObject:photo];
             
