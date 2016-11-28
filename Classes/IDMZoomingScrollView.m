@@ -51,22 +51,55 @@
         CGFloat screenWidth = screenBound.size.width;
         CGFloat screenHeight = screenBound.size.height;
         
-        if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
-            [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
-            screenWidth = screenBound.size.height;
-            screenHeight = screenBound.size.width;
-        }
-        
         // Progress view
-        _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake((screenWidth-35.)/2., (screenHeight-35.)/2, 35.0f, 35.0f)];
+        CGFloat progressViewDimension = 35.0;
+
+        _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake(0.0, 0.0, progressViewDimension, progressViewDimension)];
         [_progressView setProgress:0.0f];
         _progressView.tag = 101;
         _progressView.thicknessRatio = 0.1;
         _progressView.roundedCorners = NO;
         _progressView.trackTintColor    = browser.trackTintColor    ? self.photoBrowser.trackTintColor    : [UIColor colorWithWhite:0.2 alpha:1];
         _progressView.progressTintColor = browser.progressTintColor ? self.photoBrowser.progressTintColor : [UIColor colorWithWhite:1.0 alpha:1];
+        _progressView.translatesAutoresizingMaskIntoConstraints = NO;
+
         [self addSubview:_progressView];
-        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:self
+                             attribute:NSLayoutAttributeCenterX
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:_progressView
+                             attribute:NSLayoutAttributeCenterX
+                             multiplier:1.0
+                             constant:0.0]];
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:self
+                             attribute:NSLayoutAttributeCenterY
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:_progressView
+                             attribute:NSLayoutAttributeCenterY
+                             multiplier:1.0
+                             constant:0.0]];
+
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_progressView
+                             attribute:NSLayoutAttributeWidth
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:nil
+                             attribute:NSLayoutAttributeNotAnAttribute
+                             multiplier:1.0
+                             constant:progressViewDimension]];
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_progressView
+                             attribute:NSLayoutAttributeHeight
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:nil
+                             attribute:NSLayoutAttributeNotAnAttribute
+                             multiplier:1.0
+                             constant:progressViewDimension]];
+
+        [self layoutIfNeeded];
+
 		// Setup
 		self.backgroundColor = [UIColor clearColor];
 		self.delegate = self;
