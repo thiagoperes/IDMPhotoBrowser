@@ -1301,14 +1301,16 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 			{
 				[self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
 					[selfBlock hideControlsAfterDelay];
-					selfBlock.activityViewController = nil;
+                    selfBlock.activityViewController = nil;
+                    [_delegate photoBrowser:self activityViewControllerActivityTypeSelected:activityType itemsReturned:returnedItems withError:activityError];
 				}];
 			}
 			else
 			{
 				[self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
 					[selfBlock hideControlsAfterDelay];
-					selfBlock.activityViewController = nil;
+                    selfBlock.activityViewController = nil;
+                    [_delegate photoBrowser:self activityViewControllerActivityTypeSelected:activityType itemsReturned:returnedItems withError:activityError];
 				}];
 			}
 

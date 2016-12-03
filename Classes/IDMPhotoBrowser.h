@@ -24,6 +24,8 @@
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser willDismissAtPageIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDismissActionSheetWithButtonIndex:(NSUInteger)buttonIndex photoIndex:(NSUInteger)photoIndex;
 - (IDMCaptionView *)photoBrowser:(IDMPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser activityViewControllerActivitySelected:(NSString *)activityType itemsReturned:(NSArray *)returnedItems withError:(NSError *)activityError;
+
 @end
 
 // IDMPhotoBrowser
