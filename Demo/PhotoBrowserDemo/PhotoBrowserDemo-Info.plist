@@ -28,6 +28,11 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>UIApplicationExitsOnSuspend</key>
 	<false/>
 	<key>UILaunchStoryboardName</key>
