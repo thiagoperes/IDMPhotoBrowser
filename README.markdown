@@ -138,6 +138,11 @@ It's possible to disable the vertical dismiss swipe gesture:
 browser.disableVerticalSwipe = YES;
 ```
 
+Dismiss the photo browser with a touch (instead of showing/hiding controls):
+``` objective-c
+browser.dismissOnTouch = YES;
+```
+
 ### Photo Captions
 
 Photo captions can be displayed simply by setting the `caption` property on specific photos:
