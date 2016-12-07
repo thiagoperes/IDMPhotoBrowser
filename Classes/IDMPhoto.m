@@ -201,8 +201,7 @@ caption = _caption;
 }*/
 
 - (UIImage *)decodedImageWithImage:(UIImage *)image {
-    if (image.images)
-    {
+    if (image.images) {
         // Do not decode animated images
         return image;
     }
