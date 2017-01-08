@@ -925,8 +925,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 }
 
--(void)displayImageFailure:(UIImageView*)imageView {}
-
 #pragma mark - IDMPhoto Loading Notification
 
 - (void)handleIDMPhotoLoadingDidEndNotification:(NSNotification *)notification {
@@ -940,6 +938,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         } else {
             // Failed to load
             [page displayImageFailure];
+            if ([_delegate respondsToSelector:@selector(photoBrowser:imageFailed:)]) {
+                NSUInteger pageIndex = PAGE_INDEX(page);
+                [_delegate photoBrowser:self imageFailed:pageIndex];
+            }
+            // make sure the page is completely updated
+            [page setNeedsLayout];
         }
     }
 }
