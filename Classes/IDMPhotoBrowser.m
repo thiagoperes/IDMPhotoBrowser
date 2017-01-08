@@ -925,6 +925,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 }
 
+-(void)displayImageFailure:(UIImageView*)imageView {}
+
 #pragma mark - IDMPhoto Loading Notification
 
 - (void)handleIDMPhotoLoadingDidEndNotification:(NSNotification *)notification {
@@ -1379,5 +1381,4 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 		}];
 	}
 }
-
 @end

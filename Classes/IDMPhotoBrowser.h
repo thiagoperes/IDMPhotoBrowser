@@ -88,4 +88,6 @@
 // Get IDMPhoto at index
 - (id<IDMPhoto>)photoAtIndex:(NSUInteger)index;
 
+// Override this to specify custom image failure response
+-(void)displayImageFailure:(UIImageView*)imageView;
 @end
