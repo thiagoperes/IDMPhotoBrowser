@@ -52,8 +52,7 @@
         CGFloat screenWidth = screenBound.size.width;
         CGFloat screenHeight = screenBound.size.height;
         
-        if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft ||
-            [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
+        if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeLeft || [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight) {
             screenWidth = screenBound.size.height;
             screenHeight = screenBound.size.width;
         }
