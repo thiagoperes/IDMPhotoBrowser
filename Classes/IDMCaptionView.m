@@ -52,21 +52,11 @@ static const CGFloat labelPadding = 10;
     /*CGSize textSizeOLD = [_label.text sizeWithFont:_label.font
                               constrainedToSize:CGSizeMake(size.width - labelPadding*2, maxHeight)
                                   lineBreakMode:_label.lineBreakMode];*/
-    
-    NSString *text = _label.text;
+
     CGFloat width = size.width - labelPadding*2;
-    UIFont *font = _label.font;
     
-    NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text
-                                                                         attributes:@{NSFontAttributeName: font}];
-    
-    CGRect rect = [attributedText boundingRectWithSize:(CGSize){width, maxHeight}
-                                               options:NSStringDrawingUsesLineFragmentOrigin
-                                               context:nil];
-    
-    CGSize textSize = rect.size;
-    
-    return CGSizeMake(size.width, textSize.height + labelPadding * 2);
+    CGFloat height = [_label sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)].height;
+    return CGSizeMake(size.width, height + labelPadding * 2);
 }
 
 - (void)setupCaption {
