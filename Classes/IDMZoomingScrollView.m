@@ -198,12 +198,15 @@
     // on high resolution screens we have double the pixel density, so we will be seeing every pixel if we limit the
     // maximum zoom scale to 0.5.
 	if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
-		maxDoubleTapZoomScale = maxDoubleTapZoomScale / [[UIScreen mainScreen] scale];
-
-	if (maxDoubleTapZoomScale < minScale) {
-		maxDoubleTapZoomScale = minScale * 2;
+        maxDoubleTapZoomScale = maxDoubleTapZoomScale / [[UIScreen mainScreen] scale];
+        
+        if (maxDoubleTapZoomScale < minScale) {
+            maxDoubleTapZoomScale = minScale * 2;
         }
     }
+    
+    // Make sure maxDoubleTapZoomScale isn't larger than maxScale
+    maxDoubleTapZoomScale = MIN(maxDoubleTapZoomScale, maxScale);
     
 	// Set
 	self.maximumZoomScale = maxScale;
