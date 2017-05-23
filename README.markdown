@@ -20,6 +20,7 @@ We've added both user experience and technical features inspired by Facebook's a
 ## Screenshots
 
 [![Alt][screenshot1_thumb]][screenshot1]    [![Alt][screenshot2_thumb]][screenshot2]    [![Alt][screenshot3_thumb]][screenshot3]    [![Alt][screenshot4_thumb]][screenshot4]    [![Alt][screenshot5_thumb]][screenshot5]
+
 [screenshot1_thumb]: https://raw.github.com/appkraft/IDMPhotoBrowser/master/Screenshots/idmphotobrowser_thumb1.png
 [screenshot1]: https://raw.github.com/appkraft/IDMPhotoBrowser/master/Screenshots/idmphotobrowser_ss1.png
 [screenshot2_thumb]: https://raw.github.com/appkraft/IDMPhotoBrowser/master/Screenshots/idmphotobrowser_thumb2.png
