@@ -11,6 +11,9 @@
 
 @interface IDMCaptionView : UIView
 
+@property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong, readonly) id<IDMPhoto> photo;
+
 // Init
 - (id)initWithPhoto:(id<IDMPhoto>)photo;
 
