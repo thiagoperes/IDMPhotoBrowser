@@ -615,7 +615,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _doneButton.layer.cornerRadius = 3.0f;
         _doneButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
         _doneButton.layer.borderWidth = 1.0f;
-        _doneButtonSize = _doneButtonImage.size;
+        _doneButtonSize = _doneButton.frame.size;
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
