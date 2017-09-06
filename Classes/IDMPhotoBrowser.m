@@ -143,6 +143,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize dismissOnTouch = _dismissOnTouch;
 @synthesize actionsSheet = _actionsSheet, activityViewController = _activityViewController;
 @synthesize trackTintColor = _trackTintColor, progressTintColor = _progressTintColor;
+@synthesize scaleImage = _scaleImage;
 @synthesize delegate = _delegate;
 
 #pragma mark - NSObject
