@@ -375,6 +375,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.clipsToBounds = YES;
     resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
+    if (@available(iOS 11.0, *)) {
+        resizableImageView.accessibilityIgnoresInvertColors = YES;
+    } else {
+        // Fallback on earlier versions
+    }
     [_applicationWindow addSubview:resizableImageView];
     _senderViewForAnimation.hidden = YES;
 
@@ -432,6 +437,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
     resizableImageView.clipsToBounds = YES;
+    if (@available(iOS 11.0, *)) {
+        resizableImageView.accessibilityIgnoresInvertColors = YES;
+    } else {
+        // Fallback on earlier versions
+    }
     [_applicationWindow addSubview:resizableImageView];
     self.view.hidden = YES;
 
