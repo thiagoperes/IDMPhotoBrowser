@@ -48,6 +48,7 @@
 @property (nonatomic, weak) UIImage *doneButtonImage;
 @property (nonatomic, weak) UIColor *doneButtonBorderColor;
 @property (nonatomic, weak) UIColor *doneButtonTitleColor;
+@property (nonatomic, copy) NSString *doneButtonTitle;
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 
 @property (nonatomic, weak) UIImage *scaleImage;
