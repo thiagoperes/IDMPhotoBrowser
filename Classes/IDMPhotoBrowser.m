@@ -135,6 +135,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 // Properties
 @synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage, actionButtonImage = _actionButtonImage, actionButtonSelectedImage = _actionButtonSelectedImage;
+@synthesize failureImage = _failureImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
 @synthesize forceHideStatusBar = _forceHideStatusBar;
@@ -997,6 +998,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             page = [[IDMZoomingScrollView alloc] initWithPhotoBrowser:self];
             page.backgroundColor = [UIColor clearColor];
             page.opaque = YES;
+            page.failureImage = self.failureImage;
 
 			[self configurePage:page forIndex:index];
 			[_visiblePages addObject:page];

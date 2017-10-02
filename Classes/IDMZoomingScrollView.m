@@ -29,6 +29,7 @@
 @implementation IDMZoomingScrollView
 
 @synthesize photoImageView = _photoImageView, photoBrowser = _photoBrowser, photo = _photo, captionView = _captionView;
+@synthesize failureView = _failureView, failureImage = _failureImage;
 
 - (id)initWithPhotoBrowser:(IDMPhotoBrowser *)browser {
     if ((self = [super init])) {
@@ -66,6 +67,10 @@
         _progressView.trackTintColor    = browser.trackTintColor    ? self.photoBrowser.trackTintColor    : [UIColor colorWithWhite:0.2 alpha:1];
         _progressView.progressTintColor = browser.progressTintColor ? self.photoBrowser.progressTintColor : [UIColor colorWithWhite:1.0 alpha:1];
         [self addSubview:_progressView];
+
+        _failureView = [[UIImageView alloc] init];
+        _failureView.contentMode = UIViewContentModeCenter;
+        [self addSubview:_failureView];
         
 		// Setup
 		self.backgroundColor = [UIColor clearColor];
@@ -105,6 +110,8 @@
         
 		self.contentSize = CGSizeMake(0, 0);
 		
+		_failureView.hidden = YES;
+
 		// Get image from browser as it handles ordering of fetching
 		UIImage *img = [self.photoBrowser imageForPhoto:_photo];
 		if (img) {
@@ -149,6 +156,9 @@
 
 // Image failed so just show black!
 - (void)displayImageFailure {
+    _failureView.hidden = NO;
+    _failureView.frame = self.bounds;
+    _failureView.image = self.failureImage;
     [_progressView removeFromSuperview];
 }
 
