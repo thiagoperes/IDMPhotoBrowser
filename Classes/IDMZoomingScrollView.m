@@ -48,6 +48,12 @@
 		_photoImageView.backgroundColor = [UIColor clearColor];
 		[self addSubview:_photoImageView];
         
+        //Add darg&drop in iOS 11
+        if (@available(iOS 11.0, *)) {
+            UIDragInteraction *drag = [[UIDragInteraction alloc] initWithDelegate: self];
+            [_photoImageView addInteraction:drag];
+        }
+        
         CGRect screenBound = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenBound.size.width;
         CGFloat screenHeight = screenBound.size.height;
@@ -91,6 +97,12 @@
     self.photo = nil;
     [_captionView removeFromSuperview];
     self.captionView = nil;
+}
+
+#pragma mark - Drag & Drop
+
+- (NSArray<UIDragItem *> *)dragInteraction:(UIDragInteraction *)interaction itemsForBeginningSession:(id<UIDragSession>)session NS_AVAILABLE_IOS(11.0) {
+    return @[[[UIDragItem alloc] initWithItemProvider:[[NSItemProvider alloc] initWithObject:_photoImageView.image]]];
 }
 
 #pragma mark - Image
