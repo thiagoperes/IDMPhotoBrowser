@@ -10,7 +10,6 @@
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
 
-
 #ifndef IDMPhotoBrowserLocalizedStrings
 #define IDMPhotoBrowserLocalizedStrings(key) \
 NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBundle bundleForClass: self.class] pathForResource:@"IDMPBLocalizations" ofType:@"bundle"]], nil)
@@ -1157,21 +1156,45 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation {
+    CGRect screenBound = self.view.bounds;
+    CGFloat screenWidth = screenBound.size.width;
+    CGFloat screenHeight = screenBound.size.height;
     CGFloat height = 44;
+    CGFloat bottomIndicator = 34;
+    BOOL iPhoneX = NO;
     
-    if ([self isLandscape:orientation])
+    if ([self isLandscape:orientation]) {
         height = 32;
+        if (screenWidth == 821 && screenHeight == 375) {
+            iPhoneX = NO;
+        }
+    }
+    else {
+        if (screenWidth == 375 && screenHeight == 812) {
+            iPhoneX = YES;
+        }
+    }
     
-    return CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+    if (iPhoneX) {
+      return CGRectMake(0, self.view.bounds.size.height - height - bottomIndicator, self.view.bounds.size.width, height);
+    }
+    else {
+        return CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
+    }
 }
 
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation {
     CGRect screenBound = self.view.bounds;
     CGFloat screenWidth = screenBound.size.width;
-    
+    CGFloat screenHeight = screenBound.size.height;
     // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
     
-    return CGRectMake(screenWidth - 75, 30, 55, 26);
+    if (screenWidth == 375 && screenHeight == 812) {
+        return CGRectMake(screenWidth - 75, 54, 55, 26);
+    }
+    else {
+        return CGRectMake(screenWidth - 75, 30, 55, 26);
+    }
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
