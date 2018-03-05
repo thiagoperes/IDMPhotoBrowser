@@ -46,6 +46,11 @@
 		_photoImageView = [[IDMTapDetectingImageView alloc] initWithFrame:CGRectZero];
 		_photoImageView.tapDelegate = self;
 		_photoImageView.backgroundColor = [UIColor clearColor];
+        if (@available(iOS 11.0, *)) {
+            _photoImageView.accessibilityIgnoresInvertColors = YES;
+        } else {
+            // Fallback on earlier versions
+        }
 		[self addSubview:_photoImageView];
         
         //Add darg&drop in iOS 11
