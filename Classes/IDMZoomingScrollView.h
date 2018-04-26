@@ -26,9 +26,13 @@
 	IDMTapDetectingView *_tapView; // for background taps
     
     DACircularProgressView *_progressView;
+    UIImageView *_failureView;
+    UIImage *_failureImage;
 }
 
 @property (nonatomic, strong) IDMTapDetectingImageView *photoImageView;
+@property (nonatomic, strong) UIImageView *failureView;
+@property (nonatomic, strong) UIImage *failureImage;
 @property (nonatomic, strong) IDMCaptionView *captionView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
 @property (nonatomic) CGFloat maximumDoubleTapZoomScale;
