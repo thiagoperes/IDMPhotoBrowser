@@ -39,5 +39,6 @@
 - (void)setProgress:(CGFloat)progress forPhoto:(IDMPhoto*)photo;
 - (void)setMaxMinZoomScalesForCurrentBounds;
 - (void)prepareForReuse;
+-(CGPoint)getViewFramePercent:(UIView *)view : (UITouch *)touch;
 
 @end
