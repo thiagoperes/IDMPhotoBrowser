@@ -8,6 +8,7 @@
 
 #import "IDMPhoto.h"
 #import "IDMPhotoBrowser.h"
+#import <YYWebImageManager.h>
 
 // Private
 @interface IDMPhoto () {
@@ -137,28 +138,31 @@ caption = _caption;
         } else if (_photoURL) {
             // Load async from web (using SDWebImageManager)
 
-			[[SDWebImageManager sharedManager] loadImageWithURL:_photoURL options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+            [[YYWebImageManager sharedManager] requestImageWithURL:_photoURL options:YYWebImageOptionShowNetworkActivity progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                 if ([NSThread isMainThread]) {
-    				CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
-    				if (self.progressUpdateBlock) {
-    					self.progressUpdateBlock(progress);
-    				}
+                    CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
+                    if (self.progressUpdateBlock) {
+                        self.progressUpdateBlock(progress);
+                    }
                 } else {
                     __weak typeof(self) weakSelf = self;
                     dispatch_async(dispatch_get_main_queue(), ^{
-        				CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
-        				if (weakSelf.progressUpdateBlock) {
-        					weakSelf.progressUpdateBlock(progress);
-        				}
+                        CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
+                        if (weakSelf.progressUpdateBlock) {
+                            weakSelf.progressUpdateBlock(progress);
+                        }
                     });
                 }
-			} completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-				if (image) {
-					self.underlyingImage = image;
-				}
+            } transform:^UIImage * _Nullable(UIImage * _Nonnull image, NSURL * _Nonnull url) {
+                return image;
+            } completion:^(UIImage * _Nullable image, NSURL * _Nonnull url, YYWebImageFromType from, YYWebImageStage stage, NSError * _Nullable error) {
+                if (image) {
+                    self.underlyingImage = image;
+                }
 
-				[self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
-			}];
+                [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
+            }];
+
         } else {
             // Failed - no source
             self.underlyingImage = nil;
