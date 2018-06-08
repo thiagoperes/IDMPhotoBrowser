@@ -1,20 +1,26 @@
 PODS:
   - DACircularProgress (2.3.1)
   - pop (1.0.9)
-  - SDWebImage (4.0.0):
-    - SDWebImage/Core (= 4.0.0)
-  - SDWebImage/Core (4.0.0)
+  - YYCache (1.0.4)
+  - YYImage (1.0.4):
+    - YYImage/Core (= 1.0.4)
+  - YYImage/Core (1.0.4)
+  - YYWebImage (1.0.5):
+    - YYCache
+    - YYImage
 
 DEPENDENCIES:
   - DACircularProgress
   - pop
-  - SDWebImage
+  - YYWebImage
 
 SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
-  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  YYCache: 8105b6638f5e849296c71f331ff83891a4942952
+  YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
+  YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
 
-PODFILE CHECKSUM: 7c9b8bb160246eb04b56feab0ec4a8fb149d5fa3
+PODFILE CHECKSUM: f4b516e7e36492c77ef1df51884224a1182df021
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.4.0
