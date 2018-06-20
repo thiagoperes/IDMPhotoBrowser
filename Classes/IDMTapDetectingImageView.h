@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <YYKit/YYAnimatedImageView.h>
 
 @protocol IDMTapDetectingImageViewDelegate;
 
-@interface IDMTapDetectingImageView : UIImageView {
+@interface IDMTapDetectingImageView : YYAnimatedImageView {
 	id <IDMTapDetectingImageViewDelegate> __weak tapDelegate;
 }
 @property (nonatomic, weak) id <IDMTapDetectingImageViewDelegate> tapDelegate;
