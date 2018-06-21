@@ -6,7 +6,7 @@ We've added both user experience and technical features inspired by Facebook's a
 
 ## New features:
 - Uses ARC
-- Uses SDWebImage for image loading
+- Uses YYWebImage for image loading
 - Image progress shown
 - Minimalistic Facebook-like interface, swipe up/down to dismiss
 - Ability to add custom actions on the action sheet
@@ -181,7 +181,7 @@ Just add `pod 'IDMPhotoBrowser'` to your Podfile.
 
 #### Opensource libraries used
 
-- [SDWebImage](https://github.com/rs/SDWebImage)
+- [YYKit](https://github.com/ibireme/YYKit)
 - [DACircularProgress](https://github.com/danielamitay/DACircularProgress)
 - [pop](https://github.com/facebook/pop)
 
