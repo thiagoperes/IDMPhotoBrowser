@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.resources     =  'Classes/IDMPhotoBrowser.bundle', 'Classes/IDMPBLocalizations.bundle'
   s.framework     =  'MessageUI', 'QuartzCore', 'SystemConfiguration', 'MobileCoreServices', 'Security'
   s.requires_arc  =  true
-  s.dependency       'YYKit', :git => 'https://github.com/rannger/YYKit.git'
+  s.dependency       'YYKit' 
   s.dependency       'DACircularProgress'
   s.dependency       'pop'
   end
