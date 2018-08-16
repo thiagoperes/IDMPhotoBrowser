@@ -123,7 +123,7 @@ extension MenuViewController {
 		case 0:
 			return 1
 		case 1:
-			return 3
+			return 4
 		case 2:
 			return 0
 		default:
@@ -161,8 +161,10 @@ extension MenuViewController {
 				cell?.textLabel?.text = "Local photos"
 			case 1:
 				cell?.textLabel?.text = "Photos from Flickr"
-			case 2:
-				cell?.textLabel?.text = "Photos from Flickr - Custom"
+            case 2:
+                cell?.textLabel?.text = "Photos from Flickr - Custom"
+            case 3:
+                cell?.textLabel?.text = "Video"
 			default:
 				break
 			}
@@ -191,7 +193,7 @@ extension MenuViewController {
 		}
 		else if indexPath.section == 1 { // Multiple photos
 			if indexPath.row == 0 { // Local Photos
-				
+
 				let path_photo1l = [Bundle.main.path(forResource: "photo1l", ofType: "jpg")]
 				photo = IDMPhoto.photos(withFilePaths:path_photo1l).first as! IDMPhoto
 				photo.caption = "Grotto of the Madonna"
@@ -211,15 +213,32 @@ extension MenuViewController {
 				photo = IDMPhoto.photos(withFilePaths:path_photo4l).first as! IDMPhoto
 				photo.caption = "Campervan";
 				photos.append(photo)
-			} else if indexPath.row == 1 || indexPath.row == 2 { // Photos from Flickr or Flickr - Custom
-				let photosWithURLArray = [NSURL.init(string: "http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"),
-				                          NSURL.init(string: "http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"),
-				                          NSURL.init(string: "http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"),
-				                          NSURL.init(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")]
-				let photosWithURL: [IDMPhoto] = IDMPhoto.photos(withURLs: photosWithURLArray) as! [IDMPhoto]
-				
-				photos = photosWithURL
-			}
+            } else if indexPath.row == 1 || indexPath.row == 2 { // Photos from Flickr or Flickr - Custom
+                let photosWithURLArray = [NSURL.init(string: "http://farm4.static.flickr.com/3567/3523321514_371d9ac42f_b.jpg"),
+                                          NSURL.init(string: "http://farm4.static.flickr.com/3629/3339128908_7aecabc34b_b.jpg"),
+                                          NSURL.init(string: "http://farm4.static.flickr.com/3364/3338617424_7ff836d55f_b.jpg"),
+                                          NSURL.init(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")]
+                let photosWithURL: [IDMPhoto] = IDMPhoto.photos(withURLs: photosWithURLArray) as! [IDMPhoto]
+
+                photos = photosWithURL
+            } else if indexPath.row == 3 { // Videos
+                let video1 = IDMPhoto(video: URL(string: "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4")!)!
+                video1.caption = "Big Buck Bunny — by THE PEACH OPEN MOVIE PROJECT"
+
+                let photo1 = IDMPhoto(url: URL(string: "http://farm4.static.flickr.com/3590/3329114220_5fbc5bc92b_b.jpg")!)!
+                photo1.caption = "A standard picture separating two videos"
+
+                let video2 = IDMPhoto(video: URL(string: "https://staging.coverr.co/s3/mp4/Playful.mp4")!)!
+                video2.caption = "A cover coming straight from coverr.co for an example"
+
+                let videos: [IDMPhoto] = [
+                    video1,
+                    photo1,
+                    video2
+                ]
+
+                photos = videos
+            }
 		}
 
 		// Create and setup browser
@@ -227,7 +246,7 @@ extension MenuViewController {
 		browser?.delegate = self
 
 		if indexPath.section == 1 { // Multiple photos
-			if indexPath.row == 1 { // Photos from Flickr
+			if indexPath.row == 1 || indexPath.row == 3 { // Photos from Flickr
 				browser?.displayCounterLabel = true
 				browser?.displayActionButton = false
 			} else if indexPath.row == 2 { // Photos from Flickr - Custom
