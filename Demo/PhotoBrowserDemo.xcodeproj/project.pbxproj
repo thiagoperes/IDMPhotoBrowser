@@ -22,6 +22,9 @@
 		5736E0DD544CC84515494E76 /* libPods-PhotoBrowserDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64F5714840012BFE47F8331B /* libPods-PhotoBrowserDemo.a */; };
 		727988B1187B3B5400966C66 /* IDMPBLocalizations.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */; };
 		727988B7187B3CF100966C66 /* IDMPhotoBrowser.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */; };
+		7D2B79B81FD2501300F2094F /* IDMUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2B79B71FD2501200F2094F /* IDMUtils.m */; };
+		7D2B79C01FD25B7600F2094F /* PhotoBrowserDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2B79BF1FD25B7600F2094F /* PhotoBrowserDemoTests.m */; };
+		7D2B79C81FD25BF300F2094F /* IDMUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D2B79C71FD25BF300F2094F /* IDMUtilsTest.m */; };
 		D114BB411A32269C00E677FE /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D114BB401A32269C00E677FE /* Launch Screen.xib */; };
 		D1574968178DB94900B0211A /* IDMCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = D157494F178DB94900B0211A /* IDMCaptionView.m */; };
 		D1574969178DB94900B0211A /* IDMPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = D1574951178DB94900B0211A /* IDMPhoto.m */; };
@@ -54,6 +57,16 @@
 		D1FA3A911805C340000FFE18 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1FA3A901805C340000FFE18 /* Security.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		7D2B79C21FD25B7600F2094F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C6F978414AF734800F8389A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4C6F978C14AF734800F8389A;
+			remoteInfo = PhotoBrowserDemo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		4C6F978D14AF734900F8389A /* PhotoBrowserDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoBrowserDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6F979114AF734900F8389A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -73,6 +86,14 @@
 		64F5714840012BFE47F8331B /* libPods-PhotoBrowserDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PhotoBrowserDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		727988B0187B3B5400966C66 /* IDMPBLocalizations.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IDMPBLocalizations.bundle; sourceTree = "<group>"; };
 		727988B6187B3CF100966C66 /* IDMPhotoBrowser.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = IDMPhotoBrowser.podspec; path = ../../IDMPhotoBrowser.podspec; sourceTree = "<group>"; };
+		7D2B79B61FD2501200F2094F /* IDMUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMUtils.h; sourceTree = "<group>"; };
+		7D2B79B71FD2501200F2094F /* IDMUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IDMUtils.m; sourceTree = "<group>"; };
+		7D2B79BD1FD25B7600F2094F /* PhotoBrowserDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoBrowserDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D2B79BF1FD25B7600F2094F /* PhotoBrowserDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoBrowserDemoTests.m; sourceTree = "<group>"; };
+		7D2B79C11FD25B7600F2094F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7D2B79C71FD25BF300F2094F /* IDMUtilsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IDMUtilsTest.m; sourceTree = "<group>"; };
+		7D7D66691E09D6D400410A67 /* IDMBrowserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMBrowserDelegate.h; sourceTree = "<group>"; };
+		7D7D666A1E09D6DA00410A67 /* IDMPhotoDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPhotoDataSource.h; sourceTree = "<group>"; };
 		D00FA320EEACA8C835D9D626 /* Pods-PhotoBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoBrowserDemo/Pods-PhotoBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		D11464B61802FFC4005B7BC3 /* IDMPBConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IDMPBConstants.h; sourceTree = "<group>"; };
 		D114BB401A32269C00E677FE /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
@@ -136,6 +157,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D2B79BA1FD25B7600F2094F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -147,6 +175,7 @@
 				4C6F97CA14AF75D300F8389A /* Sample Photos */,
 				D19D825517E8D40700A5859E /* Custom Images */,
 				4C6F979814AF734900F8389A /* Supporting Files */,
+				7D2B79BE1FD25B7600F2094F /* PhotoBrowserDemoTests */,
 				4C6F979014AF734900F8389A /* Frameworks */,
 				4C6F978E14AF734900F8389A /* Products */,
 				6D1B0039D6199AD450E98829 /* Pods */,
@@ -157,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				4C6F978D14AF734900F8389A /* PhotoBrowserDemo.app */,
+				7D2B79BD1FD25B7600F2094F /* PhotoBrowserDemoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -231,6 +261,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		7D2B79BE1FD25B7600F2094F /* PhotoBrowserDemoTests */ = {
+			isa = PBXGroup;
+			children = (
+				7D2B79BF1FD25B7600F2094F /* PhotoBrowserDemoTests.m */,
+				7D2B79C71FD25BF300F2094F /* IDMUtilsTest.m */,
+				7D2B79C11FD25B7600F2094F /* Info.plist */,
+			);
+			path = PhotoBrowserDemoTests;
+			sourceTree = "<group>";
+		};
 		D1574931178DB94900B0211A /* IDMPhotoBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,6 +281,9 @@
 				D1574951178DB94900B0211A /* IDMPhoto.m */,
 				D1574953178DB94900B0211A /* IDMPhotoBrowser.h */,
 				D1574954178DB94900B0211A /* IDMPhotoBrowser.m */,
+				7D2B79B61FD2501200F2094F /* IDMUtils.h */,
+				7D2B79B71FD2501200F2094F /* IDMUtils.m */,
+				7D7D666A1E09D6DA00410A67 /* IDMPhotoDataSource.h */,
 				D1574955178DB94900B0211A /* IDMPhotoProtocol.h */,
 				D1574956178DB94900B0211A /* IDMTapDetectingImageView.h */,
 				D1574957178DB94900B0211A /* IDMTapDetectingImageView.m */,
@@ -296,6 +339,24 @@
 			productReference = 4C6F978D14AF734900F8389A /* PhotoBrowserDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7D2B79BC1FD25B7600F2094F /* PhotoBrowserDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D2B79C41FD25B7600F2094F /* Build configuration list for PBXNativeTarget "PhotoBrowserDemoTests" */;
+			buildPhases = (
+				7D2B79B91FD25B7600F2094F /* Sources */,
+				7D2B79BA1FD25B7600F2094F /* Frameworks */,
+				7D2B79BB1FD25B7600F2094F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7D2B79C31FD25B7600F2094F /* PBXTargetDependency */,
+			);
+			name = PhotoBrowserDemoTests;
+			productName = PhotoBrowserDemoTests;
+			productReference = 7D2B79BD1FD25B7600F2094F /* PhotoBrowserDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -306,6 +367,11 @@
 				TargetAttributes = {
 					4C6F978C14AF734800F8389A = {
 						LastSwiftMigration = 0810;
+					};
+					7D2B79BC1FD25B7600F2094F = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 4C6F978C14AF734800F8389A;
 					};
 				};
 			};
@@ -324,6 +390,7 @@
 			projectRoot = "";
 			targets = (
 				4C6F978C14AF734800F8389A /* PhotoBrowserDemo */,
+				7D2B79BC1FD25B7600F2094F /* PhotoBrowserDemoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -361,6 +428,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D2B79BB1FD25B7600F2094F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -391,7 +465,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		F88445D630091F1AA9A2F89A /* [CP] Copy Pods Resources */ = {
@@ -416,6 +490,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D2B79B81FD2501300F2094F /* IDMUtils.m in Sources */,
 				D1574968178DB94900B0211A /* IDMCaptionView.m in Sources */,
 				D1A9ED541DEB685F00C238DA /* MenuViewController.swift in Sources */,
 				D1574969178DB94900B0211A /* IDMPhoto.m in Sources */,
@@ -427,7 +502,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7D2B79B91FD25B7600F2094F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D2B79C81FD25BF300F2094F /* IDMUtilsTest.m in Sources */,
+				7D2B79C01FD25B7600F2094F /* PhotoBrowserDemoTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7D2B79C31FD25B7600F2094F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4C6F978C14AF734800F8389A /* PhotoBrowserDemo */;
+			targetProxy = 7D2B79C21FD25B7600F2094F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4C6F97AC14AF734900F8389A /* Debug */ = {
@@ -560,6 +652,86 @@
 			};
 			name = Release;
 		};
+		7D2B79C51FD25B7600F2094F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = PhotoBrowserDemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appkraft.PhotoBrowserDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoBrowserDemo.app/PhotoBrowserDemo";
+			};
+			name = Debug;
+		};
+		7D2B79C61FD25B7600F2094F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = PhotoBrowserDemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.appkraft.PhotoBrowserDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoBrowserDemo.app/PhotoBrowserDemo";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -577,6 +749,15 @@
 			buildConfigurations = (
 				4C6F97AF14AF734900F8389A /* Debug */,
 				4C6F97B014AF734900F8389A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D2B79C41FD25B7600F2094F /* Build configuration list for PBXNativeTarget "PhotoBrowserDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D2B79C51FD25B7600F2094F /* Debug */,
+				7D2B79C61FD25B7600F2094F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
