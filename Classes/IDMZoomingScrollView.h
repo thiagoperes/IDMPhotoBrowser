@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVKit/AVKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "IDMPhotoProtocol.h"
 #import "IDMTapDetectingImageView.h"
 #import "IDMTapDetectingView.h"
@@ -29,6 +31,8 @@
 }
 
 @property (nonatomic, strong) IDMTapDetectingImageView *photoImageView;
+@property (nonatomic, strong) IDMTapDetectingView *videoPlayerView;
+@property (nonatomic, strong) AVPlayerLayer *videoPlayerLayer;
 @property (nonatomic, strong) IDMCaptionView *captionView;
 @property (nonatomic, strong) id<IDMPhoto> photo;
 @property (nonatomic) CGFloat maximumDoubleTapZoomScale;

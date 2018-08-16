@@ -714,10 +714,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Update
     [self reloadData];
 
-
     if ([_delegate respondsToSelector:@selector(willAppearPhotoBrowser:)]) {
         [_delegate willAppearPhotoBrowser:self];
     }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerDidFinishPlaying:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:NULL];
 
     // Super
 	[super viewWillAppear:animated];
@@ -734,6 +738,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _viewIsActive = YES;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVPlayerItemDidPlayToEndTimeNotification
+                                                  object:NULL];
+
+    // Super
+    [super viewWillDisappear:animated];
+}
+
 // Release any retained subviews of the main view.
 - (void)viewDidUnload {
 	_currentPageIndex = 0;
@@ -746,6 +759,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _nextButton = nil;
 
     [super viewDidUnload];
+}
+
+#pragma mark - Video Loop
+
+- (void)playerDidFinishPlaying:(NSNotification *)notification {
+    [[self pageDisplayedAtIndex:_currentPageIndex].videoPlayerLayer.player seekToTime:kCMTimeZero];
+    [[self pageDisplayedAtIndex:_currentPageIndex].videoPlayerLayer.player play];
 }
 
 #pragma mark - Status Bar

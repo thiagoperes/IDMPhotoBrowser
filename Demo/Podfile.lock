@@ -1,20 +1,26 @@
 PODS:
   - DACircularProgress (2.3.1)
   - pop (1.0.9)
-  - SDWebImage (4.0.0):
-    - SDWebImage/Core (= 4.0.0)
-  - SDWebImage/Core (4.0.0)
+  - SDWebImage (4.3.0):
+    - SDWebImage/Core (= 4.3.0)
+  - SDWebImage/Core (4.3.0)
 
 DEPENDENCIES:
   - DACircularProgress
   - pop
-  - SDWebImage
+  - SDWebImage (= 4.3.0)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - DACircularProgress
+    - pop
+    - SDWebImage
 
 SPEC CHECKSUMS:
   DACircularProgress: 4dd437c0fc3da5161cb289e07ac449493d41db71
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
-  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  SDWebImage: 6da6c8bca115addc4de8613362e1b15f66333825
 
-PODFILE CHECKSUM: 7c9b8bb160246eb04b56feab0ec4a8fb149d5fa3
+PODFILE CHECKSUM: 1003e1b6f3d8af0dcbaf40d0441e56a86817bc6b
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.5.3

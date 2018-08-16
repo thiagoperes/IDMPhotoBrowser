@@ -36,6 +36,7 @@
 // Properties
 @synthesize underlyingImage = _underlyingImage, 
 photoURL = _photoURL,
+videoURL = _videoURL,
 caption = _caption;
 
 #pragma mark Class Methods
@@ -102,6 +103,13 @@ caption = _caption;
 		self.underlyingImage = image;
 	}
 	return self;
+}
+
+- (id)initWithVideo:(NSURL *)videoURL {
+    if ((self = [super init])) {
+        self.videoURL = videoURL;
+    }
+    return self;
 }
 
 - (id)initWithFilePath:(NSString *)path {
