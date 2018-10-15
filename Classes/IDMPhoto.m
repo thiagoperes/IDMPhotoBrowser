@@ -137,25 +137,20 @@ caption = _caption;
         } else if (_photoURL) {
             __block CGFloat progress = 0;
             // Load async from web (using SDWebImageManager)
-            SDWebImageManager *manager = [SDWebImageManager sharedManager];
-            [manager downloadImageWithURL:_photoURL options:SDWebImageRetryFailed | SDWebImageProgressiveDownload progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-                if (self.progressUpdateBlock) {
-                    if (receivedSize > 0 && expectedSize > 0) {
-                        CGFloat newProgress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
-                        progress = MAX(newProgress, progress);
-                    }
-                    else {
-                        progress = MIN(1, progress + 0.05);
-                    }
-                    self.progressUpdateBlock(progress);
-                }
-            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                if (image) {
-                    self.underlyingImage = image;
-                    [self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
-                }
-            }];
-
+			
+			[[SDWebImageManager sharedManager] loadImageWithURL:_photoURL options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+				CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
+				
+				if (self.progressUpdateBlock) {
+					self.progressUpdateBlock(progress);
+				}
+			} completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+				if (image) {
+					self.underlyingImage = image;
+				}
+				
+				[self performSelectorOnMainThread:@selector(imageLoadingComplete) withObject:nil waitUntilDone:NO];
+			}];
         } else {
             // Failed - no source
             self.underlyingImage = nil;
@@ -208,8 +203,7 @@ caption = _caption;
 }*/
 
 - (UIImage *)decodedImageWithImage:(UIImage *)image {
-    if (image.images)
-    {
+    if (image.images) {
         // Do not decode animated images
         return image;
     }
