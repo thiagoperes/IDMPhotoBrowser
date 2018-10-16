@@ -69,7 +69,14 @@
 // Defines zooming of the background (default 1.0)
 @property (nonatomic) float backgroundScaleFactor;
 
-// Animation time (default .28)
+// Present
+@property (nonatomic, strong) UIView *senderViewForAnimation;
+
+@property (nonatomic) CGFloat senderViewImageXOffset;
+@property (nonatomic) CGFloat senderViewImageYOffset;
+@property (nonatomic) CGSize senderViewOriginalSize;
+
+// animation time (default .28)
 @property (nonatomic) float animationDuration;
 
 // Init
