@@ -52,7 +52,7 @@
 @property (nonatomic, assign) CGFloat doneButtonRightInset, doneButtonTopInset;
 @property (nonatomic, assign) CGSize doneButtonSize;
 
-@property (nonatomic, weak) UIImage *scaleImage;
+@property (nonatomic) UIImage *scaleImage;
 
 @property (nonatomic) BOOL arrowButtonsChangePhotosAnimated;
 
