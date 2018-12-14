@@ -15,7 +15,7 @@
 
 @class IDMPhotoBrowser, IDMPhoto, IDMCaptionView;
 
-@interface IDMZoomingScrollView : UIScrollView <UIScrollViewDelegate, IDMTapDetectingImageViewDelegate, IDMTapDetectingViewDelegate, UIDragInteractionDelegate> {
+@interface IDMZoomingScrollView : UIScrollView <UIScrollViewDelegate, IDMTapDetectingImageViewDelegate, IDMTapDetectingViewDelegate> {
 	
 	IDMPhotoBrowser *__weak _photoBrowser;
     id<IDMPhoto> _photo;

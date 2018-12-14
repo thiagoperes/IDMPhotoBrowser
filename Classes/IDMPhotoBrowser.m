@@ -9,7 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "IDMPhotoBrowser.h"
 #import "IDMZoomingScrollView.h"
-#import "IDMUtils.h"
 
 #import "pop/POP.h"
 
@@ -36,6 +35,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Buttons
     UIButton *_doneButton;
+    UIButton *_deleteButton;
 
 	// Toolbar
 	UIToolbar *_toolbar;
@@ -63,7 +63,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     BOOL _viewIsActive; // active as in it's in the view heirarchy
     BOOL _autoHide;
     NSInteger _initalPageIndex;
-    CGFloat _statusBarHeight;
 
     BOOL _isdraggingPhoto;
 
@@ -135,7 +134,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage;
+@synthesize displayDoneButton = _displayDoneButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, displayDeleteButton = _displayDeleteButton;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage, actionButtonImage = _actionButtonImage, actionButtonSelectedImage = _actionButtonSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
@@ -167,12 +166,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _autoHideInterface = YES;
 
         _displayDoneButton = YES;
-        _doneButtonImage = nil;
+        _displayDeleteButton = NO;
+        _doneButtonImage = [UIImage imageNamed:@"close-gallery"];
 
         _displayToolbar = YES;
-        _displayActionButton = YES;
+        _displayActionButton = NO;
         _displayArrowButton = YES;
-        _displayCounterLabel = NO;
+        _displayCounterLabel = YES;
 
         _forceHideStatusBar = NO;
         _usePopAnimation = NO;
@@ -192,11 +192,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
         _isdraggingPhoto = NO;
         
-        _statusBarHeight = 20.f;
-        _doneButtonRightInset = 20.f;
-        // relative to status bar and safeAreaInsets
-        _doneButtonTopInset = 10.f;
-
+        _doneButtonRightInset = 0.f;
+        _doneButtonTopInset = 30.f;
         _doneButtonSize = CGSizeMake(55.f, 26.f);
 
 		if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
@@ -380,15 +377,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.clipsToBounds = YES;
     resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
-    if (@available(iOS 11.0, *)) {
-        resizableImageView.accessibilityIgnoresInvertColors = YES;
-    } else {
-        // Fallback on earlier versions
-    }
     [_applicationWindow addSubview:resizableImageView];
     _senderViewForAnimation.hidden = YES;
 
-    void (^completion)() = ^() {
+    void (^completion)(void) = ^() {
         self.view.alpha = 1.0f;
         _pagingScrollView.alpha = 1.0f;
         resizableImageView.backgroundColor = [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
@@ -442,15 +434,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.contentMode = _senderViewForAnimation ? _senderViewForAnimation.contentMode : UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
     resizableImageView.clipsToBounds = YES;
-    if (@available(iOS 11.0, *)) {
-        resizableImageView.accessibilityIgnoresInvertColors = YES;
-    } else {
-        // Fallback on earlier versions
-    }
     [_applicationWindow addSubview:resizableImageView];
     self.view.hidden = YES;
 
-    void (^completion)() = ^() {
+    void (^completion)(void) = ^() {
         _senderViewForAnimation.hidden = NO;
         _senderViewForAnimation = nil;
         _scaleImage = nil;
@@ -493,19 +480,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     CGSize imageSize = image.size;
 
-    CGRect bounds = _applicationWindow.bounds;
-    // adjust bounds as the photo browser does
-    if (@available(iOS 11.0, *)) {
-        // use the windows safe area inset
-        UIWindow *window = [UIApplication sharedApplication].keyWindow;
-        UIEdgeInsets insets = UIEdgeInsetsMake(_statusBarHeight, 0, 0, 0);
-        if (window != NULL) {
-            insets = window.safeAreaInsets;
-        }
-        bounds = [self adjustForSafeArea:bounds adjustForStatusBar:NO forInsets:insets];
-    }
-    CGFloat maxWidth = CGRectGetWidth(bounds);
-    CGFloat maxHeight = CGRectGetHeight(bounds);
+    CGFloat maxWidth = CGRectGetWidth(_applicationWindow.bounds);
+    CGFloat maxHeight = CGRectGetHeight(_applicationWindow.bounds);
 
     CGRect animationFrame = CGRectZero;
 
@@ -523,6 +499,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if (!presenting) {
         animationFrame.origin.y += scrollView.frame.origin.y;
     }
+
     return animationFrame;
 }
 
@@ -547,11 +524,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self dismissViewControllerAnimated:animated completion:^{
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDismissAtPageIndex:)])
             [_delegate photoBrowser:self didDismissAtPageIndex:_currentPageIndex];
-
-//		if (SYSTEM_VERSION_LESS_THAN(@"8.0"))
-//		{
-//			_applicationTopViewController.modalPresentationStyle = _previousModalPresentationStyle;
-//		}
     }];
 }
 
@@ -646,7 +618,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
         _doneButton.contentMode = UIViewContentModeScaleAspectFit;
     }
-
+    
+    _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_deleteButton setFrame:[self frameForDeleteButtonAtOrientation:currentOrientation]];
+    [_deleteButton setBackgroundColor:[UIColor colorWithRed:74.0/255.0 green:74.0/255.0 blue:74.0/255.0 alpha:0.5]];
+    [_deleteButton setAlpha:1.0f];
+    [_deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [_deleteButton setImage:[UIImage imageNamed:@"trash"] forState:UIControlStateNormal];
+    _deleteButton.contentMode = UIViewContentModeScaleAspectFit;
+    
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
     [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]          : _leftArrowImage;
 
@@ -669,7 +649,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
                                                                                       action:@selector(gotoNextPage)]];
 
     // Counter Label
-    _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 95, 40)];
+    CGRect screenBound = self.view.bounds;
+    _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, screenBound.size.width, 40)];
     _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
     _counterLabel.font = [UIFont fontWithName:@"Helvetica" size:17];
@@ -742,6 +723,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _recycledPages = nil;
     _toolbar = nil;
     _doneButton = nil;
+    _deleteButton = nil;
     _previousButton = nil;
     _nextButton = nil;
 
@@ -751,7 +733,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - Status Bar
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    return _useWhiteBackgroundColor ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
+    return UIStatusBarStyleLightContent;
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -790,7 +772,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Done button
     _doneButton.frame = [self frameForDoneButtonAtOrientation:currentOrientation];
 
-
+    // Delete button
+    _deleteButton.frame = [self frameForDeleteButtonAtOrientation:currentOrientation];
+    
     // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
 
@@ -842,6 +826,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Close button
     if(_displayDoneButton && !self.navigationController.navigationBar)
         [self.view addSubview:_doneButton];
+
+    if(_displayDeleteButton && !self.navigationController.navigationBar)
+        [self.view addSubview:_deleteButton];
 
     // Toolbar items & navigation
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
@@ -1103,7 +1090,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGRect frame = self.view.bounds;
     frame.origin.x -= PADDING;
     frame.size.width += (2 * PADDING);
-    frame = [self adjustForSafeArea:frame adjustForStatusBar:false];
     return frame;
 }
 
@@ -1142,18 +1128,16 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if ([self isLandscape:orientation])
         height = 32;
 
-    CGRect rtn = CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
-    rtn = [self adjustForSafeArea:rtn adjustForStatusBar:true];
-    return rtn;
+    return CGRectMake(0, 30.0, self.view.bounds.size.width, height);
 }
 
 - (CGRect)frameForDoneButtonAtOrientation:(UIInterfaceOrientation)orientation {
     CGRect screenBound = self.view.bounds;
     CGFloat screenWidth = screenBound.size.width;
 
-    CGRect rtn = CGRectMake(screenWidth - self.doneButtonRightInset - self.doneButtonSize.width, self.doneButtonTopInset, self.doneButtonSize.width, self.doneButtonSize.height);
-    rtn = [self adjustForSafeArea:rtn adjustForStatusBar:true];
-    return rtn;
+    // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
+
+    return CGRectMake(screenWidth - self.doneButtonRightInset - self.doneButtonSize.width, self.doneButtonTopInset, self.doneButtonSize.width, self.doneButtonSize.height);
 }
 
 - (CGRect)frameForCaptionView:(IDMCaptionView *)captionView atIndex:(NSUInteger)index {
@@ -1165,16 +1149,14 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return captionFrame;
 }
 
-- (CGRect)adjustForSafeArea:(CGRect)rect adjustForStatusBar:(BOOL)adjust {
-    if (@available(iOS 11.0, *)) {
-        return [self adjustForSafeArea:rect adjustForStatusBar:adjust forInsets:self.view.safeAreaInsets];
-    }
-    UIEdgeInsets insets = UIEdgeInsetsMake(_statusBarHeight, 0, 0, 0);
-    return [self adjustForSafeArea:rect adjustForStatusBar:adjust forInsets:insets];
-}
-
-- (CGRect)adjustForSafeArea:(CGRect)rect adjustForStatusBar:(BOOL)adjust forInsets:(UIEdgeInsets) insets {
-    return [IDMUtils adjustRect:rect forSafeAreaInsets:insets forBounds:self.view.bounds adjustForStatusBar:adjust statusBarHeight:_statusBarHeight];
+- (CGRect)frameForDeleteButtonAtOrientation:(UIInterfaceOrientation)orientation {
+    CGRect screenBound = self.view.bounds;
+    CGFloat screenWidth = screenBound.size.width;
+    CGFloat screenHeight = screenBound.size.height;
+    
+    // if ([self isLandscape:orientation]) screenWidth = screenBound.size.height;
+    
+    return CGRectMake(0, screenHeight-50, screenWidth, 50);
 }
 
 #pragma mark - UIScrollView Delegate
@@ -1203,7 +1185,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	// Hide controls when dragging begins
     if(_autoHideInterface){
-        [self setControlsHidden:YES animated:YES permanent:NO];
+//        [self setControlsHidden:YES animated:YES permanent:NO];
     }
 }
 
@@ -1216,8 +1198,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)updateToolbar {
     // Counter
-	if ([self numberOfPhotos] > 1) {
-		_counterLabel.text = [NSString stringWithFormat:@"%lu %@ %lu", (unsigned long)(_currentPageIndex+1), IDMPhotoBrowserLocalizedStrings(@"of"), (unsigned long)[self numberOfPhotos]];
+    if ([self numberOfPhotos] > 0) {
+        id <IDMPhoto> photo = [_photos objectAtIndex:_currentPageIndex];
+        _counterLabel.text = photo.caption;
 	} else {
 		_counterLabel.text = nil;
 	}
@@ -1351,55 +1334,23 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (void)actionButtonPressed:(id)sender {
-    id <IDMPhoto> photo = [self photoAtIndex:_currentPageIndex];
 
-    if ([self numberOfPhotos] > 0 && [photo underlyingImage]) {
-        if(!_actionButtonTitles)
-        {
-            // Activity view
-            NSMutableArray *activityItems = [NSMutableArray arrayWithObject:[photo underlyingImage]];
-            if (photo.caption) [activityItems addObject:photo.caption];
+}
 
-            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-
-            __typeof__(self) __weak selfBlock = self;
-
-			[self.activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-				[selfBlock hideControlsAfterDelay];
-				selfBlock.activityViewController = nil;
-			}];
-
-			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-				[self presentViewController:self.activityViewController animated:YES completion:nil];
-			}
-			else { // iPad
-				UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:self.activityViewController];
-				[popover presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/4, 0, 0)
-										 inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny
-									   animated:YES];
-			}
+- (void)deleteButtonPressed:(id)sender {
+    if(_photos.count > 1){
+        [_photos removeObjectAtIndex:_currentPageIndex];
+        if(_currentPageIndex > 0){
+            _currentPageIndex -= 1;
+            [self reloadData];
+        }else if(_currentPageIndex == 0 && _photos){
+            _currentPageIndex += 1;
+            [self reloadData];
         }
-        else
-        {
-            // Action sheet
-            self.actionsSheet = [UIActionSheet new];
-            self.actionsSheet.delegate = self;
-            for(NSString *action in _actionButtonTitles) {
-                [self.actionsSheet addButtonWithTitle:action];
-            }
-
-            self.actionsSheet.cancelButtonIndex = [self.actionsSheet addButtonWithTitle:IDMPhotoBrowserLocalizedStrings(@"Cancel")];
-            self.actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-				[_actionsSheet showInView:self.view];
-            } else {
-                [_actionsSheet showFromBarButtonItem:sender animated:YES];
-            }
-        }
-
-        // Keep controls hidden
-        [self setControlsHidden:NO animated:YES permanent:YES];
+    }else{
+        [self dismissPhotoBrowserAnimated:false];
+        if ([_delegate respondsToSelector:@selector(photoBrowser:didDeleteImageAtIndex:)])
+            [_delegate photoBrowser:self didDeleteImageAtIndex:_currentPageIndex];
     }
 }
 

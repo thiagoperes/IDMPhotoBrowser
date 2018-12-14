@@ -77,7 +77,7 @@ static const CGFloat labelPadding = 10;
     _label.shadowOffset = CGSizeMake(0, 1);
     _label.font = [UIFont systemFontOfSize:17];
     if ([_photo respondsToSelector:@selector(caption)]) {
-        _label.text = [_photo caption] ? [_photo caption] : @" ";
+        _label.text = @" ";
     }
     
     [self addSubview:_label];
