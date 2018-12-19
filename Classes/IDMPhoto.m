@@ -139,10 +139,19 @@ caption = _caption;
 			
 			[[SDWebImageManager sharedManager] loadImageWithURL:_photoURL options:SDWebImageRetryFailed progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
 				CGFloat progress = ((CGFloat)receivedSize)/((CGFloat)expectedSize);
-				
-				if (self.progressUpdateBlock) {
-					self.progressUpdateBlock(progress);
-				}
+
+                if ([NSThread isMainThread]) {
+                    if (self.progressUpdateBlock) {
+                        self.progressUpdateBlock(progress);
+                    }
+                } else {
+                    __weak typeof(self) weakSelf = self;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (weakSelf.progressUpdateBlock) {
+                            weakSelf.progressUpdateBlock(progress);
+                        }
+                    });
+                }
 			} completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
 				if (image) {
 					self.underlyingImage = image;
