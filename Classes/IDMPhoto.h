@@ -17,7 +17,7 @@
 @interface IDMPhoto : NSObject <IDMPhoto>
 
 // Progress download block, used to update the circularView
-typedef void (^IDMProgressUpdateBlock)(CGFloat progress);
+typedef void (^IDMProgressUpdateBlock)(CGFloat progress, BOOL complete);
 
 // Properties
 @property (nonatomic, strong) NSString *caption;
