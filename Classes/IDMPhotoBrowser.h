@@ -18,6 +18,7 @@
 @class IDMPhotoBrowser;
 @protocol IDMPhotoBrowserDelegate <NSObject>
 @optional
+- (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didBlockButtonClickedWithIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didAbuseButtonClickedWithIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didWillShowPhotoWithOffsetIndex:(NSUInteger)index;
 - (void)photoBrowser:(IDMPhotoBrowser *)photoBrowser didDeletePhotoAtIndex:(NSUInteger)index;
@@ -68,7 +69,7 @@
 // defines zooming of the background (default 1.0)
 @property (nonatomic) float backgroundScaleFactor;
 @property (nonatomic) NSString* reportAbuseString;
-
+@property (nonatomic) NSString* blockUserString;
 // animation time (default .28)
 @property (nonatomic) float animationDuration;
 
