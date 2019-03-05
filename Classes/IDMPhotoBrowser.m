@@ -151,6 +151,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @synthesize delegate = _delegate;
 @synthesize photoImageViews = _photoImageViews;
 @synthesize reportAbuseString;
+@synthesize blockUserString;
 #pragma mark - NSObject
 
 - (id)init {
@@ -158,6 +159,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         // Defaults
         self.hidesBottomBarWhenPushed = YES;
         reportAbuseString = NSLocalizedString(@"Report abuse", @"");
+        blockUserString = NSLocalizedString(@"Block user", @"");
         _currentPageIndex = 0;
         _performingLayout = NO; // Reset on view did appear
         _rotating = NO;
@@ -1482,7 +1484,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _currentPageIndex = index;
     if ([self isViewLoaded]) {
         [self jumpToPageAtIndex:index];
-        if (!_viewIsActive) [self tilePages]; // Force tiling if view is not visible
+        if (!_viewIsActive) [self tilePages];
     }
 }
 
@@ -1494,6 +1496,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 {
     if ([_delegate respondsToSelector:@selector(photoBrowser:didAbuseButtonClickedWithIndex:)]) {
         [_delegate photoBrowser:self didAbuseButtonClickedWithIndex:_currentPageIndex];
+    }
+}
+
+-(void)blockByPhoto
+{
+    if ([_delegate respondsToSelector:@selector(photoBrowser:didBlockButtonClickedWithIndex:)]) {
+        [_delegate photoBrowser:self didBlockButtonClickedWithIndex:_currentPageIndex];
     }
 }
 
@@ -1509,10 +1518,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if ([_delegate respondsToSelector:@selector(photoBrowser:didDeletePhotoAtIndex:)]) {
             [_delegate photoBrowser:self didDeletePhotoAtIndex:_currentPageIndex];
         }
-        /*if(_currentPageIndex == _photos.count)
-         {
-         _currentPageIndex--;
-         }*/
         if(_photos.count == 0)
         {
             _senderViewForAnimation.hidden = NO;
@@ -1534,7 +1539,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if (_actionButtonIsAbuseAction) {
         [actionSheet addAction:[UIAlertAction actionWithTitle:reportAbuseString style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
             [self abusePhoto];
-
+        }]];
+        [actionSheet addAction:[UIAlertAction actionWithTitle:blockUserString style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self blockByPhoto];
         }]];
         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         {
