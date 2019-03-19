@@ -93,7 +93,7 @@
 - (void)setInitialPageIndex:(NSUInteger)index;
 
 -(void)updatePhotosArray:(NSArray*)array;
-
+- (void)dismissPhotoBrowserAnimated:(BOOL)animated;
 - (void)setOffsetForDownloadPageIndex:(NSUInteger)index;
 
 // Get IDMPhoto at index

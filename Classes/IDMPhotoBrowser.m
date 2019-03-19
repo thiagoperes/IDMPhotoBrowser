@@ -27,7 +27,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     UIImage* bgImage;
     // Views
     UIScrollView *_pagingScrollView;
-
+    UIPopoverPresentationController *alertPopoverPresentationController;
     UIView*headerView;
     //RNGridMenu*gridMenu;
 
@@ -904,6 +904,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     _actionRightButton.frame = [self frameForRightActionButtonAtOrientation:currentOrientation];
 
+    if (alertPopoverPresentationController) {
+        alertPopoverPresentationController.sourceRect = _actionRightButton.frame;
+        alertPopoverPresentationController.sourceView = self.view;
+    }
 
     // Remember index
     NSUInteger indexPriorToLayout = _currentPageIndex;
@@ -1545,7 +1549,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }]];
         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         {
-            UIPopoverPresentationController *alertPopoverPresentationController = actionSheet.popoverPresentationController;
+            alertPopoverPresentationController = actionSheet.popoverPresentationController;
             alertPopoverPresentationController.sourceRect = _actionRightButton.frame;
             alertPopoverPresentationController.sourceView = self.view;
         }
@@ -1558,7 +1562,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }]];
         if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
         {
-            UIPopoverPresentationController *alertPopoverPresentationController = actionSheet.popoverPresentationController;
+            alertPopoverPresentationController = actionSheet.popoverPresentationController;
             alertPopoverPresentationController.sourceRect = _actionRightButton.frame;
             alertPopoverPresentationController.sourceView = self.view;
         }
