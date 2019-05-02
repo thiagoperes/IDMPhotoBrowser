@@ -274,7 +274,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 -(void)setBgImage:(UIImage *)bgImage1
 {
     bgImage = bgImage1;
-    //self.view.backgroundColor = [UIColor colorWithPatternImage:bgImage];
 }
 
 - (void)releaseAllUnderlyingPhotos {
@@ -325,7 +324,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     self.view.opaque = YES;
 
-    self.view.backgroundColor = [UIColor colorWithPatternImage:bgImage];//[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
+    self.view.backgroundColor = bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
 
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
@@ -372,7 +371,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
             [UIView setAnimationDelegate:self];
             [scrollView setCenter:CGPointMake(finalX, finalY)];
-            self.view.backgroundColor =  [UIColor colorWithWhite:1 alpha:0];
+            self.view.backgroundColor =  [UIColor colorWithWhite:1 alpha:1];
             [UIView commitAnimations];
 
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
@@ -382,7 +381,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             _isdraggingPhoto = NO;
             [self setNeedsStatusBarAppearanceUpdate];
 
-            self.view.backgroundColor = [UIColor colorWithPatternImage:bgImage];;//[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+            self.view.backgroundColor = bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:newAlpha];
 
             CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y);
 
@@ -441,7 +440,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.frame = _senderViewOriginalFrame;
     resizableImageView.clipsToBounds = YES;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
-    resizableImageView.backgroundColor = [UIColor colorWithPatternImage:bgImage];// [UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
+    resizableImageView.backgroundColor = bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
     [_applicationWindow addSubview:resizableImageView];
     _senderViewForAnimation.hidden = YES;
 
@@ -451,7 +450,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _pagingScrollView.alpha = 1.0f;
         [UIView animateWithDuration:0.2f animations:^{
 
-            resizableImageView.backgroundColor = [UIColor colorWithPatternImage:bgImage];//[UIColor colorWithWhite:(_useWhiteBackgroundColor) ? 1 : 0 alpha:1];
+            resizableImageView.backgroundColor = bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
             fadeView.alpha = 0.0f;
             resizableImageView.alpha = 0.0f;
 
@@ -462,10 +461,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         }];
 
     };
-
-    /* [UIView animateWithDuration:_animationDuration animations:^{
-     fadeView.backgroundColor = self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
-     } completion:nil];*/
 
     float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
     CGRect finalImageViewFrame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
@@ -513,7 +508,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     float scaleFactor = imageFromView.size.width / screenWidth;
 
     UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor =  [UIColor colorWithPatternImage:bgImage];// self.useWhiteBackgroundColor ? [UIColor whiteColor] : [UIColor blackColor];
+    fadeView.backgroundColor =  bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:fadeAlpha];
     fadeView.alpha = fadeAlpha;
     [_applicationWindow addSubview:fadeView];
 
@@ -625,7 +620,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (void)viewDidLoad {
     // View
-    self.view.backgroundColor = [UIColor colorWithPatternImage:bgImage];//[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
+    bgImage = NULL;
+    self.view.backgroundColor = bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
 
     self.view.clipsToBounds = YES;
 
@@ -665,13 +661,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_applicationWindow addSubview:headerView];
     headerView.backgroundColor = [UIColor clearColor];
 
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     blurEffectView.frame = headerView.bounds;
     blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     [headerView addSubview:blurEffectView];
-
     //action
 
     _actionRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -680,26 +675,21 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_actionRightButton addTarget:self action:@selector(rightActionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
     if(!_actionRightButtonImage) {
-        // [_actionRightButton setTitleColor:[UIColor colorWithWhite:0.9 alpha:0.9] forState:UIControlStateNormal|UIControlStateHighlighted];
-        //[_actionRightButton setTitle:IDMPhotoBrowserLocalizedStrings(@"...") forState:UIControlStateNormal];
         [_actionRightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
         [_actionRightButton setBackgroundColor:[UIColor clearColor]];
-        //_actionRightButton.layer.cornerRadius = 3.0f;
-        // _actionRightButton.layer.borderColor = [UIColor colorWithWhite:0.9 alpha:0.9].CGColor;
-        // _actionRightButton.layer.borderWidth = 1.0f;
         float topMarginDots = 19.0f;
         float dDot = 5.0f;
         CAShapeLayer *circleLayer = [CAShapeLayer layer];
         [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(5, topMarginDots, dDot, dDot)] CGPath]];
-        [circleLayer setFillColor:[DEFAULT_GREEN_COLOR CGColor]];
+        [circleLayer setFillColor:[UIColor whiteColor].CGColor];
 
         CAShapeLayer *circleLayer1 = [CAShapeLayer layer];
         [circleLayer1 setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(14, topMarginDots, dDot, dDot)] CGPath]];
-        [circleLayer1 setFillColor:[DEFAULT_GREEN_COLOR CGColor]];
+        [circleLayer1 setFillColor:[UIColor whiteColor].CGColor];
 
         CAShapeLayer *circleLayer2 = [CAShapeLayer layer];
         [circleLayer2 setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(23, topMarginDots, dDot, dDot)] CGPath]];
-        [circleLayer2 setFillColor:[DEFAULT_GREEN_COLOR CGColor]];
+        [circleLayer2 setFillColor:[UIColor whiteColor].CGColor];
 
         [_actionRightButton.layer addSublayer:circleLayer];
         [_actionRightButton.layer addSublayer:circleLayer1];
@@ -769,12 +759,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Counter Label
     UIView*clView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 95, 44)];
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _statusBarHeight/2, 95, 44)];
-    //clView.backgroundColor = [UIColor greenColor];
     _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
     _counterLabel.font = [UIFont fontWithName:@"PTSans-Bold" size:17];
-    _counterLabel.textColor = [UIColor colorWithRed:51.000000/255.0f green:51.000000/255.0f blue:51.000000/255.0f alpha:1.000000];
-    // _counterLabel.backgroundColor = [UIColor redColor];
+    _counterLabel.textColor = [UIColor whiteColor];
     // Counter Button
     [clView addSubview:_counterLabel];
     _counterButton = [[UIBarButtonItem alloc] initWithCustomView:clView];
@@ -1436,7 +1424,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [_doneButton setAlpha:alpha];
         [headerView setAlpha:alpha];
         [_actionRightButton setAlpha:alpha];
-        self.view.backgroundColor = hidden ? [UIColor blackColor] :  [UIColor colorWithPatternImage:bgImage];
+        self.view.backgroundColor = hidden ? [UIColor blackColor] :  bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
         for (UIView *v in captionViews) v.alpha = alpha;
     } completion:^(BOOL finished) {}];
 
