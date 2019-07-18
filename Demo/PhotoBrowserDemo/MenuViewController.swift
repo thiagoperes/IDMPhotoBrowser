@@ -59,7 +59,7 @@ extension MenuViewController {
 // MARK: Actions
 
 extension MenuViewController {
-	func buttonWithImageOnScreenPressed(sender: AnyObject) {
+  @objc func buttonWithImageOnScreenPressed(sender: AnyObject) {
 		let buttonSender = sender as? UIButton
 		
 		// Create an array to store IDMPhoto objects
