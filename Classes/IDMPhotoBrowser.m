@@ -416,7 +416,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)performPresentAnimation {
 
     self.view.alpha = 0.0f;
-    _pagingScrollView.alpha = 1.0f;
+    _pagingScrollView.alpha = 0.0f;
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
     imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
 
@@ -441,6 +441,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [self animateHeader];
     void (^completion)() = ^() {
         self.view.alpha = 1.0f;
+        _pagingScrollView.alpha = 1.0f;
         [UIView animateWithDuration:_animationDuration animations:^{
             resizableImageView.backgroundColor = [UIColor clearColor];
             fadeView.alpha = 1.0f;
