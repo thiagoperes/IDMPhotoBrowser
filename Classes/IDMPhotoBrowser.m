@@ -26,9 +26,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     NSMutableArray *_photos;
     UIImage* bgImage;
     // Views
+    UIView *fadeView;
+    UIImageView*headerImageView;
     UIScrollView *_pagingScrollView;
     UIPopoverPresentationController *alertPopoverPresentationController;
     UIView*headerView;
+//    UIView*headerViewContainer;
     //RNGridMenu*gridMenu;
 
     // Gesture
@@ -65,6 +68,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     UIView *_senderViewForAnimation;
 
     // Misc
+    BOOL _areControlsHidden;
     BOOL _performingLayout;
     BOOL _rotating;
     BOOL _viewIsActive; // active as in it's in the view heirarchy
@@ -138,7 +142,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayDoneButton = _displayDoneButton, displayActionRightButton = _displayActionRightButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, actionRightButtonImage = _actionRightButtonImage, statusBarHeight = _statusBarHeight, headerHeight = _headerHeight;
+@synthesize displayDoneButton = _displayDoneButton, displayActionRightButton = _displayActionRightButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, headerImage = _headerImage, actionRightButtonImage = _actionRightButtonImage, statusBarHeight = _statusBarHeight, headerHeight = _headerHeight;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
@@ -177,6 +181,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayDoneButton = YES;
         _displayActionRightButton = YES;
         _doneButtonImage = nil;
+        _headerImage = nil;
         _actionRightButtonImage = nil;
 
         _displayToolbar = YES;
@@ -184,6 +189,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayArrowButton = YES;
         _displayCounterLabel = NO;
 
+        _areControlsHidden = NO;
+        
         _forceHideStatusBar = NO;
         _usePopAnimation = NO;
         _disableVerticalSwipe = NO;
@@ -239,6 +246,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     return self;
 }
 
+-(UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
 - (id)initWithPhotos:(NSArray *)photosArray animatedFromView:(UIView*)view {
     if ((self = [self init])) {
@@ -321,10 +331,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     float newY = scrollView.center.y - viewHalfHeight;
     float newAlpha = 1 - fabsf(newY)/viewHeight;
+    self.view.alpha = newAlpha;
 
     self.view.opaque = YES;
-
-    self.view.backgroundColor = bgImage?[UIColor colorWithPatternImage:bgImage]:[UIColor colorWithWhite:(_useWhiteBackgroundColor ? 1 : 0) alpha:1];
 
     // Gesture Ended
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
@@ -371,7 +380,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
             [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
             [UIView setAnimationDelegate:self];
             [scrollView setCenter:CGPointMake(finalX, finalY)];
-            self.view.backgroundColor = [UIColor clearColor];
             [UIView commitAnimations];
 
             [self performSelector:@selector(doneButtonPressed:) withObject:self afterDelay:animationDuration];
@@ -380,8 +388,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         {
             _isdraggingPhoto = NO;
             [self setNeedsStatusBarAppearanceUpdate];
-
-            self.view.backgroundColor =[UIColor clearColor];
 
             CGFloat velocityY = (.35*[(UIPanGestureRecognizer*)sender velocityInView:self.view].y);
 
@@ -404,25 +410,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 - (UIImage*)rotateImageToCurrentOrientation:(UIImage*)image
 {
-    /* if(UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation))
-     {
-     UIImageOrientation orientation = ([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationLandscapeLeft) ?UIImageOrientationLeft : UIImageOrientationRight;
-
-     UIImage *rotatedImage = [[UIImage alloc] initWithCGImage:image.CGImage
-     scale:1.0
-     orientation:orientation];
-
-     image = rotatedImage;
-     }*/
-
     return image;
 }
 
 - (void)performPresentAnimation {
 
     self.view.alpha = 0.0f;
-    _pagingScrollView.alpha = 0.0f;
-
+    _pagingScrollView.alpha = 1.0f;
     UIImage *imageFromView = _scaleImage ? _scaleImage : [self getImageFromView:_senderViewForAnimation];
     imageFromView = [self rotateImageToCurrentOrientation:imageFromView];
 
@@ -432,9 +426,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     CGFloat screenWidth = screenBound.size.width;
     CGFloat screenHeight = screenBound.size.height;
 
-    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
+    fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
     fadeView.alpha = 0.0f;
-    fadeView.backgroundColor = [UIColor blackColor];
+    fadeView.backgroundColor = [UIColor colorWithRed:238.0f / 255.0f green:238.0f / 255.0f blue:238.0f / 255.0f alpha:1.0];
     [_applicationWindow addSubview:fadeView];
 
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
@@ -444,29 +438,29 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     resizableImageView.backgroundColor = [UIColor clearColor];
     [_applicationWindow addSubview:resizableImageView];
     _senderViewForAnimation.hidden = YES;
-
+    [self animateHeader];
     void (^completion)() = ^() {
         self.view.alpha = 1.0f;
-        _pagingScrollView.alpha = 1.0f;
-        [UIView animateWithDuration:0.2f animations:^{
+        [UIView animateWithDuration:_animationDuration animations:^{
             resizableImageView.backgroundColor = [UIColor clearColor];
-            resizableImageView.alpha = 0.0f;
+            fadeView.alpha = 1.0f;
+            resizableImageView.alpha = 1.0f;
 
         } completion:^(BOOL finished) {
+            
             [fadeView removeFromSuperview];
             [resizableImageView removeFromSuperview];
-
+            [self.view insertSubview:fadeView atIndex:0];
         }];
 
     };
-
     float scaleFactor = (imageFromView ? imageFromView.size.width : screenWidth) / screenWidth;
     CGRect finalImageViewFrame = CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2), screenWidth, imageFromView.size.height / scaleFactor);
     if (finalImageViewFrame.size.height>screenHeight) {
         float scaleFactor2 = finalImageViewFrame.size.height/screenHeight;
         finalImageViewFrame = CGRectMake((screenWidth-(finalImageViewFrame.size.width/scaleFactor2))/2, 0, finalImageViewFrame.size.width/scaleFactor2, screenHeight);
     }
-
+    
     if(_usePopAnimation)
     {
         [self animateView:resizableImageView toFrame:finalImageViewFrame completion:completion];
@@ -474,7 +468,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     else
     {
         [UIView animateWithDuration:(_animationDuration+0.15f) animations:^{
-             fadeView.alpha = 1.0f;
+            fadeView.alpha = 1.0f;
             resizableImageView.layer.frame = finalImageViewFrame;
         } completion:^(BOOL finished) {
             completion();
@@ -506,19 +500,16 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     float scaleFactor = imageFromView.size.width / screenWidth;
 
-    UIView *fadeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
-    fadeView.backgroundColor =  [UIColor blackColor];
-    fadeView.alpha = fadeAlpha;
-    [_applicationWindow addSubview:fadeView];
-
     UIImageView *resizableImageView = [[UIImageView alloc] initWithImage:imageFromView];
     resizableImageView.frame = (imageFromView) ? CGRectMake(0, (screenHeight/2)-((imageFromView.size.height / scaleFactor)/2)+scrollView.frame.origin.y, screenWidth, imageFromView.size.height / scaleFactor) : CGRectZero;
     resizableImageView.contentMode = UIViewContentModeScaleAspectFill;
     resizableImageView.backgroundColor = [UIColor clearColor];
     resizableImageView.clipsToBounds = YES;
+    [fadeView removeFromSuperview];
+    [_applicationWindow addSubview:fadeView];
     [_applicationWindow addSubview:resizableImageView];
     self.view.hidden = YES;
-
+    
     void (^completion)() = ^() {
         _senderViewForAnimation.hidden = NO;
         _senderViewForAnimation = nil;
@@ -533,7 +524,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     [UIView animateWithDuration:_animationDuration animations:^{
         fadeView.alpha = 0;
-        self.view.backgroundColor = [UIColor clearColor];
     } completion:nil];
 
     if(_usePopAnimation)
@@ -618,21 +608,15 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 #pragma mark - View Lifecycle
 
 - (void)viewDidLoad {
-    // View
-    bgImage = NULL;
-    self.view.backgroundColor = [UIColor clearColor];
-
     self.view.clipsToBounds = YES;
-
     // Setup paging scrolling view
     CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
     _pagingScrollView = [[UIScrollView alloc] initWithFrame:pagingScrollViewFrame];
-    //_pagingScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _pagingScrollView.pagingEnabled = YES;
     _pagingScrollView.delegate = self;
     _pagingScrollView.showsHorizontalScrollIndicator = NO;
     _pagingScrollView.showsVerticalScrollIndicator = NO;
-    _pagingScrollView.backgroundColor = [UIColor blackColor];
+    _pagingScrollView.backgroundColor = [UIColor clearColor];
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
     if (@available(iOS 11.0, *)) {
         [_pagingScrollView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
@@ -641,8 +625,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     [self.view addSubview:_pagingScrollView];
 
-    // Transition animation
-    [self performPresentAnimation];
+   
 
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
 
@@ -659,13 +642,27 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _headerHeight)];
     [self.view addSubview:headerView];
     headerView.backgroundColor = [UIColor clearColor];
+    
+    // Transition animation
+    [self performPresentAnimation];
+    
+    if (_headerImage) {
+        headerImageView = [[UIImageView alloc] initWithImage:_headerImage];
+        [headerView addSubview:headerImageView];
+        headerImageView.frame = headerView.bounds;
+        headerImageView.contentMode = UIViewContentModeScaleAspectFill;
+        headerImageView.clipsToBounds = YES;
+        headerImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+    } else {
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        blurEffectView.frame = headerView.bounds;
+        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        [headerView addSubview:blurEffectView];
+    }
 
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.frame = headerView.bounds;
-    blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-    [headerView addSubview:blurEffectView];
     //action
 
     _actionRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -676,19 +673,19 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if(!_actionRightButtonImage) {
         [_actionRightButton.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
         [_actionRightButton setBackgroundColor:[UIColor clearColor]];
-        float topMarginDots = 19.0f;
+        float topMarginDots = _actionRightButton.frame.size.height/2 - 2;
         float dDot = 5.0f;
         CAShapeLayer *circleLayer = [CAShapeLayer layer];
         [circleLayer setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(5, topMarginDots, dDot, dDot)] CGPath]];
-        [circleLayer setFillColor:[UIColor whiteColor].CGColor];
+        [circleLayer setFillColor:[[UIColor whiteColor] CGColor]];
 
         CAShapeLayer *circleLayer1 = [CAShapeLayer layer];
         [circleLayer1 setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(14, topMarginDots, dDot, dDot)] CGPath]];
-        [circleLayer1 setFillColor:[UIColor whiteColor].CGColor];
+        [circleLayer1 setFillColor:[[UIColor whiteColor] CGColor]];
 
         CAShapeLayer *circleLayer2 = [CAShapeLayer layer];
         [circleLayer2 setPath:[[UIBezierPath bezierPathWithOvalInRect:CGRectMake(23, topMarginDots, dDot, dDot)] CGPath]];
-        [circleLayer2 setFillColor:[UIColor whiteColor].CGColor];
+        [circleLayer2 setFillColor:[[UIColor whiteColor] CGColor]];
 
         [_actionRightButton.layer addSublayer:circleLayer];
         [_actionRightButton.layer addSublayer:circleLayer1];
@@ -696,11 +693,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else {
         [_actionRightButton setImage:_actionRightButtonImage forState:UIControlStateNormal];
-        //[_actionRightButton setImageEdgeInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
         _actionRightButton.contentMode = UIViewContentModeScaleAspectFill;
     }
-
-
     // Close Button
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_doneButton setFrame:[self frameForDoneButtonAtOrientation:currentOrientation]];
@@ -718,21 +712,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     else {
         [_doneButton setImage:_doneButtonImage forState:UIControlStateNormal];
-        //[_doneButton setImageEdgeInsets:UIEdgeInsetsMake(10, 10, 10, 10)];
         _doneButton.contentMode = UIViewContentModeScaleAspectFill;
     }
-    _toolbar.alpha =headerView.alpha = _doneButton.alpha = _actionRightButton.alpha = self.navigationController.navigationBar.alpha = 0.0f;
-    // Hide/show bars
-    [UIView animateWithDuration:0.5f animations:^(void) {
-        CGFloat alpha = 1.0f;
-        [self.navigationController.navigationBar setAlpha:alpha];
-        [_toolbar setAlpha:alpha];
-        [_actionRightButton setAlpha:alpha];
-        [_doneButton setAlpha:alpha];
-        [headerView setAlpha:alpha];
-    } completion:^(BOOL finished) {}];
-    //_deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    // [_deleteButton setFrame:[self frameForDoneButtonAtOrientation:currentOrientation]];
+    _toolbar.alpha =headerView.alpha = _doneButton.alpha = _actionRightButton.alpha = self.navigationController.navigationBar.alpha = 1.0f;
 
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
     [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowLeft.png"]          : _leftArrowImage;
@@ -746,7 +728,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     UIImage *rightButtonSelectedImage = (_rightArrowSelectedImage == nil) ?
     [UIImage imageNamed:@"IDMPhotoBrowser.bundle/images/IDMPhotoBrowser_arrowRightSelected.png"] : _rightArrowSelectedImage;
 
-    // Arrows
     _previousButton = [[UIBarButtonItem alloc] initWithCustomView:[self customToolbarButtonImage:leftButtonImage
                                                                                    imageSelected:leftButtonSelectedImage
                                                                                           action:@selector(gotoPreviousPage)]];
@@ -760,7 +741,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     _counterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _statusBarHeight/2, 95, 44)];
     _counterLabel.textAlignment = NSTextAlignmentCenter;
     _counterLabel.backgroundColor = [UIColor clearColor];
-    _counterLabel.font = [UIFont fontWithName:@"PTSans-Bold" size:17];
+    _counterLabel.font = [UIFont fontWithName:@"roboto-medium" size:16];
     _counterLabel.textColor = [UIColor whiteColor];
     // Counter Button
     [clView addSubview:_counterLabel];
@@ -800,18 +781,22 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Status Bar
     _statusBarOriginallyHidden = [UIApplication sharedApplication].statusBarHidden;
 
-    _toolbar.alpha =headerView.alpha = _doneButton.alpha = _actionRightButton.alpha = self.navigationController.navigationBar.alpha = 0.0f;
-    [UIView animateWithDuration:0.1f animations:^(void) {
-        CGFloat alpha = 1.0f;
-        [self.navigationController.navigationBar setAlpha:alpha];
-        [_toolbar setAlpha:alpha];
-        [_doneButton setAlpha:alpha];
-        [headerView setAlpha:alpha];
-        [_actionRightButton setAlpha:alpha];
-    } completion:^(BOOL finished) {}];
+    
 
     // Update UI
     //[self hideControlsAfterDelay];
+}
+
+-(void)animateHeader {
+    _toolbar.alpha =headerView.alpha = _doneButton.alpha = _actionRightButton.alpha = self.navigationController.navigationBar.alpha = 0.0f;
+        [UIView animateWithDuration:_animationDuration animations:^(void) {
+            CGFloat alpha = 1.0f;
+            [self.navigationController.navigationBar setAlpha:alpha];
+            [_toolbar setAlpha:alpha];
+            [_doneButton setAlpha:alpha];
+            [headerView setAlpha:alpha];
+            [_actionRightButton setAlpha:alpha];
+        } completion:^(BOOL finished) {}];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -847,10 +832,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 #pragma mark - Status Bar
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
-}
 
 - (BOOL)prefersStatusBarHidden {
     if(_forceHideStatusBar) {
@@ -945,22 +926,17 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Toolbar
     if (_displayToolbar) {
-        [_applicationWindow addSubview:_toolbar];
+        [self.view addSubview:_toolbar];
     } else {
         [_toolbar removeFromSuperview];
     }
 
-    //UIWindow* statusBarWindow = (UIWindow *)[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
-    //statusBarWindow.frame = _rectStatusBar;
-
-
-
     // Close button
     if(_displayDoneButton && !self.navigationController.navigationBar)
-        [_applicationWindow addSubview:_doneButton];
+        [self.view addSubview:_doneButton];
 
     if(_displayActionRightButton && !self.navigationController.navigationBar)
-        [_applicationWindow addSubview:_actionRightButton];
+        [self.view addSubview:_actionRightButton];
 
     // Toolbar items & navigation
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
@@ -1006,7 +982,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         if(isLast)
         {
             _pagingScrollView.frame = CGRectMake(-_pagingScrollView.frame.size.width, _pagingScrollView.frame.origin.y, _pagingScrollView.frame.size.width, _pagingScrollView.frame.size.height);
-            [UIView animateWithDuration:0.2f animations:^{
+            [UIView animateWithDuration:_animationDuration animations:^{
                 _pagingScrollView.frame = origRect;
             } completion:^(BOOL finished) {
                 //complete
@@ -1015,7 +991,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         else
         {
             _pagingScrollView.frame = CGRectMake(_pagingScrollView.frame.size.width, _pagingScrollView.frame.origin.y, _pagingScrollView.frame.size.width, _pagingScrollView.frame.size.height);
-            [UIView animateWithDuration:0.2f animations:^{
+            [UIView animateWithDuration:_animationDuration animations:^{
                 _pagingScrollView.frame = origRect;
             } completion:^(BOOL finished) {
                 //complete
@@ -1408,7 +1384,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated permanent:(BOOL)permanent {
     // Cancel any timers
     [self cancelControlHiding];
-
+    _areControlsHidden = hidden;
     // Captions
     NSMutableSet *captionViews = [[NSMutableSet alloc] initWithCapacity:_visiblePages.count];
     for (IDMZoomingScrollView *page in _visiblePages) {
@@ -1416,14 +1392,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 
     // Hide/show bars
-    [UIView animateWithDuration:(animated ? 0.1 : 0) animations:^(void) {
+    [UIView animateWithDuration:(animated ? _animationDuration : 0) animations:^(void) {
         CGFloat alpha = hidden ? 0 : 1;
         [self.navigationController.navigationBar setAlpha:alpha];
         [_toolbar setAlpha:alpha];
         [_doneButton setAlpha:alpha];
         [headerView setAlpha:alpha];
         [_actionRightButton setAlpha:alpha];
-        self.view.backgroundColor = [UIColor clearColor];
         for (UIView *v in captionViews) v.alpha = alpha;
     } completion:^(BOOL finished) {}];
 
@@ -1452,7 +1427,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
 }
 
-- (BOOL)areControlsHidden { return (_toolbar.alpha == 0); }
+- (BOOL)areControlsHidden { return _areControlsHidden; }
 - (void)hideControls      { if(_autoHide) [self setControlsHidden:YES animated:YES permanent:NO]; }
 - (void)toggleControls    { [self setControlsHidden:![self areControlsHidden] animated:YES permanent:NO]; }
 
@@ -1499,7 +1474,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
 -(void)deletePhoto
 {
-    [UIView animateWithDuration:0.2f animations:^{
+    [UIView animateWithDuration:_animationDuration animations:^{
         IDMZoomingScrollView*page = [self pageDisplayedAtIndex:_currentPageIndex];
         page.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
         page.alpha = 0.1f;
