@@ -59,15 +59,6 @@
             [_photoImageView addInteraction:drag];
         }
         
-        CGRect screenBound = [[UIScreen mainScreen] bounds];
-        CGFloat screenWidth = screenBound.size.width;
-        CGFloat screenHeight = screenBound.size.height;
-        
-        if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeLeft || [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight) {
-            screenWidth = screenBound.size.height;
-            screenHeight = screenBound.size.width;
-        }
-        
         // Progress view
         _progressView = [[DACircularProgressView alloc] initWithFrame:CGRectZero];
         _progressView.translatesAutoresizingMaskIntoConstraints = NO;
