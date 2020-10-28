@@ -331,7 +331,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     float newY = scrollView.center.y - viewHalfHeight;
     float newAlpha = 1 - fabsf(newY)/viewHeight;
-    self.view.alpha = newAlpha;
+    _pagingScrollView.alpha = newAlpha;
 
     self.view.opaque = YES;
 
