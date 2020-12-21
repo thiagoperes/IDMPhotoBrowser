@@ -54,6 +54,7 @@
 @property (nonatomic) BOOL useWhiteBackgroundColor;
 @property (nonatomic, weak) UIImage *doneButtonImage;
 @property (nonatomic, weak) UIImage *headerImage;
+@property (nonatomic) BOOL premiumColorEnabled;
 @property (nonatomic, weak) UIImage *actionRightButtonImage;
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 @property (nonatomic) CGRect rectStatusBar;

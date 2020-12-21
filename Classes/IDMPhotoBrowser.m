@@ -28,11 +28,11 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Views
     UIView *fadeView;
     UIImageView*headerImageView;
+    UIView*premiumColorView;
+    CAGradientLayer* gradientLayer;
     UIScrollView *_pagingScrollView;
     UIPopoverPresentationController *alertPopoverPresentationController;
     UIView*headerView;
-//    UIView*headerViewContainer;
-    //RNGridMenu*gridMenu;
 
     // Gesture
     UIPanGestureRecognizer *_panGesture;
@@ -142,7 +142,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @implementation IDMPhotoBrowser
 
 // Properties
-@synthesize displayDoneButton = _displayDoneButton, displayActionRightButton = _displayActionRightButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, headerImage = _headerImage, actionRightButtonImage = _actionRightButtonImage, statusBarHeight = _statusBarHeight, headerHeight = _headerHeight;
+@synthesize displayDoneButton = _displayDoneButton, displayActionRightButton = _displayActionRightButton, displayToolbar = _displayToolbar, displayActionButton = _displayActionButton, displayCounterLabel = _displayCounterLabel, useWhiteBackgroundColor = _useWhiteBackgroundColor, doneButtonImage = _doneButtonImage, headerImage = _headerImage, actionRightButtonImage = _actionRightButtonImage, statusBarHeight = _statusBarHeight, headerHeight = _headerHeight, premiumColorEnabled = _premiumColorEnabled;
 @synthesize leftArrowImage = _leftArrowImage, rightArrowImage = _rightArrowImage, leftArrowSelectedImage = _leftArrowSelectedImage, rightArrowSelectedImage = _rightArrowSelectedImage;
 @synthesize displayArrowButton = _displayArrowButton, actionButtonTitles = _actionButtonTitles;
 @synthesize arrowButtonsChangePhotosAnimated = _arrowButtonsChangePhotosAnimated;
@@ -172,7 +172,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _recycledPages = [NSMutableSet new];
         _photos = [NSMutableArray new];
         _photoImageViews = [NSMutableArray new];
-
+        _premiumColorEnabled = NO;
         _initalPageIndex = 0;
         _offsetPageIndex = 0;
         _autoHide = NO;
@@ -626,8 +626,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     }
     [self.view addSubview:_pagingScrollView];
 
-   
-
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
 
     // Toolbar
@@ -638,7 +636,6 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     [_toolbar setBackgroundImage:[UIImage new]
               forToolbarPosition:UIToolbarPositionAny
                       barMetrics:UIBarMetricsDefault];
-
 
     headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _headerHeight)];
     [self.view addSubview:headerView];
@@ -663,7 +660,17 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         
         [headerView addSubview:blurEffectView];
     }
-
+    premiumColorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, _headerHeight)];
+    if (premiumColorView) {
+        premiumColorView.hidden = !_premiumColorEnabled;
+    }
+    [headerView addSubview:premiumColorView];
+    premiumColorView.frame = headerView.bounds;
+    gradientLayer = [[CAGradientLayer alloc] init];
+    gradientLayer.colors = [NSArray arrayWithObjects:(id)(id)[UIColor colorWithRed:229.0f / 255.0f green:104.0f / 255.0f blue:107.0f / 255.0f alpha:0.0f].CGColor, (id)[UIColor colorWithRed:229.0f / 255.0f green:104.0f / 255.0f blue:107.0f / 255.0f alpha:0.85f].CGColor, nil];
+    [premiumColorView.layer addSublayer:gradientLayer];
+    gradientLayer.frame = headerView.bounds;
+    premiumColorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     //action
 
     _actionRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -890,6 +897,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Recalculate contentSize based on current orientation
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
     headerView.frame = CGRectMake(0, 0, self.view.bounds.size.width, _headerHeight);
+    premiumColorView.frame = headerView.bounds;
+    gradientLayer.frame = headerView.bounds;
     // Adjust frames and configuration of each visible page
     for (IDMZoomingScrollView *page in _visiblePages) {
         NSUInteger index = PAGE_INDEX(page);
@@ -908,6 +917,13 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Super
     [super viewWillLayoutSubviews];
+}
+
+-(void)setPremiumColorEnabled:(BOOL)premiumColorEnabled {
+    _premiumColorEnabled = premiumColorEnabled;
+    if (premiumColorView) {
+        premiumColorView.hidden = !_premiumColorEnabled;
+    }
 }
 
 - (void)performLayoutFromDeletion:(BOOL)fromDeletion {
