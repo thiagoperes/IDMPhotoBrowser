@@ -43,6 +43,7 @@
 @property (nonatomic, weak) UIImage *leftArrowImage, *leftArrowSelectedImage;
 @property (nonatomic, weak) UIImage *rightArrowImage, *rightArrowSelectedImage;
 @property (nonatomic, weak) UIImage *actionButtonImage, *actionButtonSelectedImage;
+@property (nonatomic)  CGFloat maximumDoubleTapZoomScale;
 
 // View customization
 @property (nonatomic) BOOL displayDoneButton;

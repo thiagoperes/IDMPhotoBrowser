@@ -81,6 +81,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 @property (nonatomic, strong) UIActionSheet *actionsSheet;
 @property (nonatomic, strong) UIActivityViewController *activityViewController;
 
+
 // Private Methods
 
 // Layout
@@ -153,7 +154,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if ((self = [super init])) {
         // Defaults
         self.hidesBottomBarWhenPushed = YES;
-		
+        _maximumDoubleTapZoomScale = 4; //default
         _currentPageIndex = 0;
 		_performingLayout = NO; // Reset on view did appear
 		_rotating = NO;
@@ -808,6 +809,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         NSUInteger index = PAGE_INDEX(page);
 		page.frame = [self frameForPageAtIndex:index];
         page.captionView.frame = [self frameForCaptionView:page.captionView atIndex:index];
+        page.maximumZoomScale = self.maximumDoubleTapZoomScale;
+        page.maximumDoubleTapZoomScale = self.maximumDoubleTapZoomScale;
 		[page setMaxMinZoomScalesForCurrentBounds];
 	}
 
