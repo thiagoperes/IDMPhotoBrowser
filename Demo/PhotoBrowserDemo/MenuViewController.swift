@@ -8,7 +8,10 @@
 
 import UIKit
 
-class MenuViewController: UITableViewController, IDMPhotoBrowserDelegate { }
+class MenuViewController: UITableViewController, IDMPhotoBrowserDelegate {
+    
+    let maxZoomScale : CGFloat = 8; // zoom in scale on double tap can be define here now
+}
 
 // MARK: View Lifecycle
 
@@ -59,7 +62,7 @@ extension MenuViewController {
 // MARK: Actions
 
 extension MenuViewController {
-	func buttonWithImageOnScreenPressed(sender: AnyObject) {
+    @objc func buttonWithImageOnScreenPressed(sender: AnyObject) {
 		let buttonSender = sender as? UIButton
 		
 		// Create an array to store IDMPhoto objects
@@ -95,7 +98,7 @@ extension MenuViewController {
 			photo.caption = "Grotto of the Madonna";
 			photos.append(photo)
 		}
-		
+       
 		// Create and setup browser
 		let browser: IDMPhotoBrowser = IDMPhotoBrowser(photos: photos, animatedFrom: buttonSender) // using initWithPhotos:animatedFromView:
 		browser.delegate = self
@@ -105,7 +108,7 @@ extension MenuViewController {
 		browser.usePopAnimation = true
 		browser.scaleImage = buttonSender?.currentImage
 		browser.dismissOnTouch = true
-		
+        browser.maximumDoubleTapZoomScale = CGFloat(maxZoomScale);
 		// Show
 		self.present(browser, animated: true, completion: nil)
 	}
@@ -244,7 +247,7 @@ extension MenuViewController {
 				browser?.trackTintColor          = UIColor.init(white: 0.8, alpha: 1)
 			}
 		}
-		
+        browser!.maximumDoubleTapZoomScale = CGFloat(maxZoomScale);
 		// Show
 		present(browser!, animated: true, completion: nil)
 		
