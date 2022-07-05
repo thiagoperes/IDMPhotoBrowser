@@ -1139,8 +1139,8 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 - (CGRect)frameForToolbarAtOrientation:(UIInterfaceOrientation)orientation {
     CGFloat height = 44;
 
-    if ([self isLandscape:orientation])
-        height = 32;
+//    if ([self isLandscape:orientation])
+//        height = 32;
 
     CGRect rtn = CGRectMake(0, self.view.bounds.size.height - height, self.view.bounds.size.width, height);
     rtn = [self adjustForSafeArea:rtn adjustForStatusBar:true];
