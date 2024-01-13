@@ -51,6 +51,7 @@
 @property (nonatomic, weak) UIColor *trackTintColor, *progressTintColor;
 @property (nonatomic, assign) CGFloat doneButtonRightInset, doneButtonTopInset;
 @property (nonatomic, assign) CGSize doneButtonSize;
+@property (nonatomic, assign) CGFloat toolbarBottomInset;
 
 @property (nonatomic, weak) UIImage *scaleImage;
 
