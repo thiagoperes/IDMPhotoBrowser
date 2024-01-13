@@ -194,7 +194,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _doneButtonTopInset = 30.f;
         _doneButtonSize = CGSizeMake(55.f, 26.f);
         
-        _toolbarBottomInset = w0.f;
+        _toolbarBottomInset = 0.f;
 
         if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
             self.automaticallyAdjustsScrollViewInsets = NO;
@@ -551,7 +551,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 }
 
 - (UIImage*)getImageFromView:(UIView *)view {
-    if (view != nil && view.bounds.size.height > 0 && view.bounds.size.height) {
+    if (view != nil) {
         UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 2);
         [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     }
